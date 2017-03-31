@@ -3,6 +3,8 @@ import List exposing (foldl)
 import Html.Events exposing (on, keyCode, onInput, onClick)
 import Json.Decode as Json
 import Html.Attributes exposing (..) 
+import Http exposing (..)
+import Json.Decode as Decode
 
 main : Program Never Model Msg
 main =
@@ -19,7 +21,7 @@ init =
 
 -- UPDATE
 
-type Msg = RemoveProject String | KeyDown Int | Input String
+type Msg = RemoveProject String | KeyDown Int | Input String | AllProjects (Result Http.Error (List String))
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -33,6 +35,10 @@ update msg model =
         (model, Cmd.none)
     Input projectName -> 
       ({ model | newProjectName = projectName }, Cmd.none)
+    AllProjects (Ok projects) -> 
+      ({model | projects = projects}, Cmd.none)
+    AllProjects (Err _) ->
+      (model, Cmd.none)
 
 -- VIEW
 
@@ -61,3 +67,15 @@ renderProjects projects =
 onKeyDown : (Int -> msg) -> Html.Attribute msg
 onKeyDown tagger =
   on "keydown" (Json.map tagger keyCode)
+
+getProjects : () -> Cmd Msg
+getProjects topic =
+  let
+    url =
+      "https://localhost:4500/projects?"    
+  in
+    Http.send AllProjects (Http.get url decodeProjects)
+
+decodeProjects : Decode.Decoder (List String)
+decodeProjects =
+  Decode.at ["data", "projects"] (Decode.list Decode.string)
