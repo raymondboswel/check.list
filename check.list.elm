@@ -5,6 +5,7 @@ import Json.Decode as Json
 import Html.Attributes exposing (..) 
 import Http exposing (..)
 import Json.Decode as Decode
+import Json.Encode as Encode
 
 main : Program Never Model Msg
 main =
@@ -17,28 +18,46 @@ subscriptions model =
 type alias Model = {projects : List String, newProjectName : String}
 init : (Model, Cmd Msg)
 init =
-  (Model ["Project 1", "Project 2"] "", Cmd.none)
+  (Model [] "", getProjects)
 
 -- UPDATE
 
-type Msg = RemoveProject String | KeyDown Int | Input String | AllProjects (Result Http.Error (List String))
+type Msg = RemoveProject String | 
+           AddProject (Result Http.Error String) | 
+           DeleteProject (Result Http.Error String) | 
+           KeyDown Int | 
+           Input String | 
+           GetProjects | 
+           AllProjects (Result Http.Error (List String))
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
-  case msg of    
-    RemoveProject projectName ->
-      ({ model | projects = List.filter (\project -> project /= projectName) model.projects}, Cmd.none)
-    KeyDown key ->
-      if key == 13 then 
-        ({ model | projects = model.newProjectName :: model.projects, newProjectName = ""}, Cmd.none)
-      else
+  let one = "one" in 
+    case msg of    
+      RemoveProject projectName ->
+        (model, deleteProject projectName)
+      KeyDown key ->
+        if key == 13 then 
+          let projectName = model.newProjectName in 
+            ({ model | newProjectName = ""}, addProject projectName)
+        else
+          (model, Cmd.none)
+      Input projectName -> 
+        ({ model | newProjectName = projectName }, Cmd.none)
+      AllProjects (Ok newProjects) -> 
+        ({model | projects = newProjects}, Cmd.none)
+      AllProjects (Err _) ->
         (model, Cmd.none)
-    Input projectName -> 
-      ({ model | newProjectName = projectName }, Cmd.none)
-    AllProjects (Ok projects) -> 
-      ({model | projects = projects}, Cmd.none)
-    AllProjects (Err _) ->
-      (model, Cmd.none)
+      GetProjects -> 
+        (model, getProjects )
+      AddProject (Ok project )->             
+        (model, getProjects)
+      AddProject (Err project )-> 
+        (model, getProjects)
+      DeleteProject (Ok projectName)-> 
+        ({ model | projects = List.filter (\project -> project /= projectName) model.projects}, Cmd.none)
+      DeleteProject (Err error)-> 
+        (model, Cmd.none)
 
 -- VIEW
 
@@ -68,14 +87,39 @@ onKeyDown : (Int -> msg) -> Html.Attribute msg
 onKeyDown tagger =
   on "keydown" (Json.map tagger keyCode)
 
-getProjects : () -> Cmd Msg
-getProjects topic =
+addProject : (String) -> Cmd Msg
+addProject name =   
   let
     url =
-      "https://localhost:4500/projects?"    
+      String.append "http://localhost:4000/api/projects?name=" name
+  in    
+    Http.send AddProject (Http.post url Http.emptyBody Decode.string)
+
+
+deleteProject : (String) -> Cmd Msg
+deleteProject projectName = 
+  Http.send DeleteProject (delete projectName)
+
+delete : String -> Request String
+delete name =
+  request
+    { method = "DELETE"
+    , headers = []
+    , url = String.append "http://localhost:4000/api/projects?name=" name
+    , body = emptyBody
+    , expect = Http.expectString
+    , timeout = Nothing
+    , withCredentials = False
+    }
+
+getProjects : Cmd Msg
+getProjects =
+  let
+    url =
+      "http://localhost:4000/api/projects"    
   in
     Http.send AllProjects (Http.get url decodeProjects)
 
 decodeProjects : Decode.Decoder (List String)
 decodeProjects =
-  Decode.at ["data", "projects"] (Decode.list Decode.string)
+  Decode.at ["data"] (Decode.list Decode.string)
