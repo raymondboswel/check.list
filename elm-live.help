@@ -1,0 +1,1 @@
+elm-live chekc.list.elm --output=elm.js --open
