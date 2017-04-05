@@ -1,1 +1,1 @@
-elm-live chekc.list.elm --output=elm.js --open
+elm-live check.list.elm --output=elm.js --open
