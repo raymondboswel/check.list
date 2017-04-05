@@ -33,7 +33,7 @@ type Msg = RemoveProject String |
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   let one = "one" in 
-    case msg of    
+    case Debug.log "message" msg of    
       RemoveProject projectName ->
         (model, deleteProject projectName)
       KeyDown key ->
