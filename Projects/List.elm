@@ -6,7 +6,7 @@ import Html.Events exposing (on, keyCode, onInput, onClick)
 import Json.Decode as Json
 import Html.Attributes exposing (..)
 import Http exposing (..)
-import Projects.Model exposing (Projects)
+import Projects.Models exposing (Projects)
 import Msgs exposing (Msg)
 import Html.Attributes exposing (..) 
 
