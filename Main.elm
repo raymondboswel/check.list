@@ -6,6 +6,7 @@ import Html.Attributes exposing (..)
 import Http exposing (..)
 import Json.Decode as Decode
 import Json.Encode as Encode
+import Msgs exposing (..)
 
 main : Program Never Model Msg
 main =
@@ -22,20 +23,11 @@ init =
 
 -- UPDATE
 
-type Msg = RemoveProject String | 
-           AddProject (Result Http.Error String) | 
-           DeleteProject (Result Http.Error String) | 
-           KeyDown Int | 
-           Input String | 
-           GetProjects | 
-           AllProjects (Result Http.Error (List String))
-
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   let one = "one" in 
     case Debug.log "message" msg of    
-      RemoveProject projectName ->
-        (model, deleteProject projectName)
+      
       KeyDown key ->
         if key == 13 then 
           let projectName = model.newProjectName in 
@@ -44,19 +36,32 @@ update msg model =
           (model, Cmd.none)
       Input projectName -> 
         ({ model | newProjectName = projectName }, Cmd.none)
+
       AllProjects (Ok newProjects) -> 
         ({model | projects = newProjects}, Cmd.none)
+
       AllProjects (Err _) ->
         (model, Cmd.none)
+
       GetProjects -> 
         (model, getProjects )
+
       AddProject (Ok project )->             
         (model, getProjects)
+
       AddProject (Err project )-> 
         (model, getProjects)
+
+      RemoveProject projectName ->
+        (model, deleteProject projectName)
+
       DeleteProject (Ok projectName)-> 
         ({ model | projects = List.filter (\project -> project /= projectName) model.projects}, Cmd.none)
+
       DeleteProject (Err error)-> 
+        (model, Cmd.none)
+
+      ExpandProject projectName ->
         (model, Cmd.none)
 
 -- VIEW
@@ -68,13 +73,12 @@ view model =
        [div [class "collection-header"] 
        [text "Projects", i [class "material-icons dp48"] []], 
        renderProjects model.projects,
-       div [class "collection-item "] 
+       div [class "collection-item"] 
         [div [class "input-field"] 
           [input [placeholder "New project", onKeyDown KeyDown, onInput Input, value model.newProjectName] [] ]  ]  ] ]
 
-
 renderProject : String -> Html Msg
-renderProject name = div [class "collection-item"] [text name, i [class "material-icons pull-right", onClick (RemoveProject name)] [text "delete"] ]
+renderProject name = div [class "collection-item", onClick (ExpandProject name)] [text name, i [class "material-icons pull-right", onClick (RemoveProject name)] [text "delete"] ]
 
 renderProjects : List String -> Html Msg
 renderProjects projects =
@@ -93,7 +97,7 @@ addProject name =
     url =
       String.append "http://localhost:4000/api/projects?name=" name
   in    
-    Http.send AddProject (Http.post url Http.emptyBody Decode.string)
+    Http.send AddProject (Http.post url Http.emptyBody (Decode.at ["id"] (Decode.int)))
 
 
 deleteProject : (String) -> Cmd Msg
