@@ -1,20 +1,25 @@
 module Commands exposing (..)
 import Msgs exposing (..)
 import Http exposing (..)
+import Models exposing (..)
 import Json.Decode as Decode
+import Json.Decode.Pipeline exposing (decode, required)
+import RemoteData exposing (..)
 
 addProject : (String) -> Cmd Msg
-addProject name =   
+addProject projectName =   
   let
     url =
-      String.append "http://localhost:4000/api/projects?name=" name
+      String.append "http://localhost:4000/api/projects?name=" projectName
   in    
-    Http.send AddProject (Http.post url Http.emptyBody (Decode.at ["id"] (Decode.int)))
+    Http.post url Http.emptyBody (Decode.at ["id"] (Decode.int))
+    |> Http.send Msgs.OnSaveProject
+    
 
 
-deleteProject : (String) -> Cmd Msg
-deleteProject projectName = 
-  Http.send DeleteProject (delete projectName)
+-- deleteProject : (Project) -> Cmd Msg
+-- deleteProject project = 
+--   Http.send DeleteProject (delete project.name)
 
 delete : String -> Request String
 delete name =
@@ -28,14 +33,33 @@ delete name =
     , withCredentials = False
     }
 
-getProjects : Cmd Msg
-getProjects =
-  let
-    url =
-      "http://localhost:4000/api/projects"    
-  in
-    Http.send AllProjects (Http.get url decodeProjects)
+fetchProjects : Cmd Msg
+fetchProjects =
+    Http.get fetchProjectsUrl projectsDecoder
+        |> RemoteData.sendRequest
+        |> Cmd.map Msgs.OnFetchProjects
 
-decodeProjects : Decode.Decoder (List String)
-decodeProjects =
-  Decode.at ["data"] (Decode.list Decode.string)
+projectsDecoder : Decode.Decoder (List Project)
+projectsDecoder =
+    Decode.list projectDecoder
+
+projectDecoder : Decode.Decoder Project
+projectDecoder =
+    decode Project
+        |> required "id" Decode.int
+        |> required "name" Decode.string
+
+fetchProjectsUrl : String
+fetchProjectsUrl = "http://localhost:4000/api/projects"
+
+-- getProjects : Cmd Msg
+-- getProjects =
+--   let
+--     url =
+--       "http://localhost:4000/api/projects"    
+--   in
+--     Http.send AllProjects (Http.get url decodeProjects)
+
+-- decodeProjects : Decode.Decoder (List String)
+-- decodeProjects =
+--   Decode.list Decode.string

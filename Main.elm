@@ -4,25 +4,26 @@ import Html.Events exposing (on, keyCode, onInput, onClick)
 import Json.Decode as Json
 import Json.Decode as Decode
 import Msgs exposing (..)
-import Projects.Models exposing (..)
+import Models exposing (..)
 import Projects.List exposing (..)
 import Commands exposing (..)
+import RemoteData exposing (..)
 
-main : Program Never Projects Msg
+main : Program Never Model Msg
 main =
   Html.program {init = init, view = Projects.List.view, update = update, subscriptions = subscriptions }
 
-subscriptions : Projects -> Sub Msg
+subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.none
 
-init : (Projects, Cmd Msg)
+init : (Model, Cmd Msg)
 init =
-  (Projects [] "", getProjects)
+  (Model RemoteData.Loading "", Commands.fetchProjects)
 
 -- UPDATE
 
-update : Msg -> Projects -> (Projects, Cmd Msg)
+update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   let one = "one" in 
     case Debug.log "message" msg of    
@@ -31,34 +32,38 @@ update msg model =
         if key == 13 then 
           let projectName = model.newProjectName in 
             ({ model | newProjectName = ""}, Commands.addProject projectName)
+            -- (model, Cmd.none)
         else
           (model, Cmd.none)
       Input projectName -> 
         ({ model | newProjectName = projectName }, Cmd.none)
 
-      AllProjects (Ok newProjects) -> 
-        ({model | projects = newProjects}, Cmd.none)
+      OnFetchProjects response -> 
+        ({model | projects = response}, Cmd.none)
 
-      AllProjects (Err _) ->
-        (model, Cmd.none)
+      -- OnFetchProjects (Err _) ->
+      --   (model, Cmd.none)
 
       GetProjects -> 
-        (model, Commands.getProjects )
+        (model, Commands.fetchProjects )
 
-      AddProject (Ok project )->             
-        (model, Commands.getProjects)
+      OnSaveProject projectId-> 
+        (model, Commands.fetchProjects)
 
-      AddProject (Err project )-> 
-        (model, Commands.getProjects)
+      -- AddProject (Ok project )->             
+      --   (model, Commands.fetchProjects)
 
-      RemoveProject projectName ->
-        (model, Commands.deleteProject projectName)
+      -- AddProject (Err project )-> 
+      --   (model, Commands.fetchProjects)
 
-      DeleteProject (Ok projectName)-> 
-        ({ model | projects = List.filter (\project -> project /= projectName) model.projects}, Cmd.none)
+      -- RemoveProject project ->
+      --   (model, Commands.deleteProject project)
 
-      DeleteProject (Err error)-> 
-        (model, Cmd.none)
+      -- DeleteProject (Ok projectName)-> 
+      --   (model, Commands.fetchProjects)
+
+      -- DeleteProject (Err error)-> 
+      --   (model, Cmd.none)
 
       ExpandProject projectName ->
         (model, Cmd.none)

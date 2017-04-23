@@ -2,3 +2,16 @@
     float: right;
     cursor: pointer;
 }
+
+.align-center {
+    text-align: center;
+}
+
+.add-top {
+    top:30px;
+    
+}
+
+.center-spinner-horizontally {
+    left: calc(50% - 45px)
+}

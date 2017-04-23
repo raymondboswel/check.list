@@ -1,11 +1,14 @@
 module Msgs exposing (..)
 import Http exposing (..)
+import RemoteData exposing (WebData)
+import Models exposing (..)
 
-type Msg = RemoveProject String | 
+type Msg = 
+        --    RemoveProject Project | 
            ExpandProject String |
-           AddProject (Result Http.Error Int) | 
-           DeleteProject (Result Http.Error String) | 
+           OnSaveProject (Result Http.Error Int)| 
+        --    DeleteProject (Result Http.Error String) | 
            KeyDown Int | 
            Input String | 
            GetProjects | 
-           AllProjects (Result Http.Error (List String))
+           OnFetchProjects (WebData (List Project))
