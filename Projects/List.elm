@@ -18,7 +18,7 @@ view model =
     
 
 renderProject : Project -> Html Msg
-renderProject project = div [class "collection-item"] [text project.name, i [class "material-icons pull-right", onClick (Msgs.RemoveProject project)] [text "delete"] ]
+renderProject project = div [class "collection-item", onClick (Msgs.SelectProject project)] [text project.name, i [class "material-icons pull-right", onClick (Msgs.RemoveProject project)] [text "delete"] ]
 
 
 maybeRenderProjects : Model -> Html Msg

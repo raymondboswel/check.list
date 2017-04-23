@@ -15,18 +15,32 @@ addProject projectName =
     Http.post url Http.emptyBody (Decode.at ["id"] (Decode.int))
     |> Http.send Msgs.OnSaveProject
     
-
-
 deleteProject : (Project) -> Cmd Msg
 deleteProject project = 
-  Http.send DeleteProject (delete project.name) 
+  Http.send DeleteProject (deleteByName projectResourceUrl project.name) 
 
-delete : String -> Request String
-delete name =
+projectResourceUrl : String 
+projectResourceUrl =
+    "http://localhost:4000/api/projects"
+
+deleteChecklist : Checklist -> Cmd Msg
+deleteChecklist checklist =
+    Http.send Msgs.DeletedChecklist (deleteByName checklistResourceUrl checklist.name)
+
+projectChecklistsResourceUrl : Project -> String
+projectChecklistsResourceUrl project = 
+    "http://localhost:4000/api/projects/" ++ toString(project.id) ++ "/checklists"
+
+checklistResourceUrl : String
+checklistResourceUrl =
+    "http://localhost:4000/api/checklists"
+
+deleteByName : String -> String -> Request String
+deleteByName url name =
   request
     { method = "DELETE"
     , headers = []
-    , url = String.append "http://localhost:4000/api/projects?name=" name
+    , url = url ++ "?name=" ++ name
     , body = emptyBody
     , expect = Http.expectString
     , timeout = Nothing

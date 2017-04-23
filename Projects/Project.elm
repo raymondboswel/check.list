@@ -8,10 +8,10 @@ import Models exposing (..)
 import RemoteData exposing (..) 
 import UI exposing (renderSpinner, onKeyDown)
 
-view : Model -> Html Msg
-view model =
+view : Model -> List Checklist -> Html Msg
+view model checklists =
     div []
-        [ maybeRenderChecklists model
+        [ renderTable checklists model
         ]
 
 maybeRenderChecklists : Model -> Html Msg
@@ -27,9 +27,9 @@ maybeRenderChecklists model =
         RemoteData.Failure error ->
             renderSpinner ()
 
-renderTable : List Project -> Model-> Html Msgs.Msg
-renderTable projects model = 
-    div [class "collection with-header"] (constructTableChildren projects model)
+renderTable : List Checklist -> Model-> Html Msgs.Msg
+renderTable checklists model = 
+    div [class "collection with-header"] (constructTableChildren checklists model)
 
 constructTableChildren : List Checklist -> Model-> List (Html Msgs.Msg)
 constructTableChildren checklists model = 

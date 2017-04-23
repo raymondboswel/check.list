@@ -5,21 +5,29 @@ import Json.Decode as Json
 import Json.Decode as Decode
 import Msgs exposing (..)
 import Models exposing (..)
-import Projects.List exposing (..)
 import Commands exposing (..)
 import RemoteData exposing (..)
+import Routing exposing (..)
+import Navigation exposing (Location)
+import View exposing (view)
 
 main : Program Never Model Msg
 main =
-  Html.program {init = init, view = Projects.List.view, update = update, subscriptions = subscriptions }
+  Navigation.program Msgs.OnLocationChange
+        { init = init
+        , view = view
+        , update = update
+        , subscriptions = subscriptions
+        }
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.none
 
-init : (Model, Cmd Msg)
-init =
-  (Model RemoteData.Loading "" RemoteData.Loading "", Commands.fetchProjects)
+init : Location -> (Model, Cmd Msg)
+init location =
+  let currentRoute = Routing.parseLocation location in
+  (Model currentRoute RemoteData.Loading "" RemoteData.Loading "", Commands.fetchProjects)
 
 -- UPDATE
 
@@ -34,6 +42,17 @@ update msg model =
             ({ model | newProjectName = ""}, Commands.addProject projectName)
         else
           (model, Cmd.none)
+
+      OnNewChecklistInput projectName -> 
+        ({ model | newProjectName = projectName }, Cmd.none)
+
+      OnNewChecklistKeyDown key ->
+        if key == 13 then 
+          let projectName = model.newProjectName in 
+            ({ model | newProjectName = ""}, Commands.addProject projectName)
+        else
+          (model, Cmd.none)
+          
       OnNewProjectInput projectName -> 
         ({ model | newProjectName = projectName }, Cmd.none)
 
@@ -51,12 +70,28 @@ update msg model =
 
       DeleteProject (Ok projectName)-> 
         (model, Commands.fetchProjects)
+      
+      DeletedChecklist (Ok checklistName) ->
+        (model, Cmd.none) 
+
+      DeletedChecklist (Err error) ->
+        (model, Cmd.none) 
 
       DeleteProject (Err error)-> 
         (model, Cmd.none)
 
-      ExpandProject projectName ->
-        (model, Cmd.none)
+      SelectProject project ->
+        ({model | route}, Cmd.none)
+
+      RemoveChecklist checklist ->
+        (model, Commands.deleteChecklist checklist)
+
+      OnLocationChange location ->
+            let
+                newRoute =
+                    parseLocation location
+            in
+                ( { model | route = newRoute }, Cmd.none )
 
 
 onKeyDown : (Int -> msg) -> Html.Attribute msg
