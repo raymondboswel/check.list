@@ -10610,16 +10610,17 @@ var _user$project$Projects_Project$maybeRenderChecklists = function (model) {
 				{ctor: '_Tuple0'});
 	}
 };
-var _user$project$Projects_Project$view = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{ctor: '[]'},
-		{
-			ctor: '::',
-			_0: _user$project$Projects_Project$maybeRenderChecklists(model),
-			_1: {ctor: '[]'}
-		});
-};
+var _user$project$Projects_Project$view = F2(
+	function (model, checklists) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: A2(_user$project$Projects_Project$renderTable, checklists, model),
+				_1: {ctor: '[]'}
+			});
+	});
 
 var _user$project$Projects_List$inputField = F4(
 	function (placeholderText, modelValue, onInputEvent, onKeyDownEvent) {
@@ -10802,13 +10803,28 @@ var _user$project$View$notFoundView = A2(
 		_0: _elm_lang$html$Html$text('Not found'),
 		_1: {ctor: '[]'}
 	});
+var _user$project$View$projectChecklistsPage = F2(
+	function (model, projectId) {
+		var _p0 = model.checklists;
+		switch (_p0.ctor) {
+			case 'NotAsked':
+				return _elm_lang$html$Html$text('');
+			case 'Loading':
+				return _elm_lang$html$Html$text('Loading ...');
+			case 'Success':
+				return A2(_user$project$Projects_Project$view, model, _p0._0);
+			default:
+				return _elm_lang$html$Html$text(
+					_elm_lang$core$Basics$toString(_p0._0));
+		}
+	});
 var _user$project$View$page = function (model) {
-	var _p0 = model.route;
-	switch (_p0.ctor) {
+	var _p1 = model.route;
+	switch (_p1.ctor) {
 		case 'ProjectsRoute':
 			return _user$project$Projects_List$view(model);
 		case 'ProjectRoute':
-			return _user$project$Projects_Project$view(model);
+			return A2(_user$project$View$projectChecklistsPage, model, _p1._0);
 		default:
 			return _user$project$View$notFoundView;
 	}
@@ -10908,7 +10924,15 @@ var _user$project$Main$update = F2(
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
 			case 'SelectProject':
-				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							route: _user$project$Models$ProjectRoute(_p0._0.id)
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			case 'RemoveChecklist':
 				return {
 					ctor: '_Tuple2',
