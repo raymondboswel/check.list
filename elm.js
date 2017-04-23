@@ -10251,12 +10251,12 @@ var _user$project$Commands$checklistDecoder = A3(
 var _user$project$Commands$checklistsDecoder = _elm_lang$core$Json_Decode$list(_user$project$Commands$checklistDecoder);
 var _user$project$Commands$fetchProjectChecklistsUrl = function (project) {
 	return A2(
-		_elm_lang$core$String$append,
-		'/checklists',
+		_elm_lang$core$Basics_ops['++'],
+		'http://localhost:4000/api/projects/',
 		A2(
-			_elm_lang$core$String$append,
-			'http://localhost:4000/api/projects/',
-			_elm_lang$core$Basics$toString(project.id)));
+			_elm_lang$core$Basics_ops['++'],
+			_elm_lang$core$Basics$toString(project.id),
+			'/checklists'));
 };
 var _user$project$Commands$fetchProjectChecklists = function (project) {
 	return A2(
@@ -10924,14 +10924,15 @@ var _user$project$Main$update = F2(
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
 			case 'SelectProject':
+				var _p1 = _p0._0;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
-							route: _user$project$Models$ProjectRoute(_p0._0.id)
+							route: _user$project$Models$ProjectRoute(_p1.id)
 						}),
-					_1: _elm_lang$core$Platform_Cmd$none
+					_1: _user$project$Commands$fetchProjectChecklists(_p1)
 				};
 			case 'RemoveChecklist':
 				return {

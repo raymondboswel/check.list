@@ -81,7 +81,7 @@ update msg model =
         (model, Cmd.none)
 
       SelectProject project ->
-        ({model | route = ProjectRoute project.id}, Cmd.none)
+        ({model | route = ProjectRoute project.id}, Commands.fetchProjectChecklists project)
 
       RemoveChecklist checklist ->
         (model, Commands.deleteChecklist checklist)

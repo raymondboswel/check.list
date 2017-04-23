@@ -60,7 +60,7 @@ fetchProjectChecklists project =
             |> Cmd.map Msgs.OnFetchProjects
 
 fetchProjectChecklistsUrl : Project -> String
-fetchProjectChecklistsUrl project = String.append "http://localhost:4000/api/projects/" (toString (project.id)) |> String.append "/checklists"
+fetchProjectChecklistsUrl project = "http://localhost:4000/api/projects/" ++ toString project.id ++ "/checklists"
 
 checklistsDecoder : Decode.Decoder (List Checklist)
 checklistsDecoder = 
