@@ -19,7 +19,7 @@ subscriptions model =
 
 init : (Model, Cmd Msg)
 init =
-  (Model RemoteData.Loading "" RemoteData.Loading "", Commands.fetchProjects)
+  (Model RemoteData.Loading "" RemoteData.Loading, Commands.fetchProjects)
 
 -- UPDATE
 
@@ -28,13 +28,13 @@ update msg model =
   let one = "one" in 
     case Debug.log "message" msg of    
       
-      OnNewProjectKeyDown key ->
+      KeyDown key ->
         if key == 13 then 
           let projectName = model.newProjectName in 
             ({ model | newProjectName = ""}, Commands.addProject projectName)
         else
           (model, Cmd.none)
-      OnNewProjectInput projectName -> 
+      Input projectName -> 
         ({ model | newProjectName = projectName }, Cmd.none)
 
       OnFetchProjects response -> 

@@ -8,7 +8,7 @@ type Msg =
            ExpandProject String |
            OnSaveProject (Result Http.Error Int)| 
            DeleteProject (Result Http.Error String) | 
-           KeyDown Int | 
-           Input String | 
+           OnNewProjectKeyDown Int | 
+           OnNewProjectInput String | 
            GetProjects | 
            OnFetchProjects (WebData (List Project))

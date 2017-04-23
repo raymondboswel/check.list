@@ -9329,30 +9329,45 @@ var _krisajenkins$remotedata$RemoteData$update = F2(
 		}
 	});
 
-var _user$project$Models$Model = F2(
-	function (a, b) {
-		return {projects: a, newProjectName: b};
+var _user$project$Models$Model = F4(
+	function (a, b, c, d) {
+		return {projects: a, newProjectName: b, checklists: c, newChecklistName: d};
 	});
 var _user$project$Models$Project = F2(
 	function (a, b) {
 		return {id: a, name: b};
 	});
+var _user$project$Models$Checklist = F2(
+	function (a, b) {
+		return {id: a, name: b};
+	});
+var _user$project$Models$NotFoundRoute = {ctor: 'NotFoundRoute'};
+var _user$project$Models$ProjectRoute = function (a) {
+	return {ctor: 'ProjectRoute', _0: a};
+};
+var _user$project$Models$ProjectsRoute = {ctor: 'ProjectsRoute'};
 
 var _user$project$Msgs$OnFetchProjects = function (a) {
 	return {ctor: 'OnFetchProjects', _0: a};
 };
 var _user$project$Msgs$GetProjects = {ctor: 'GetProjects'};
-var _user$project$Msgs$Input = function (a) {
-	return {ctor: 'Input', _0: a};
+var _user$project$Msgs$OnNewProjectInput = function (a) {
+	return {ctor: 'OnNewProjectInput', _0: a};
 };
-var _user$project$Msgs$KeyDown = function (a) {
-	return {ctor: 'KeyDown', _0: a};
+var _user$project$Msgs$OnNewProjectKeyDown = function (a) {
+	return {ctor: 'OnNewProjectKeyDown', _0: a};
+};
+var _user$project$Msgs$DeleteProject = function (a) {
+	return {ctor: 'DeleteProject', _0: a};
 };
 var _user$project$Msgs$OnSaveProject = function (a) {
 	return {ctor: 'OnSaveProject', _0: a};
 };
 var _user$project$Msgs$ExpandProject = function (a) {
 	return {ctor: 'ExpandProject', _0: a};
+};
+var _user$project$Msgs$RemoveProject = function (a) {
+	return {ctor: 'RemoveProject', _0: a};
 };
 
 var _user$project$Commands$fetchProjectsUrl = 'http://localhost:4000/api/projects';
@@ -9366,6 +9381,35 @@ var _user$project$Commands$projectDecoder = A3(
 		_elm_lang$core$Json_Decode$int,
 		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Models$Project)));
 var _user$project$Commands$projectsDecoder = _elm_lang$core$Json_Decode$list(_user$project$Commands$projectDecoder);
+var _user$project$Commands$checklistDecoder = A3(
+	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+	'name',
+	_elm_lang$core$Json_Decode$string,
+	A3(
+		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+		'id',
+		_elm_lang$core$Json_Decode$int,
+		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Models$Checklist)));
+var _user$project$Commands$checklistsDecoder = _elm_lang$core$Json_Decode$list(_user$project$Commands$checklistDecoder);
+var _user$project$Commands$fetchProjectChecklistsUrl = function (project) {
+	return A2(
+		_elm_lang$core$String$append,
+		'/checklists',
+		A2(
+			_elm_lang$core$String$append,
+			'http://localhost:4000/api/projects/',
+			_elm_lang$core$Basics$toString(project.id)));
+};
+var _user$project$Commands$fetchProjectChecklists = function (project) {
+	return A2(
+		_elm_lang$core$Platform_Cmd$map,
+		_user$project$Msgs$OnFetchProjects,
+		_krisajenkins$remotedata$RemoteData$sendRequest(
+			A2(
+				_elm_lang$http$Http$get,
+				_user$project$Commands$fetchProjectChecklistsUrl(project),
+				_user$project$Commands$projectsDecoder)));
+};
 var _user$project$Commands$fetchProjects = A2(
 	_elm_lang$core$Platform_Cmd$map,
 	_user$project$Msgs$OnFetchProjects,
@@ -9382,6 +9426,12 @@ var _user$project$Commands$delete = function (name) {
 			timeout: _elm_lang$core$Maybe$Nothing,
 			withCredentials: false
 		});
+};
+var _user$project$Commands$deleteProject = function (project) {
+	return A2(
+		_elm_lang$http$Http$send,
+		_user$project$Msgs$DeleteProject,
+		_user$project$Commands$delete(project.name));
 };
 var _user$project$Commands$addProject = function (projectName) {
 	var url = A2(_elm_lang$core$String$append, 'http://localhost:4000/api/projects?name=', projectName);
@@ -9402,13 +9452,13 @@ var _user$project$Commands$addProject = function (projectName) {
 				_elm_lang$core$Json_Decode$int)));
 };
 
-var _user$project$Projects_List$onKeyDown = function (tagger) {
+var _user$project$UI$onKeyDown = function (tagger) {
 	return A2(
 		_elm_lang$html$Html_Events$on,
 		'keydown',
 		A2(_elm_lang$core$Json_Decode$map, tagger, _elm_lang$html$Html_Events$keyCode));
 };
-var _user$project$Projects_List$renderSpinner = function (_p0) {
+var _user$project$UI$renderSpinner = function (_p0) {
 	var _p1 = _p0;
 	return A2(
 		_elm_lang$html$Html$div,
@@ -9496,6 +9546,41 @@ var _user$project$Projects_List$renderSpinner = function (_p0) {
 			_1: {ctor: '[]'}
 		});
 };
+
+var _user$project$Projects_List$inputField = F4(
+	function (placeholderText, modelValue, onInputEvent, onKeyDownEvent) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('input-field'),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$input,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$placeholder(placeholderText),
+						_1: {
+							ctor: '::',
+							_0: _user$project$UI$onKeyDown(_user$project$Msgs$OnNewProjectKeyDown),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onInput(_user$project$Msgs$OnNewProjectInput),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$value(modelValue),
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					},
+					{ctor: '[]'}),
+				_1: {ctor: '[]'}
+			});
+	});
 var _user$project$Projects_List$renderProject = function (project) {
 	return A2(
 		_elm_lang$html$Html$div,
@@ -9514,7 +9599,12 @@ var _user$project$Projects_List$renderProject = function (project) {
 					{
 						ctor: '::',
 						_0: _elm_lang$html$Html_Attributes$class('material-icons pull-right'),
-						_1: {ctor: '[]'}
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onClick(
+								_user$project$Msgs$RemoveProject(project)),
+							_1: {ctor: '[]'}
+						}
 					},
 					{
 						ctor: '::',
@@ -9527,15 +9617,62 @@ var _user$project$Projects_List$renderProject = function (project) {
 };
 var _user$project$Projects_List$renderProjects = function (projects) {
 	var projectItems = A2(_elm_lang$core$List$map, _user$project$Projects_List$renderProject, projects);
-	return A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('collection-header'),
-			_1: {ctor: '[]'}
-		},
-		projectItems);
+	return projectItems;
 };
+var _user$project$Projects_List$constructTableChildren = F2(
+	function (projects, model) {
+		var table = {
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('collection-header'),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Projects'),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$i,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('material-icons dp48'),
+								_1: {ctor: '[]'}
+							},
+							{ctor: '[]'}),
+						_1: {ctor: '[]'}
+					}
+				}),
+			_1: _user$project$Projects_List$renderProjects(projects)
+		};
+		return A2(
+			_elm_lang$core$List$append,
+			table,
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('collection-item'),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: A4(
+							_user$project$Projects_List$inputField,
+							'New Project',
+							model.newProjectName,
+							_user$project$Msgs$OnNewProjectInput(''),
+							_user$project$Msgs$OnNewProjectKeyDown(0)),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			});
+	});
 var _user$project$Projects_List$renderTable = F2(
 	function (projects, model) {
 		return A2(
@@ -9545,96 +9682,21 @@ var _user$project$Projects_List$renderTable = F2(
 				_0: _elm_lang$html$Html_Attributes$class('collection with-header'),
 				_1: {ctor: '[]'}
 			},
-			{
-				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$div,
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class('collection-header'),
-						_1: {ctor: '[]'}
-					},
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html$text('Projects'),
-						_1: {
-							ctor: '::',
-							_0: A2(
-								_elm_lang$html$Html$i,
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$class('material-icons dp48'),
-									_1: {ctor: '[]'}
-								},
-								{ctor: '[]'}),
-							_1: {ctor: '[]'}
-						}
-					}),
-				_1: {
-					ctor: '::',
-					_0: _user$project$Projects_List$renderProjects(projects),
-					_1: {
-						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$div,
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$class('collection-item'),
-								_1: {ctor: '[]'}
-							},
-							{
-								ctor: '::',
-								_0: A2(
-									_elm_lang$html$Html$div,
-									{
-										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$class('input-field'),
-										_1: {ctor: '[]'}
-									},
-									{
-										ctor: '::',
-										_0: A2(
-											_elm_lang$html$Html$input,
-											{
-												ctor: '::',
-												_0: _elm_lang$html$Html_Attributes$placeholder('New project'),
-												_1: {
-													ctor: '::',
-													_0: _user$project$Projects_List$onKeyDown(_user$project$Msgs$KeyDown),
-													_1: {
-														ctor: '::',
-														_0: _elm_lang$html$Html_Events$onInput(_user$project$Msgs$Input),
-														_1: {
-															ctor: '::',
-															_0: _elm_lang$html$Html_Attributes$value(model.newProjectName),
-															_1: {ctor: '[]'}
-														}
-													}
-												}
-											},
-											{ctor: '[]'}),
-										_1: {ctor: '[]'}
-									}),
-								_1: {ctor: '[]'}
-							}),
-						_1: {ctor: '[]'}
-					}
-				}
-			});
+			A2(_user$project$Projects_List$constructTableChildren, projects, model));
 	});
 var _user$project$Projects_List$maybeRenderProjects = function (model) {
-	var _p2 = model.projects;
-	switch (_p2.ctor) {
+	var _p0 = model.projects;
+	switch (_p0.ctor) {
 		case 'NotAsked':
-			return _user$project$Projects_List$renderSpinner(
+			return _user$project$UI$renderSpinner(
 				{ctor: '_Tuple0'});
 		case 'Loading':
-			return _user$project$Projects_List$renderSpinner(
+			return _user$project$UI$renderSpinner(
 				{ctor: '_Tuple0'});
 		case 'Success':
-			return A2(_user$project$Projects_List$renderTable, _p2._0, model);
+			return A2(_user$project$Projects_List$renderTable, _p0._0, model);
 		default:
-			return _user$project$Projects_List$renderSpinner(
+			return _user$project$UI$renderSpinner(
 				{ctor: '_Tuple0'});
 	}
 };
@@ -9664,7 +9726,7 @@ var _user$project$Main$update = F2(
 		var one = 'one';
 		var _p0 = A2(_elm_lang$core$Debug$log, 'message', msg);
 		switch (_p0.ctor) {
-			case 'KeyDown':
+			case 'OnNewProjectKeyDown':
 				if (_elm_lang$core$Native_Utils.eq(_p0._0, 13)) {
 					var projectName = model.newProjectName;
 					return {
@@ -9677,7 +9739,7 @@ var _user$project$Main$update = F2(
 				} else {
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
-			case 'Input':
+			case 'OnNewProjectInput':
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -9697,13 +9759,25 @@ var _user$project$Main$update = F2(
 				return {ctor: '_Tuple2', _0: model, _1: _user$project$Commands$fetchProjects};
 			case 'OnSaveProject':
 				return {ctor: '_Tuple2', _0: model, _1: _user$project$Commands$fetchProjects};
+			case 'RemoveProject':
+				return {
+					ctor: '_Tuple2',
+					_0: model,
+					_1: _user$project$Commands$deleteProject(_p0._0)
+				};
+			case 'DeleteProject':
+				if (_p0._0.ctor === 'Ok') {
+					return {ctor: '_Tuple2', _0: model, _1: _user$project$Commands$fetchProjects};
+				} else {
+					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				}
 			default:
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 		}
 	});
 var _user$project$Main$init = {
 	ctor: '_Tuple2',
-	_0: A2(_user$project$Models$Model, _krisajenkins$remotedata$RemoteData$Loading, ''),
+	_0: A4(_user$project$Models$Model, _krisajenkins$remotedata$RemoteData$Loading, '', _krisajenkins$remotedata$RemoteData$Loading, ''),
 	_1: _user$project$Commands$fetchProjects
 };
 var _user$project$Main$subscriptions = function (model) {

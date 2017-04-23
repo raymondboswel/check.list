@@ -39,6 +39,25 @@ fetchProjects =
         |> RemoteData.sendRequest
         |> Cmd.map Msgs.OnFetchProjects
 
+fetchProjectChecklists : Project -> Cmd Msg
+fetchProjectChecklists project = 
+    Http.get (fetchProjectChecklistsUrl project) projectsDecoder
+            |> RemoteData.sendRequest
+            |> Cmd.map Msgs.OnFetchProjects
+
+fetchProjectChecklistsUrl : Project -> String
+fetchProjectChecklistsUrl project = String.append "http://localhost:4000/api/projects/" (toString (project.id)) |> String.append "/checklists"
+
+checklistsDecoder : Decode.Decoder (List Checklist)
+checklistsDecoder = 
+    Decode.list checklistDecoder
+
+checklistDecoder : Decode.Decoder Checklist
+checklistDecoder = 
+    decode Checklist  
+        |> required "id" Decode.int
+        |> required "name" Decode.string
+
 projectsDecoder : Decode.Decoder (List Project)
 projectsDecoder =
     Decode.list projectDecoder
