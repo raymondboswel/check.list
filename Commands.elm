@@ -17,9 +17,9 @@ addProject projectName =
     
 
 
--- deleteProject : (Project) -> Cmd Msg
--- deleteProject project = 
---   Http.send DeleteProject (delete project.name)
+deleteProject : (Project) -> Cmd Msg
+deleteProject project = 
+  Http.send DeleteProject (delete project.name) 
 
 delete : String -> Request String
 delete name =

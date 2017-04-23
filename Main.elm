@@ -32,7 +32,6 @@ update msg model =
         if key == 13 then 
           let projectName = model.newProjectName in 
             ({ model | newProjectName = ""}, Commands.addProject projectName)
-            -- (model, Cmd.none)
         else
           (model, Cmd.none)
       Input projectName -> 
@@ -41,29 +40,20 @@ update msg model =
       OnFetchProjects response -> 
         ({model | projects = response}, Cmd.none)
 
-      -- OnFetchProjects (Err _) ->
-      --   (model, Cmd.none)
-
       GetProjects -> 
         (model, Commands.fetchProjects )
 
       OnSaveProject projectId-> 
         (model, Commands.fetchProjects)
 
-      -- AddProject (Ok project )->             
-      --   (model, Commands.fetchProjects)
+      RemoveProject project ->
+        (model, Commands.deleteProject project)
 
-      -- AddProject (Err project )-> 
-      --   (model, Commands.fetchProjects)
+      DeleteProject (Ok projectName)-> 
+        (model, Commands.fetchProjects)
 
-      -- RemoveProject project ->
-      --   (model, Commands.deleteProject project)
-
-      -- DeleteProject (Ok projectName)-> 
-      --   (model, Commands.fetchProjects)
-
-      -- DeleteProject (Err error)-> 
-      --   (model, Cmd.none)
+      DeleteProject (Err error)-> 
+        (model, Cmd.none)
 
       ExpandProject projectName ->
         (model, Cmd.none)

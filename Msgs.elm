@@ -4,10 +4,10 @@ import RemoteData exposing (WebData)
 import Models exposing (..)
 
 type Msg = 
-        --    RemoveProject Project | 
+           RemoveProject Project | 
            ExpandProject String |
            OnSaveProject (Result Http.Error Int)| 
-        --    DeleteProject (Result Http.Error String) | 
+           DeleteProject (Result Http.Error String) | 
            KeyDown Int | 
            Input String | 
            GetProjects | 
