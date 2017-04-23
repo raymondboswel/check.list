@@ -27,22 +27,23 @@ maybeRenderChecklists model =
         RemoteData.Failure error ->
             renderSpinner ()
 
-renderTable : List Checklist -> Model-> Html Msgs.Msg
+renderTable : List Project -> Model-> Html Msgs.Msg
 renderTable projects model = 
-    div [class "collection with-header"]   
-       [
-           div [class "collection-header"] [text "Checklists", i [class "material-icons dp48"] []], 
-           renderChecklists checklists,
-           div [class "collection-item"] [
-               div [class "input-field"] 
-                [input [placeholder "New project", onKeyDown Msgs.KeyDown, onInput Msgs.Input, value model.newChecklistName] [] ]]]
+    div [class "collection with-header"] (constructTableChildren projects model)
 
-renderChecklists : List Checklist -> Html Msgs.Msg
+constructTableChildren : List Checklist -> Model-> List (Html Msgs.Msg)
+constructTableChildren checklists model = 
+    let table = div [class "collection-header"] [text "Projects", i [class "material-icons dp48"] []] :: renderChecklists checklists 
+    in List.append table [(div [class "collection-item"] [inputField "New Project" model.newProjectName (Msgs.OnNewProjectInput "") (Msgs.OnNewProjectKeyDown 0)])]
+
+inputField : String -> String -> Msgs.Msg -> Msgs.Msg -> Html Msgs.Msg
+inputField placeholderText modelValue onInputEvent onKeyDownEvent =  
+    div [class "input-field"] [input [placeholder placeholderText, onKeyDown Msgs.OnNewChecklistKeyDown, onInput Msgs.OnNewChecklistInput, value modelValue] []]
+
+renderChecklists : List Checklist -> List (Html Msgs.Msg)
 renderChecklists checklists =
-  let
-    checklistItems = List.map renderChecklist checklists
-  in
-    div [ class "collection-header" ] checklistItems
+    List.map renderChecklist checklists
+  
 
 renderChecklist : Checklist -> Html Msg
 renderChecklist checklist = div [class "collection-item"] [text checklist.name, i [class "material-icons pull-right", onClick (Msgs.RemoveChecklist checklist)] [text "delete"] ]
