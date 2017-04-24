@@ -10190,6 +10190,9 @@ var _user$project$Models$ProjectRoute = function (a) {
 };
 var _user$project$Models$ProjectsRoute = {ctor: 'ProjectsRoute'};
 
+var _user$project$Msgs$OnFetchProjectChecklists = function (a) {
+	return {ctor: 'OnFetchProjectChecklists', _0: a};
+};
 var _user$project$Msgs$OnFetchProjects = function (a) {
 	return {ctor: 'OnFetchProjects', _0: a};
 };
@@ -10261,7 +10264,7 @@ var _user$project$Commands$fetchProjectChecklistsUrl = function (project) {
 var _user$project$Commands$fetchProjectChecklists = function (project) {
 	return A2(
 		_elm_lang$core$Platform_Cmd$map,
-		_user$project$Msgs$OnFetchProjects,
+		_user$project$Msgs$OnFetchProjectChecklists,
 		_krisajenkins$remotedata$RemoteData$sendRequest(
 			A2(
 				_elm_lang$http$Http$get,
@@ -10899,6 +10902,14 @@ var _user$project$Main$update = F2(
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{projects: _p0._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'OnFetchProjectChecklists':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{checklists: _p0._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'GetProjects':

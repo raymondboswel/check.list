@@ -59,6 +59,9 @@ update msg model =
       OnFetchProjects response -> 
         ({model | projects = response}, Cmd.none)
 
+      OnFetchProjectChecklists response ->
+        ({model | checklists = response}, Cmd.none)
+
       GetProjects -> 
         (model, Commands.fetchProjects )
 

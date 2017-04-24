@@ -17,4 +17,5 @@ type Msg =
            OnNewChecklistInput String |
            GetProjects | 
            OnLocationChange Location |
-           OnFetchProjects (WebData (List Project))
+           OnFetchProjects (WebData (List Project)) |
+           OnFetchProjectChecklists (WebData (List Checklist))
