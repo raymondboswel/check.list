@@ -9,6 +9,7 @@ type Msg =
            RemoveChecklist Checklist | 
            SelectProject Project |
            OnSaveProject (Result Http.Error Int)| 
+           OnSaveChecklist (Result Http.Error Int)| 
            DeleteProject (Result Http.Error String) |
            DeletedChecklist (Result Http.Error String) | 
            OnNewProjectKeyDown Int | 

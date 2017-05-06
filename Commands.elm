@@ -3,6 +3,7 @@ import Msgs exposing (..)
 import Http exposing (..)
 import Models exposing (..)
 import Json.Decode as Decode
+import Json.Encode as Encode exposing (..)
 import Json.Decode.Pipeline exposing (decode, required)
 import RemoteData exposing (..)
 
@@ -14,6 +15,23 @@ addProject projectName =
   in    
     Http.post url Http.emptyBody (Decode.at ["id"] (Decode.int))
     |> Http.send Msgs.OnSaveProject
+
+addChecklist : Int -> String -> Cmd Msg
+addChecklist projectId checklistName =   
+  let
+    url =
+      projectResourceUrl ++ "/" ++ toString(projectId) ++ "/checklists"
+    body =
+        checklistEncoder checklistName |> Http.jsonBody
+  in    
+    Http.post url body (Decode.at ["id"] (Decode.int))
+    |> Http.send Msgs.OnSaveChecklist
+
+checklistEncoder : String -> Encode.Value
+checklistEncoder checklistName = 
+    Encode.object 
+        [ ("name", Encode.string checklistName)
+        ]      
     
 deleteProject : (Project) -> Cmd Msg
 deleteProject project = 
@@ -25,7 +43,7 @@ projectResourceUrl =
 
 deleteChecklist : Checklist -> Cmd Msg
 deleteChecklist checklist =
-    Http.send Msgs.DeletedChecklist (deleteByName checklistResourceUrl checklist.name)
+    Http.send (Msgs.DeletedChecklist) (deleteById checklistResourceUrl checklist.id)
 
 projectChecklistsResourceUrl : Project -> String
 projectChecklistsResourceUrl project = 
@@ -34,6 +52,18 @@ projectChecklistsResourceUrl project =
 checklistResourceUrl : String
 checklistResourceUrl =
     "http://localhost:4000/api/checklists"
+
+deleteById : String -> Int -> Request String
+deleteById url id =
+  request
+    { method = "DELETE"
+    , headers = []
+    , url = url ++ "/" ++ toString(id)
+    , body = emptyBody
+    , expect = Http.expectString
+    , timeout = Nothing
+    , withCredentials = False
+    }
 
 deleteByName : String -> String -> Request String
 deleteByName url name =

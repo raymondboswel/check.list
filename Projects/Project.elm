@@ -33,8 +33,8 @@ renderTable checklists model =
 
 constructTableChildren : List Checklist -> Model-> List (Html Msgs.Msg)
 constructTableChildren checklists model = 
-    let table = div [class "collection-header"] [text "Projects", i [class "material-icons dp48"] []] :: renderChecklists checklists 
-    in List.append table [(div [class "collection-item"] [inputField "New Project" model.newProjectName (Msgs.OnNewProjectInput "") (Msgs.OnNewProjectKeyDown 0)])]
+    let table = div [class "collection-header"] [text "Checklists", i [class "material-icons dp48"] []] :: renderChecklists checklists 
+    in List.append table [(div [class "collection-item"] [inputField "New Checklist" model.newChecklistName (Msgs.OnNewChecklistInput "") (Msgs.OnNewChecklistKeyDown 0)])]
 
 inputField : String -> String -> Msgs.Msg -> Msgs.Msg -> Html Msgs.Msg
 inputField placeholderText modelValue onInputEvent onKeyDownEvent =  

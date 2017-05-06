@@ -10172,14 +10172,15 @@ var _krisajenkins$remotedata$RemoteData$update = F2(
 		}
 	});
 
-var _user$project$Models$Model = F5(
-	function (a, b, c, d, e) {
-		return {route: a, projects: b, newProjectName: c, checklists: d, newChecklistName: e};
+var _user$project$Models$Model = F6(
+	function (a, b, c, d, e, f) {
+		return {route: a, selectedProject: b, projects: c, newProjectName: d, checklists: e, newChecklistName: f};
 	});
 var _user$project$Models$Project = F2(
 	function (a, b) {
 		return {id: a, name: b};
 	});
+var _user$project$Models$initialProject = A2(_user$project$Models$Project, 0, '');
 var _user$project$Models$Checklist = F2(
 	function (a, b) {
 		return {id: a, name: b};
@@ -10217,6 +10218,9 @@ var _user$project$Msgs$DeletedChecklist = function (a) {
 };
 var _user$project$Msgs$DeleteProject = function (a) {
 	return {ctor: 'DeleteProject', _0: a};
+};
+var _user$project$Msgs$OnSaveChecklist = function (a) {
+	return {ctor: 'OnSaveChecklist', _0: a};
 };
 var _user$project$Msgs$OnSaveProject = function (a) {
 	return {ctor: 'OnSaveProject', _0: a};
@@ -10292,6 +10296,25 @@ var _user$project$Commands$deleteByName = F2(
 				withCredentials: false
 			});
 	});
+var _user$project$Commands$deleteById = F2(
+	function (url, id) {
+		return _elm_lang$http$Http$request(
+			{
+				method: 'DELETE',
+				headers: {ctor: '[]'},
+				url: A2(
+					_elm_lang$core$Basics_ops['++'],
+					url,
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						'/',
+						_elm_lang$core$Basics$toString(id))),
+				body: _elm_lang$http$Http$emptyBody,
+				expect: _elm_lang$http$Http$expectString,
+				timeout: _elm_lang$core$Maybe$Nothing,
+				withCredentials: false
+			});
+	});
 var _user$project$Commands$checklistResourceUrl = 'http://localhost:4000/api/checklists';
 var _user$project$Commands$projectChecklistsResourceUrl = function (project) {
 	return A2(
@@ -10306,7 +10329,7 @@ var _user$project$Commands$deleteChecklist = function (checklist) {
 	return A2(
 		_elm_lang$http$Http$send,
 		_user$project$Msgs$DeletedChecklist,
-		A2(_user$project$Commands$deleteByName, _user$project$Commands$checklistResourceUrl, checklist.name));
+		A2(_user$project$Commands$deleteById, _user$project$Commands$checklistResourceUrl, checklist.id));
 };
 var _user$project$Commands$projectResourceUrl = 'http://localhost:4000/api/projects';
 var _user$project$Commands$deleteProject = function (project) {
@@ -10315,6 +10338,48 @@ var _user$project$Commands$deleteProject = function (project) {
 		_user$project$Msgs$DeleteProject,
 		A2(_user$project$Commands$deleteByName, _user$project$Commands$projectResourceUrl, project.name));
 };
+var _user$project$Commands$checklistEncoder = function (checklistName) {
+	return _elm_lang$core$Json_Encode$object(
+		{
+			ctor: '::',
+			_0: {
+				ctor: '_Tuple2',
+				_0: 'name',
+				_1: _elm_lang$core$Json_Encode$string(checklistName)
+			},
+			_1: {ctor: '[]'}
+		});
+};
+var _user$project$Commands$addChecklist = F2(
+	function (projectId, checklistName) {
+		var body = _elm_lang$http$Http$jsonBody(
+			_user$project$Commands$checklistEncoder(checklistName));
+		var url = A2(
+			_elm_lang$core$Basics_ops['++'],
+			_user$project$Commands$projectResourceUrl,
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				'/',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					_elm_lang$core$Basics$toString(projectId),
+					'/checklists')));
+		return A2(
+			_elm_lang$http$Http$send,
+			_user$project$Msgs$OnSaveChecklist,
+			A3(
+				_elm_lang$http$Http$post,
+				url,
+				body,
+				A2(
+					_elm_lang$core$Json_Decode$at,
+					{
+						ctor: '::',
+						_0: 'id',
+						_1: {ctor: '[]'}
+					},
+					_elm_lang$core$Json_Decode$int)));
+	});
 var _user$project$Commands$addProject = function (projectName) {
 	var url = A2(_elm_lang$core$String$append, 'http://localhost:4000/api/projects?name=', projectName);
 	return A2(
@@ -10545,7 +10610,7 @@ var _user$project$Projects_Project$constructTableChildren = F2(
 				},
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html$text('Projects'),
+					_0: _elm_lang$html$Html$text('Checklists'),
 					_1: {
 						ctor: '::',
 						_0: A2(
@@ -10577,10 +10642,10 @@ var _user$project$Projects_Project$constructTableChildren = F2(
 						ctor: '::',
 						_0: A4(
 							_user$project$Projects_Project$inputField,
-							'New Project',
-							model.newProjectName,
-							_user$project$Msgs$OnNewProjectInput(''),
-							_user$project$Msgs$OnNewProjectKeyDown(0)),
+							'New Checklist',
+							model.newChecklistName,
+							_user$project$Msgs$OnNewChecklistInput(''),
+							_user$project$Msgs$OnNewChecklistKeyDown(0)),
 						_1: {ctor: '[]'}
 					}),
 				_1: {ctor: '[]'}
@@ -10865,22 +10930,23 @@ var _user$project$Main$update = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{newProjectName: _p0._0}),
+						{newChecklistName: _p0._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'OnNewChecklistKeyDown':
-				if (_elm_lang$core$Native_Utils.eq(_p0._0, 13)) {
-					var projectName = model.newProjectName;
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{newProjectName: ''}),
-						_1: _user$project$Commands$addProject(projectName)
-					};
-				} else {
-					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-				}
+				return _elm_lang$core$Native_Utils.eq(_p0._0, 13) ? {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{newChecklistName: ''}),
+					_1: A2(_user$project$Commands$addChecklist, model.selectedProject.id, model.newChecklistName)
+				} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'OnSaveChecklist':
+				return {
+					ctor: '_Tuple2',
+					_0: model,
+					_1: _user$project$Commands$fetchProjectChecklists(model.selectedProject)
+				};
 			case 'OnNewProjectInput':
 				return {
 					ctor: '_Tuple2',
@@ -10917,9 +10983,17 @@ var _user$project$Main$update = F2(
 				};
 			case 'DeletedChecklist':
 				if (_p0._0.ctor === 'Ok') {
-					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+					return {
+						ctor: '_Tuple2',
+						_0: model,
+						_1: _user$project$Commands$fetchProjectChecklists(model.selectedProject)
+					};
 				} else {
-					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+					return {
+						ctor: '_Tuple2',
+						_0: model,
+						_1: _user$project$Commands$fetchProjectChecklists(model.selectedProject)
+					};
 				}
 			case 'DeleteProject':
 				if (_p0._0.ctor === 'Ok') {
@@ -10934,7 +11008,8 @@ var _user$project$Main$update = F2(
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
-							route: _user$project$Models$ProjectRoute(_p1.id)
+							route: _user$project$Models$ProjectRoute(_p1.id),
+							selectedProject: _p1
 						}),
 					_1: _user$project$Commands$fetchProjectChecklists(_p1)
 				};
@@ -10959,7 +11034,7 @@ var _user$project$Main$init = function (location) {
 	var currentRoute = _user$project$Routing$parseLocation(location);
 	return {
 		ctor: '_Tuple2',
-		_0: A5(_user$project$Models$Model, currentRoute, _krisajenkins$remotedata$RemoteData$Loading, '', _krisajenkins$remotedata$RemoteData$Loading, ''),
+		_0: A6(_user$project$Models$Model, currentRoute, _user$project$Models$initialProject, _krisajenkins$remotedata$RemoteData$Loading, '', _krisajenkins$remotedata$RemoteData$Loading, ''),
 		_1: _user$project$Commands$fetchProjects
 	};
 };

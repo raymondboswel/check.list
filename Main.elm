@@ -27,7 +27,7 @@ subscriptions model =
 init : Location -> (Model, Cmd Msg)
 init location =
   let currentRoute = Routing.parseLocation location in
-  (Model currentRoute RemoteData.Loading "" RemoteData.Loading "", Commands.fetchProjects)
+  (Model currentRoute Models.initialProject RemoteData.Loading "" RemoteData.Loading "", Commands.fetchProjects)
 
 -- UPDATE
 
@@ -43,15 +43,17 @@ update msg model =
         else
           (model, Cmd.none)
 
-      OnNewChecklistInput projectName -> 
-        ({ model | newProjectName = projectName }, Cmd.none)
+      OnNewChecklistInput checklistName -> 
+        ({ model | newChecklistName = checklistName }, Cmd.none)
 
       OnNewChecklistKeyDown key ->
-        if key == 13 then 
-          let projectName = model.newProjectName in 
-            ({ model | newProjectName = ""}, Commands.addProject projectName)
+        if key == 13 then           
+          ({ model | newChecklistName = ""}, Commands.addChecklist model.selectedProject.id model.newChecklistName)
         else
           (model, Cmd.none)
+
+      OnSaveChecklist projectId-> 
+        (model, Commands.fetchProjectChecklists model.selectedProject)
           
       OnNewProjectInput projectName -> 
         ({ model | newProjectName = projectName }, Cmd.none)
@@ -75,16 +77,16 @@ update msg model =
         (model, Commands.fetchProjects)
       
       DeletedChecklist (Ok checklistName) ->
-        (model, Cmd.none) 
+        (model, Commands.fetchProjectChecklists model.selectedProject) 
 
       DeletedChecklist (Err error) ->
-        (model, Cmd.none) 
+        (model, Commands.fetchProjectChecklists model.selectedProject) 
 
       DeleteProject (Err error)-> 
         (model, Cmd.none)
 
       SelectProject project ->
-        ({model | route = ProjectRoute project.id}, Commands.fetchProjectChecklists project)
+        ({model | route = ProjectRoute project.id, selectedProject = project}, Commands.fetchProjectChecklists project)
 
       RemoveChecklist checklist ->
         (model, Commands.deleteChecklist checklist)
