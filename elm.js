@@ -10172,19 +10172,24 @@ var _krisajenkins$remotedata$RemoteData$update = F2(
 		}
 	});
 
-var _user$project$Models$Model = F6(
-	function (a, b, c, d, e, f) {
-		return {route: a, selectedProject: b, projects: c, newProjectName: d, checklists: e, newChecklistName: f};
+var _user$project$Models$Model = F9(
+	function (a, b, c, d, e, f, g, h, i) {
+		return {route: a, selectedProject: b, selectedChecklist: c, projects: d, newProjectName: e, checklists: f, newChecklistName: g, items: h, newItemName: i};
 	});
 var _user$project$Models$Project = F2(
 	function (a, b) {
 		return {id: a, name: b};
 	});
 var _user$project$Models$initialProject = A2(_user$project$Models$Project, 0, '');
+var _user$project$Models$Item = F3(
+	function (a, b, c) {
+		return {id: a, description: b, completed: c};
+	});
 var _user$project$Models$Checklist = F2(
 	function (a, b) {
 		return {id: a, name: b};
 	});
+var _user$project$Models$initialChecklist = A2(_user$project$Models$Checklist, 0, '');
 var _user$project$Models$NotFoundRoute = {ctor: 'NotFoundRoute'};
 var _user$project$Models$ProjectRoute = function (a) {
 	return {ctor: 'ProjectRoute', _0: a};
@@ -11034,7 +11039,7 @@ var _user$project$Main$init = function (location) {
 	var currentRoute = _user$project$Routing$parseLocation(location);
 	return {
 		ctor: '_Tuple2',
-		_0: A6(_user$project$Models$Model, currentRoute, _user$project$Models$initialProject, _krisajenkins$remotedata$RemoteData$Loading, '', _krisajenkins$remotedata$RemoteData$Loading, ''),
+		_0: A9(_user$project$Models$Model, currentRoute, _user$project$Models$initialProject, _user$project$Models$initialChecklist, _krisajenkins$remotedata$RemoteData$Loading, '', _krisajenkins$remotedata$RemoteData$Loading, '', _krisajenkins$remotedata$RemoteData$Loading, ''),
 		_1: _user$project$Commands$fetchProjects
 	};
 };

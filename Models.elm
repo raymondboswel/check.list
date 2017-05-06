@@ -1,13 +1,29 @@
 module Models exposing (..)
 import RemoteData exposing (WebData)
 
-type alias Model = {route: Route, selectedProject: Project, projects : WebData (List Project), newProjectName : String, checklists: WebData (List Checklist), newChecklistName: String}
+type alias Model = {
+    route: Route, 
+    selectedProject: Project, 
+    selectedChecklist: Checklist,
+    projects : WebData (List Project), 
+    newProjectName : String, 
+    checklists: WebData (List Checklist), 
+    newChecklistName: String,
+    items: WebData (List Item),
+    newItemName: String
+    }
 
 type alias Project = {id: ProjectId, name: String}
 
 initialProject : Project
 initialProject =
     Project 0 ""
+
+initialChecklist : Checklist
+initialChecklist = Checklist 0 ""
+
+type alias Item = {id: ItemId, description: String, completed: Bool}
+type alias ItemId = Int
 
 type alias Checklist = {id: ChecklistId, name: String}
 

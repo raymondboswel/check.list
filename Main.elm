@@ -27,7 +27,12 @@ subscriptions model =
 init : Location -> (Model, Cmd Msg)
 init location =
   let currentRoute = Routing.parseLocation location in
-  (Model currentRoute Models.initialProject RemoteData.Loading "" RemoteData.Loading "", Commands.fetchProjects)
+  (Model  currentRoute 
+          Models.initialProject 
+          Models.initialChecklist
+          RemoteData.Loading "" 
+          RemoteData.Loading ""
+          RemoteData.Loading "", Commands.fetchProjects)
 
 -- UPDATE
 
@@ -72,6 +77,12 @@ update msg model =
 
       RemoveProject project ->
         (model, Commands.deleteProject project)
+
+      RemoveItem item -> 
+        (model, Commands.deleteItem item)
+      
+      DeletedItem _ ->
+        (model, Commands.fetchChecklistItems model.selectedChecklist)
 
       DeleteProject (Ok projectName)-> 
         (model, Commands.fetchProjects)

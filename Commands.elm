@@ -45,6 +45,14 @@ deleteChecklist : Checklist -> Cmd Msg
 deleteChecklist checklist =
     Http.send (Msgs.DeletedChecklist) (deleteById checklistResourceUrl checklist.id)
 
+deleteItem : Item -> Cmd Msg
+deleteItem item = 
+    Http.send (Msgs.DeletedItem) (deleteById itemResourceUrl item.id)
+
+itemResourceUrl : String
+itemResourceUrl = 
+    "http://localhost:4000/api/items"
+
 projectChecklistsResourceUrl : Project -> String
 projectChecklistsResourceUrl project = 
     "http://localhost:4000/api/projects/" ++ toString(project.id) ++ "/checklists"
@@ -85,7 +93,13 @@ fetchProjects =
 
 fetchProjectChecklists : Project -> Cmd Msg
 fetchProjectChecklists project = 
-    Http.get (fetchProjectChecklistsUrl project) projectsDecoder
+    Http.get (fetchProjectChecklistsUrl project) checklistsDecoder
+            |> RemoteData.sendRequest
+            |> Cmd.map Msgs.OnFetchProjectChecklists
+
+fetchChecklistItems : Checklist -> Cmd Msg
+fetchChecklistItems checklist = 
+     Http.get (fetchProjectChecklistsUrl checklist) itemsDecoder
             |> RemoteData.sendRequest
             |> Cmd.map Msgs.OnFetchProjectChecklists
 
@@ -101,6 +115,17 @@ checklistDecoder =
     decode Checklist  
         |> required "id" Decode.int
         |> required "name" Decode.string
+
+itemsDecoder : Decode.Decoder (List Item)
+itemsDecoder = 
+    Decode.list itemDecoder
+
+itemDecoder : Decode.Decoder Item
+itemDecoder = 
+    decode Item  
+        |> required "id" Decode.int
+        |> required "description" Decode.string
+        |> required "completed" Decode.bool
 
 projectsDecoder : Decode.Decoder (List Project)
 projectsDecoder =
