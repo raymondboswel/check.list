@@ -10466,7 +10466,7 @@ var _user$project$Projects_Project$renderChecklist = function (checklist) {
 		_elm_lang$html$Html$div,
 		{
 			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('collection-item'),
+			_0: _elm_lang$html$Html_Attributes$class('collection-item row-item'),
 			_1: {ctor: '[]'}
 		},
 		{
@@ -10664,7 +10664,7 @@ var _user$project$Projects_List$renderProject = function (project) {
 		_elm_lang$html$Html$div,
 		{
 			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('collection-item'),
+			_0: _elm_lang$html$Html_Attributes$class('collection-item row-item'),
 			_1: {
 				ctor: '::',
 				_0: _elm_lang$html$Html_Events$onClick(
@@ -10784,18 +10784,7 @@ var _user$project$Projects_List$maybeRenderProjects = function (model) {
 	}
 };
 var _user$project$Projects_List$view = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('container'),
-			_1: {ctor: '[]'}
-		},
-		{
-			ctor: '::',
-			_0: _user$project$Projects_List$maybeRenderProjects(model),
-			_1: {ctor: '[]'}
-		});
+	return _user$project$Projects_List$maybeRenderProjects(model);
 };
 
 var _user$project$View$notFoundView = A2(
@@ -10835,7 +10824,11 @@ var _user$project$View$page = function (model) {
 var _user$project$View$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
-		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('container'),
+			_1: {ctor: '[]'}
+		},
 		{
 			ctor: '::',
 			_0: _user$project$View$page(model),

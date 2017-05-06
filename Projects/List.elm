@@ -14,11 +14,11 @@ import UI exposing (renderSpinner, onKeyDown)
 
 view : Model -> Html Msg
 view model =
-  div [class "container"] [maybeRenderProjects model]
+  maybeRenderProjects model
     
 
 renderProject : Project -> Html Msg
-renderProject project = div [class "collection-item", onClick (Msgs.SelectProject project)] [text project.name, i [class "material-icons pull-right", onClick (Msgs.RemoveProject project)] [text "delete"] ]
+renderProject project = div [class "collection-item row-item", onClick (Msgs.SelectProject project)] [text project.name, i [class "material-icons pull-right", onClick (Msgs.RemoveProject project)] [text "delete"] ]
 
 
 maybeRenderProjects : Model -> Html Msg

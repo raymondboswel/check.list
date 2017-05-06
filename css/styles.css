@@ -9,7 +9,14 @@
 
 .add-top {
     top:30px;
-    
+}
+
+.row-item {
+    cursor: pointer;
+}
+
+.row-item:hover {
+    background-color: #80deea !important;
 }
 
 .center-spinner-horizontally {
