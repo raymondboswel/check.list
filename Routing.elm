@@ -11,6 +11,8 @@ matchers =
         [ map ProjectsRoute top
         , map ProjectRoute (s "projects" </> int)
         , map ProjectsRoute (s "projects")
+        , map ProjectRoute (s "checklists" </> int)
+        , map ProjectsRoute (s "checklists")
         ]
 
 

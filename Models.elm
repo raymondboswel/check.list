@@ -22,7 +22,7 @@ initialProject =
 initialChecklist : Checklist
 initialChecklist = Checklist 0 ""
 
-type alias Item = {id: ItemId, description: String, completed: Bool}
+type alias Item = {id: ItemId, name: String, completed: Bool, sequenceNumber: Int}
 type alias ItemId = Int
 
 type alias Checklist = {id: ChecklistId, name: String}
@@ -33,6 +33,7 @@ type alias ProjectId = Int
 type Route
     = ProjectsRoute
     | ProjectRoute ProjectId
+    | ChecklistRoute ChecklistId
     | NotFoundRoute
 
 -- initialModel : Model

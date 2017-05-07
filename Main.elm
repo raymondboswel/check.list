@@ -57,8 +57,20 @@ update msg model =
         else
           (model, Cmd.none)
 
+      OnNewItemInput itemName -> 
+        ({ model | newItemName = itemName }, Cmd.none)
+
+      OnNewItemKeyDown key ->
+        if key == 13 then           
+          ({ model | newItemName = ""}, Commands.addItem model.selectedChecklist.id model.newItemName)
+        else
+          (model, Cmd.none)
+
       OnSaveChecklist projectId-> 
         (model, Commands.fetchProjectChecklists model.selectedProject)
+
+      OnSaveItem checklistId-> 
+        (model, Commands.fetchChecklistItems model.selectedChecklist)
           
       OnNewProjectInput projectName -> 
         ({ model | newProjectName = projectName }, Cmd.none)
@@ -68,6 +80,9 @@ update msg model =
 
       OnFetchProjectChecklists response ->
         ({model | checklists = response}, Cmd.none)
+
+      OnFetchChecklistItems response -> 
+        ({model | items = response}, Cmd.none)
 
       GetProjects -> 
         (model, Commands.fetchProjects )
@@ -98,6 +113,9 @@ update msg model =
 
       SelectProject project ->
         ({model | route = ProjectRoute project.id, selectedProject = project}, Commands.fetchProjectChecklists project)
+
+      SelectChecklist checklist ->
+        ({model | route = ChecklistRoute checklist.id, selectedChecklist = checklist}, Commands.fetchChecklistItems checklist)
 
       RemoveChecklist checklist ->
         (model, Commands.deleteChecklist checklist)

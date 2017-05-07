@@ -32,6 +32,25 @@ checklistEncoder checklistName =
     Encode.object 
         [ ("name", Encode.string checklistName)
         ]      
+
+addItem : Int -> String -> Cmd Msg
+addItem checklistId itemName =   
+  let
+    url =
+      "http://localhost:4000/api/checklists/" ++ toString(checklistId) ++ "/items"
+    body =
+        itemEncoder itemName False 1 |> Http.jsonBody
+  in    
+    Http.post url body (Decode.at ["id"] (Decode.int))
+    |> Http.send Msgs.OnSaveItem
+
+itemEncoder : String -> Bool -> Int -> Encode.Value
+itemEncoder itemName completed sequenceNumber = 
+    Encode.object 
+        [ ("name", Encode.string itemName),
+          ("completed", Encode.bool completed),
+          ("sequence_number", Encode.int sequenceNumber)
+        ]      
     
 deleteProject : (Project) -> Cmd Msg
 deleteProject project = 
@@ -99,9 +118,13 @@ fetchProjectChecklists project =
 
 fetchChecklistItems : Checklist -> Cmd Msg
 fetchChecklistItems checklist = 
-     Http.get (fetchProjectChecklistsUrl checklist) itemsDecoder
+     Http.get (fetchChecklistItemsUrl checklist) itemsDecoder
             |> RemoteData.sendRequest
-            |> Cmd.map Msgs.OnFetchProjectChecklists
+            |> Cmd.map Msgs.OnFetchChecklistItems
+
+fetchChecklistItemsUrl : Checklist -> String
+fetchChecklistItemsUrl checklist =
+    "http://localhost:4000/api/checklists/" ++ toString(checklist.id) ++ "/items" 
 
 fetchProjectChecklistsUrl : Project -> String
 fetchProjectChecklistsUrl project = "http://localhost:4000/api/projects/" ++ toString project.id ++ "/checklists"
@@ -124,8 +147,9 @@ itemDecoder : Decode.Decoder Item
 itemDecoder = 
     decode Item  
         |> required "id" Decode.int
-        |> required "description" Decode.string
+        |> required "name" Decode.string
         |> required "completed" Decode.bool
+        |> required "sequence_number" Decode.int
 
 projectsDecoder : Decode.Decoder (List Project)
 projectsDecoder =

@@ -46,4 +46,4 @@ renderChecklists checklists =
   
 
 renderChecklist : Checklist -> Html Msg
-renderChecklist checklist = div [class "collection-item row-item"] [text checklist.name, i [class "material-icons pull-right", onClick (Msgs.RemoveChecklist checklist)] [text "delete"] ]
+renderChecklist checklist = div [class "collection-item row-item", onClick (Msgs.SelectChecklist checklist)] [text checklist.name, i [class "material-icons pull-right", onClick (Msgs.RemoveChecklist checklist)] [text "delete"] ]

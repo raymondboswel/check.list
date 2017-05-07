@@ -10181,9 +10181,9 @@ var _user$project$Models$Project = F2(
 		return {id: a, name: b};
 	});
 var _user$project$Models$initialProject = A2(_user$project$Models$Project, 0, '');
-var _user$project$Models$Item = F3(
-	function (a, b, c) {
-		return {id: a, description: b, completed: c};
+var _user$project$Models$Item = F4(
+	function (a, b, c, d) {
+		return {id: a, name: b, completed: c, sequenceNumber: d};
 	});
 var _user$project$Models$Checklist = F2(
 	function (a, b) {
@@ -10191,11 +10191,17 @@ var _user$project$Models$Checklist = F2(
 	});
 var _user$project$Models$initialChecklist = A2(_user$project$Models$Checklist, 0, '');
 var _user$project$Models$NotFoundRoute = {ctor: 'NotFoundRoute'};
+var _user$project$Models$ChecklistRoute = function (a) {
+	return {ctor: 'ChecklistRoute', _0: a};
+};
 var _user$project$Models$ProjectRoute = function (a) {
 	return {ctor: 'ProjectRoute', _0: a};
 };
 var _user$project$Models$ProjectsRoute = {ctor: 'ProjectsRoute'};
 
+var _user$project$Msgs$OnFetchChecklistItems = function (a) {
+	return {ctor: 'OnFetchChecklistItems', _0: a};
+};
 var _user$project$Msgs$OnFetchProjectChecklists = function (a) {
 	return {ctor: 'OnFetchProjectChecklists', _0: a};
 };
@@ -10206,6 +10212,12 @@ var _user$project$Msgs$OnLocationChange = function (a) {
 	return {ctor: 'OnLocationChange', _0: a};
 };
 var _user$project$Msgs$GetProjects = {ctor: 'GetProjects'};
+var _user$project$Msgs$OnNewItemInput = function (a) {
+	return {ctor: 'OnNewItemInput', _0: a};
+};
+var _user$project$Msgs$OnNewItemKeyDown = function (a) {
+	return {ctor: 'OnNewItemKeyDown', _0: a};
+};
 var _user$project$Msgs$OnNewChecklistInput = function (a) {
 	return {ctor: 'OnNewChecklistInput', _0: a};
 };
@@ -10218,11 +10230,17 @@ var _user$project$Msgs$OnNewProjectInput = function (a) {
 var _user$project$Msgs$OnNewProjectKeyDown = function (a) {
 	return {ctor: 'OnNewProjectKeyDown', _0: a};
 };
+var _user$project$Msgs$DeletedItem = function (a) {
+	return {ctor: 'DeletedItem', _0: a};
+};
 var _user$project$Msgs$DeletedChecklist = function (a) {
 	return {ctor: 'DeletedChecklist', _0: a};
 };
 var _user$project$Msgs$DeleteProject = function (a) {
 	return {ctor: 'DeleteProject', _0: a};
+};
+var _user$project$Msgs$OnSaveItem = function (a) {
+	return {ctor: 'OnSaveItem', _0: a};
 };
 var _user$project$Msgs$OnSaveChecklist = function (a) {
 	return {ctor: 'OnSaveChecklist', _0: a};
@@ -10230,8 +10248,14 @@ var _user$project$Msgs$OnSaveChecklist = function (a) {
 var _user$project$Msgs$OnSaveProject = function (a) {
 	return {ctor: 'OnSaveProject', _0: a};
 };
+var _user$project$Msgs$SelectChecklist = function (a) {
+	return {ctor: 'SelectChecklist', _0: a};
+};
 var _user$project$Msgs$SelectProject = function (a) {
 	return {ctor: 'SelectProject', _0: a};
+};
+var _user$project$Msgs$RemoveItem = function (a) {
+	return {ctor: 'RemoveItem', _0: a};
 };
 var _user$project$Msgs$RemoveChecklist = function (a) {
 	return {ctor: 'RemoveChecklist', _0: a};
@@ -10251,6 +10275,24 @@ var _user$project$Commands$projectDecoder = A3(
 		_elm_lang$core$Json_Decode$int,
 		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Models$Project)));
 var _user$project$Commands$projectsDecoder = _elm_lang$core$Json_Decode$list(_user$project$Commands$projectDecoder);
+var _user$project$Commands$itemDecoder = A3(
+	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+	'sequence_number',
+	_elm_lang$core$Json_Decode$int,
+	A3(
+		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+		'completed',
+		_elm_lang$core$Json_Decode$bool,
+		A3(
+			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+			'name',
+			_elm_lang$core$Json_Decode$string,
+			A3(
+				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+				'id',
+				_elm_lang$core$Json_Decode$int,
+				_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Models$Item)))));
+var _user$project$Commands$itemsDecoder = _elm_lang$core$Json_Decode$list(_user$project$Commands$itemDecoder);
 var _user$project$Commands$checklistDecoder = A3(
 	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 	'name',
@@ -10270,6 +10312,25 @@ var _user$project$Commands$fetchProjectChecklistsUrl = function (project) {
 			_elm_lang$core$Basics$toString(project.id),
 			'/checklists'));
 };
+var _user$project$Commands$fetchChecklistItemsUrl = function (checklist) {
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		'http://localhost:4000/api/checklists/',
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			_elm_lang$core$Basics$toString(checklist.id),
+			'/items'));
+};
+var _user$project$Commands$fetchChecklistItems = function (checklist) {
+	return A2(
+		_elm_lang$core$Platform_Cmd$map,
+		_user$project$Msgs$OnFetchChecklistItems,
+		_krisajenkins$remotedata$RemoteData$sendRequest(
+			A2(
+				_elm_lang$http$Http$get,
+				_user$project$Commands$fetchChecklistItemsUrl(checklist),
+				_user$project$Commands$itemsDecoder)));
+};
 var _user$project$Commands$fetchProjectChecklists = function (project) {
 	return A2(
 		_elm_lang$core$Platform_Cmd$map,
@@ -10278,7 +10339,7 @@ var _user$project$Commands$fetchProjectChecklists = function (project) {
 			A2(
 				_elm_lang$http$Http$get,
 				_user$project$Commands$fetchProjectChecklistsUrl(project),
-				_user$project$Commands$projectsDecoder)));
+				_user$project$Commands$checklistsDecoder)));
 };
 var _user$project$Commands$fetchProjects = A2(
 	_elm_lang$core$Platform_Cmd$map,
@@ -10330,6 +10391,13 @@ var _user$project$Commands$projectChecklistsResourceUrl = function (project) {
 			_elm_lang$core$Basics$toString(project.id),
 			'/checklists'));
 };
+var _user$project$Commands$itemResourceUrl = 'http://localhost:4000/api/items';
+var _user$project$Commands$deleteItem = function (item) {
+	return A2(
+		_elm_lang$http$Http$send,
+		_user$project$Msgs$DeletedItem,
+		A2(_user$project$Commands$deleteById, _user$project$Commands$itemResourceUrl, item.id));
+};
 var _user$project$Commands$deleteChecklist = function (checklist) {
 	return A2(
 		_elm_lang$http$Http$send,
@@ -10343,6 +10411,62 @@ var _user$project$Commands$deleteProject = function (project) {
 		_user$project$Msgs$DeleteProject,
 		A2(_user$project$Commands$deleteByName, _user$project$Commands$projectResourceUrl, project.name));
 };
+var _user$project$Commands$itemEncoder = F3(
+	function (itemName, completed, sequenceNumber) {
+		return _elm_lang$core$Json_Encode$object(
+			{
+				ctor: '::',
+				_0: {
+					ctor: '_Tuple2',
+					_0: 'name',
+					_1: _elm_lang$core$Json_Encode$string(itemName)
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						ctor: '_Tuple2',
+						_0: 'completed',
+						_1: _elm_lang$core$Json_Encode$bool(completed)
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							ctor: '_Tuple2',
+							_0: 'sequence_number',
+							_1: _elm_lang$core$Json_Encode$int(sequenceNumber)
+						},
+						_1: {ctor: '[]'}
+					}
+				}
+			});
+	});
+var _user$project$Commands$addItem = F2(
+	function (checklistId, itemName) {
+		var body = _elm_lang$http$Http$jsonBody(
+			A3(_user$project$Commands$itemEncoder, itemName, false, 1));
+		var url = A2(
+			_elm_lang$core$Basics_ops['++'],
+			'http://localhost:4000/api/checklists/',
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				_elm_lang$core$Basics$toString(checklistId),
+				'/items'));
+		return A2(
+			_elm_lang$http$Http$send,
+			_user$project$Msgs$OnSaveItem,
+			A3(
+				_elm_lang$http$Http$post,
+				url,
+				body,
+				A2(
+					_elm_lang$core$Json_Decode$at,
+					{
+						ctor: '::',
+						_0: 'id',
+						_1: {ctor: '[]'}
+					},
+					_elm_lang$core$Json_Decode$int)));
+	});
 var _user$project$Commands$checklistEncoder = function (checklistName) {
 	return _elm_lang$core$Json_Encode$object(
 		{
@@ -10423,7 +10547,24 @@ var _user$project$Routing$matchers = _evancz$url_parser$UrlParser$oneOf(
 					_evancz$url_parser$UrlParser$map,
 					_user$project$Models$ProjectsRoute,
 					_evancz$url_parser$UrlParser$s('projects')),
-				_1: {ctor: '[]'}
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_evancz$url_parser$UrlParser$map,
+						_user$project$Models$ProjectRoute,
+						A2(
+							_evancz$url_parser$UrlParser_ops['</>'],
+							_evancz$url_parser$UrlParser$s('checklists'),
+							_evancz$url_parser$UrlParser$int)),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_evancz$url_parser$UrlParser$map,
+							_user$project$Models$ProjectsRoute,
+							_evancz$url_parser$UrlParser$s('checklists')),
+						_1: {ctor: '[]'}
+					}
+				}
 			}
 		}
 	});
@@ -10537,7 +10678,12 @@ var _user$project$Projects_Project$renderChecklist = function (checklist) {
 		{
 			ctor: '::',
 			_0: _elm_lang$html$Html_Attributes$class('collection-item row-item'),
-			_1: {ctor: '[]'}
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$html$Html_Events$onClick(
+					_user$project$Msgs$SelectChecklist(checklist)),
+				_1: {ctor: '[]'}
+			}
 		},
 		{
 			ctor: '::',
@@ -10857,6 +11003,192 @@ var _user$project$Projects_List$view = function (model) {
 	return _user$project$Projects_List$maybeRenderProjects(model);
 };
 
+var _user$project$Projects_Checklist$renderItem = function (item) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('collection-item row-item'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$input,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$type_('checkbox'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$checked(item.completed),
+						_1: {ctor: '[]'}
+					}
+				},
+				{ctor: '[]'}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$label,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(item.name),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$i,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('material-icons pull-right'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onClick(
+									_user$project$Msgs$RemoveItem(item)),
+								_1: {ctor: '[]'}
+							}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('delete'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
+			}
+		});
+};
+var _user$project$Projects_Checklist$renderItems = function (items) {
+	return A2(_elm_lang$core$List$map, _user$project$Projects_Checklist$renderItem, items);
+};
+var _user$project$Projects_Checklist$inputField = F4(
+	function (placeholderText, modelValue, onInputEvent, onKeyDownEvent) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('input-field'),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$input,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$placeholder(placeholderText),
+						_1: {
+							ctor: '::',
+							_0: _user$project$UI$onKeyDown(_user$project$Msgs$OnNewItemKeyDown),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onInput(_user$project$Msgs$OnNewItemInput),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$value(modelValue),
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					},
+					{ctor: '[]'}),
+				_1: {ctor: '[]'}
+			});
+	});
+var _user$project$Projects_Checklist$constructTableChildren = F2(
+	function (items, model) {
+		var table = {
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('collection-header'),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Checklist items'),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$i,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('material-icons dp48'),
+								_1: {ctor: '[]'}
+							},
+							{ctor: '[]'}),
+						_1: {ctor: '[]'}
+					}
+				}),
+			_1: _user$project$Projects_Checklist$renderItems(items)
+		};
+		return A2(
+			_elm_lang$core$List$append,
+			table,
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('collection-item'),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: A4(
+							_user$project$Projects_Checklist$inputField,
+							'New Item',
+							model.newItemName,
+							_user$project$Msgs$OnNewItemInput(''),
+							_user$project$Msgs$OnNewItemKeyDown(0)),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			});
+	});
+var _user$project$Projects_Checklist$renderTable = F2(
+	function (items, model) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('collection with-header'),
+				_1: {ctor: '[]'}
+			},
+			A2(_user$project$Projects_Checklist$constructTableChildren, items, model));
+	});
+var _user$project$Projects_Checklist$maybeRenderChecklists = function (model) {
+	var _p0 = model.items;
+	switch (_p0.ctor) {
+		case 'NotAsked':
+			return _user$project$UI$renderSpinner(
+				{ctor: '_Tuple0'});
+		case 'Loading':
+			return _user$project$UI$renderSpinner(
+				{ctor: '_Tuple0'});
+		case 'Success':
+			return A2(_user$project$Projects_Checklist$renderTable, _p0._0, model);
+		default:
+			return _user$project$UI$renderSpinner(
+				{ctor: '_Tuple0'});
+	}
+};
+var _user$project$Projects_Checklist$view = F2(
+	function (model, items) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: A2(_user$project$Projects_Checklist$renderTable, items, model),
+				_1: {ctor: '[]'}
+			});
+	});
+
 var _user$project$View$notFoundView = A2(
 	_elm_lang$html$Html$div,
 	{ctor: '[]'},
@@ -10880,13 +11212,30 @@ var _user$project$View$projectChecklistsPage = F2(
 					_elm_lang$core$Basics$toString(_p0._0));
 		}
 	});
+var _user$project$View$checklistItemsPage = F2(
+	function (model, checklistId) {
+		var _p1 = model.items;
+		switch (_p1.ctor) {
+			case 'NotAsked':
+				return _elm_lang$html$Html$text('');
+			case 'Loading':
+				return _elm_lang$html$Html$text('Loading...');
+			case 'Success':
+				return A2(_user$project$Projects_Checklist$view, model, _p1._0);
+			default:
+				return _elm_lang$html$Html$text(
+					_elm_lang$core$Basics$toString(_p1._0));
+		}
+	});
 var _user$project$View$page = function (model) {
-	var _p1 = model.route;
-	switch (_p1.ctor) {
+	var _p2 = model.route;
+	switch (_p2.ctor) {
 		case 'ProjectsRoute':
 			return _user$project$Projects_List$view(model);
 		case 'ProjectRoute':
-			return A2(_user$project$View$projectChecklistsPage, model, _p1._0);
+			return A2(_user$project$View$projectChecklistsPage, model, _p2._0);
+		case 'ChecklistRoute':
+			return A2(_user$project$View$checklistItemsPage, model, _p2._0);
 		default:
 			return _user$project$View$notFoundView;
 	}
@@ -10946,11 +11295,33 @@ var _user$project$Main$update = F2(
 						{newChecklistName: ''}),
 					_1: A2(_user$project$Commands$addChecklist, model.selectedProject.id, model.newChecklistName)
 				} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'OnNewItemInput':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{newItemName: _p0._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'OnNewItemKeyDown':
+				return _elm_lang$core$Native_Utils.eq(_p0._0, 13) ? {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{newItemName: ''}),
+					_1: A2(_user$project$Commands$addItem, model.selectedChecklist.id, model.newItemName)
+				} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'OnSaveChecklist':
 				return {
 					ctor: '_Tuple2',
 					_0: model,
 					_1: _user$project$Commands$fetchProjectChecklists(model.selectedProject)
+				};
+			case 'OnSaveItem':
+				return {
+					ctor: '_Tuple2',
+					_0: model,
+					_1: _user$project$Commands$fetchChecklistItems(model.selectedChecklist)
 				};
 			case 'OnNewProjectInput':
 				return {
@@ -10976,6 +11347,14 @@ var _user$project$Main$update = F2(
 						{checklists: _p0._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
+			case 'OnFetchChecklistItems':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{items: _p0._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			case 'GetProjects':
 				return {ctor: '_Tuple2', _0: model, _1: _user$project$Commands$fetchProjects};
 			case 'OnSaveProject':
@@ -10985,6 +11364,18 @@ var _user$project$Main$update = F2(
 					ctor: '_Tuple2',
 					_0: model,
 					_1: _user$project$Commands$deleteProject(_p0._0)
+				};
+			case 'RemoveItem':
+				return {
+					ctor: '_Tuple2',
+					_0: model,
+					_1: _user$project$Commands$deleteItem(_p0._0)
+				};
+			case 'DeletedItem':
+				return {
+					ctor: '_Tuple2',
+					_0: model,
+					_1: _user$project$Commands$fetchChecklistItems(model.selectedChecklist)
 				};
 			case 'DeletedChecklist':
 				if (_p0._0.ctor === 'Ok') {
@@ -11017,6 +11408,18 @@ var _user$project$Main$update = F2(
 							selectedProject: _p1
 						}),
 					_1: _user$project$Commands$fetchProjectChecklists(_p1)
+				};
+			case 'SelectChecklist':
+				var _p2 = _p0._0;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							route: _user$project$Models$ChecklistRoute(_p2.id),
+							selectedChecklist: _p2
+						}),
+					_1: _user$project$Commands$fetchChecklistItems(_p2)
 				};
 			case 'RemoveChecklist':
 				return {

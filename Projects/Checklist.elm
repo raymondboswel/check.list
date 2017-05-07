@@ -1,7 +1,7 @@
 module Projects.Checklist exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (class, value, href, placeholder)
+import Html.Attributes exposing (class, value, href, checked, placeholder, type_)
 import Html.Events exposing (on, keyCode, onInput, onClick)
 import Msgs exposing (Msg)
 import Models exposing (..) 
@@ -34,16 +34,15 @@ renderTable items model =
 constructTableChildren : List Item -> Model-> List (Html Msgs.Msg)
 constructTableChildren items model = 
     let table = div [class "collection-header"] [text "Checklist items", i [class "material-icons dp48"] []] :: renderItems items 
-    in List.append table [(div [class "collection-item"] [inputField "New Checklist" model.newChecklistName (Msgs.OnNewChecklistInput "") (Msgs.OnNewChecklistKeyDown 0)])]
+    in List.append table [(div [class "collection-item"] [inputField "New Item" model.newItemName (Msgs.OnNewItemInput "") (Msgs.OnNewItemKeyDown 0)])]
 
 inputField : String -> String -> Msgs.Msg -> Msgs.Msg -> Html Msgs.Msg
 inputField placeholderText modelValue onInputEvent onKeyDownEvent =  
-    div [class "input-field"] [input [placeholder placeholderText, onKeyDown Msgs.OnNewChecklistKeyDown, onInput Msgs.OnNewChecklistInput, value modelValue] []]
+    div [class "input-field"] [input [placeholder placeholderText, onKeyDown Msgs.OnNewItemKeyDown, onInput Msgs.OnNewItemInput, value modelValue] []]
 
 renderItems : List Item -> List (Html Msgs.Msg)
 renderItems items =
     List.map renderItem items
   
-
 renderItem : Item -> Html Msg
-renderItem item = div [class "collection-item row-item"] [text item.description, i [class "material-icons pull-right", onClick (Msgs.RemoveItem item)] [text "delete"] ]
+renderItem item = div [class "collection-item row-item"] [input [type_ "checkbox", checked item.completed] [], label [] [text item.name], i [class "material-icons pull-right", onClick (Msgs.RemoveItem item)] [text "delete"] ]
