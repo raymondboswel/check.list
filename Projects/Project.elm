@@ -38,7 +38,14 @@ constructTableChildren checklists model =
 
 inputField : String -> String -> Msgs.Msg -> Msgs.Msg -> Html Msgs.Msg
 inputField placeholderText modelValue onInputEvent onKeyDownEvent =  
-    div [class "input-field"] [input [placeholder placeholderText, onKeyDown Msgs.OnNewChecklistKeyDown, onInput Msgs.OnNewChecklistInput, value modelValue] []]
+    div [class "input-field"] 
+        [
+            input [placeholder placeholderText, 
+                   onKeyDown Msgs.OnNewChecklistKeyDown, 
+                   onInput Msgs.OnNewChecklistInput, 
+                   value modelValue] 
+                   []
+        ]
 
 renderChecklists : List Checklist -> List (Html Msgs.Msg)
 renderChecklists checklists =
@@ -46,4 +53,10 @@ renderChecklists checklists =
   
 
 renderChecklist : Checklist -> Html Msg
-renderChecklist checklist = div [class "collection-item row-item", onClick (Msgs.SelectChecklist checklist)] [text checklist.name, i [class "material-icons pull-right", onClick (Msgs.RemoveChecklist checklist)] [text "delete"] ]
+renderChecklist checklist = div [class "collection-item row-item", 
+                                 onClick (Msgs.SelectChecklist checklist)] 
+                                [text checklist.name, 
+                                 i [class "material-icons pull-right", 
+                                    onClick (Msgs.RemoveChecklist checklist)] 
+                                   [text "delete"] 
+                                ]

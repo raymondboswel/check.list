@@ -44,6 +44,26 @@ addItem checklistId itemName =
     Http.post url body (Decode.at ["id"] (Decode.int))
     |> Http.send Msgs.OnSaveItem
 
+updateChecklistItem : Item -> Cmd Msg
+updateChecklistItem item = 
+  let 
+    url = "http://localhost:4000/api/items/" ++ toString(item.id)
+    body = itemEncoder item.name item.completed item.sequenceNumber |> Http.jsonBody
+  in Http.send Msgs.UpdatedItem (putRequest url body) 
+
+
+putRequest : String -> Body -> Request String
+putRequest url body =
+    request
+        { method = "PUT"
+        , headers = []
+        , url = url
+        , body = body
+        , expect = Http.expectString
+        , timeout = Nothing
+        , withCredentials = False
+        }
+
 itemEncoder : String -> Bool -> Int -> Encode.Value
 itemEncoder itemName completed sequenceNumber = 
     Encode.object 

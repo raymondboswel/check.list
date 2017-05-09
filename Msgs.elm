@@ -9,6 +9,9 @@ type Msg =
            RemoveChecklist Checklist | 
            RemoveItem Item | 
 
+           ToggleItemCompleted Item |
+           UpdatedItem (Result Http.Error String) |
+
            SelectProject Project |
            SelectChecklist Checklist |
 

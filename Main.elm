@@ -66,6 +66,12 @@ update msg model =
         else
           (model, Cmd.none)
 
+      Msgs.ToggleItemCompleted item ->    
+        (model, Commands.updateChecklistItem {item | completed = not item.completed })
+      
+      Msgs.UpdatedItem item ->
+        (model, Commands.fetchChecklistItems model.selectedChecklist)
+
       OnSaveChecklist projectId-> 
         (model, Commands.fetchProjectChecklists model.selectedProject)
 
@@ -127,6 +133,16 @@ update msg model =
             in
                 ( { model | route = newRoute }, Cmd.none )
 
+updateElement : List Item -> Item -> List Item
+updateElement list itemToToggle =
+  let
+    toggle item =
+      if item.id == itemToToggle.id then
+        { item | completed = not item.completed }
+      else
+        item
+  in
+    List.map toggle list
 
 onKeyDown : (Int -> msg) -> Html.Attribute msg
 onKeyDown tagger =

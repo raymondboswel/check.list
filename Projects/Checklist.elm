@@ -2,7 +2,7 @@ module Projects.Checklist exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (class, value, href, checked, placeholder, type_)
-import Html.Events exposing (on, keyCode, onInput, onClick)
+import Html.Events exposing (on, keyCode, onInput, onClick, onCheck)
 import Msgs exposing (Msg)
 import Models exposing (..) 
 import RemoteData exposing (..) 
@@ -45,4 +45,15 @@ renderItems items =
     List.map renderItem items
   
 renderItem : Item -> Html Msg
-renderItem item = div [class "collection-item row-item"] [input [type_ "checkbox", checked item.completed] [], label [] [text item.name], i [class "material-icons pull-right", onClick (Msgs.RemoveItem item)] [text "delete"] ]
+renderItem item = div [class "collection-item row-item"] 
+                      [
+                        input 
+                            [type_ "checkbox", 
+                             checked item.completed] 
+                            [],
+                        label 
+                            [onClick (Msgs.ToggleItemCompleted item)] 
+                            [text item.name], 
+                        i 
+                            [class "material-icons pull-right", onClick (Msgs.RemoveItem item)] 
+                            [text "delete"] ]

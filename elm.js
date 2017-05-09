@@ -10254,6 +10254,12 @@ var _user$project$Msgs$SelectChecklist = function (a) {
 var _user$project$Msgs$SelectProject = function (a) {
 	return {ctor: 'SelectProject', _0: a};
 };
+var _user$project$Msgs$UpdatedItem = function (a) {
+	return {ctor: 'UpdatedItem', _0: a};
+};
+var _user$project$Msgs$ToggleItemCompleted = function (a) {
+	return {ctor: 'ToggleItemCompleted', _0: a};
+};
 var _user$project$Msgs$RemoveItem = function (a) {
 	return {ctor: 'RemoveItem', _0: a};
 };
@@ -10440,6 +10446,31 @@ var _user$project$Commands$itemEncoder = F3(
 				}
 			});
 	});
+var _user$project$Commands$putRequest = F2(
+	function (url, body) {
+		return _elm_lang$http$Http$request(
+			{
+				method: 'PUT',
+				headers: {ctor: '[]'},
+				url: url,
+				body: body,
+				expect: _elm_lang$http$Http$expectString,
+				timeout: _elm_lang$core$Maybe$Nothing,
+				withCredentials: false
+			});
+	});
+var _user$project$Commands$updateChecklistItem = function (item) {
+	var body = _elm_lang$http$Http$jsonBody(
+		A3(_user$project$Commands$itemEncoder, item.name, item.completed, item.sequenceNumber));
+	var url = A2(
+		_elm_lang$core$Basics_ops['++'],
+		'http://localhost:4000/api/items/',
+		_elm_lang$core$Basics$toString(item.id));
+	return A2(
+		_elm_lang$http$Http$send,
+		_user$project$Msgs$UpdatedItem,
+		A2(_user$project$Commands$putRequest, url, body));
+};
 var _user$project$Commands$addItem = F2(
 	function (checklistId, itemName) {
 		var body = _elm_lang$http$Http$jsonBody(
@@ -11029,7 +11060,12 @@ var _user$project$Projects_Checklist$renderItem = function (item) {
 				ctor: '::',
 				_0: A2(
 					_elm_lang$html$Html$label,
-					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Events$onClick(
+							_user$project$Msgs$ToggleItemCompleted(item)),
+						_1: {ctor: '[]'}
+					},
 					{
 						ctor: '::',
 						_0: _elm_lang$html$Html$text(item.name),
@@ -11261,6 +11297,15 @@ var _user$project$Main$onKeyDown = function (tagger) {
 		'keydown',
 		A2(_elm_lang$core$Json_Decode$map, tagger, _elm_lang$html$Html_Events$keyCode));
 };
+var _user$project$Main$updateElement = F2(
+	function (list, itemToToggle) {
+		var toggle = function (item) {
+			return _elm_lang$core$Native_Utils.eq(item.id, itemToToggle.id) ? _elm_lang$core$Native_Utils.update(
+				item,
+				{completed: !item.completed}) : item;
+		};
+		return A2(_elm_lang$core$List$map, toggle, list);
+	});
 var _user$project$Main$update = F2(
 	function (msg, model) {
 		var one = 'one';
@@ -11311,6 +11356,22 @@ var _user$project$Main$update = F2(
 						{newItemName: ''}),
 					_1: A2(_user$project$Commands$addItem, model.selectedChecklist.id, model.newItemName)
 				} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			case 'ToggleItemCompleted':
+				var _p1 = _p0._0;
+				return {
+					ctor: '_Tuple2',
+					_0: model,
+					_1: _user$project$Commands$updateChecklistItem(
+						_elm_lang$core$Native_Utils.update(
+							_p1,
+							{completed: !_p1.completed}))
+				};
+			case 'UpdatedItem':
+				return {
+					ctor: '_Tuple2',
+					_0: model,
+					_1: _user$project$Commands$fetchChecklistItems(model.selectedChecklist)
+				};
 			case 'OnSaveChecklist':
 				return {
 					ctor: '_Tuple2',
@@ -11398,28 +11459,28 @@ var _user$project$Main$update = F2(
 					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				}
 			case 'SelectProject':
-				var _p1 = _p0._0;
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							route: _user$project$Models$ProjectRoute(_p1.id),
-							selectedProject: _p1
-						}),
-					_1: _user$project$Commands$fetchProjectChecklists(_p1)
-				};
-			case 'SelectChecklist':
 				var _p2 = _p0._0;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{
-							route: _user$project$Models$ChecklistRoute(_p2.id),
-							selectedChecklist: _p2
+							route: _user$project$Models$ProjectRoute(_p2.id),
+							selectedProject: _p2
 						}),
-					_1: _user$project$Commands$fetchChecklistItems(_p2)
+					_1: _user$project$Commands$fetchProjectChecklists(_p2)
+				};
+			case 'SelectChecklist':
+				var _p3 = _p0._0;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							route: _user$project$Models$ChecklistRoute(_p3.id),
+							selectedChecklist: _p3
+						}),
+					_1: _user$project$Commands$fetchChecklistItems(_p3)
 				};
 			case 'RemoveChecklist':
 				return {
