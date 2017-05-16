@@ -22,3 +22,7 @@
 .center-spinner-horizontally {
     left: calc(50% - 45px)
 }
+
+.inline-block {
+    display: inline-block;
+}

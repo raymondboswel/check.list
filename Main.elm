@@ -27,10 +27,10 @@ subscriptions model =
 init : Location -> (Model, Cmd Msg)
 init location =
   let currentRoute = Routing.parseLocation location in
-  (Model  currentRoute 
-          Models.initialProject 
+  (Model  currentRoute
+          Models.initialProject
           Models.initialChecklist
-          RemoteData.Loading "" 
+          RemoteData.Loading ""
           RemoteData.Loading ""
           RemoteData.Loading "", Commands.fetchProjects)
 
@@ -38,83 +38,96 @@ init location =
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
-  let one = "one" in 
-    case Debug.log "message" msg of    
-      
+  let one = "one" in
+    case Debug.log "message" msg of
+
       OnNewProjectKeyDown key ->
-        if key == 13 then 
-          let projectName = model.newProjectName in 
+        if key == 13 then
+          let projectName = model.newProjectName in
             ({ model | newProjectName = ""}, Commands.addProject projectName)
         else
           (model, Cmd.none)
 
-      OnNewChecklistInput checklistName -> 
+      OnNewChecklistInput checklistName ->
         ({ model | newChecklistName = checklistName }, Cmd.none)
 
       OnNewChecklistKeyDown key ->
-        if key == 13 then           
+        if key == 13 then
           ({ model | newChecklistName = ""}, Commands.addChecklist model.selectedProject.id model.newChecklistName)
         else
           (model, Cmd.none)
 
-      OnNewItemInput itemName -> 
+      EditItem description ->
+        let
+                updateEntry t =
+                    if t.id == id then
+                        { t | name = item.name }
+                    else
+                        t
+            in
+                { model | items = List.map updateEntry model.items }
+
+      OnEditItemInput itemName ->
+        ({ model | newItemName = itemName }, Cmd.none)
+
+      OnNewItemInput itemName ->
         ({ model | newItemName = itemName }, Cmd.none)
 
       OnNewItemKeyDown key ->
-        if key == 13 then           
+        if key == 13 then
           ({ model | newItemName = ""}, Commands.addItem model.selectedChecklist.id model.newItemName)
         else
           (model, Cmd.none)
 
-      Msgs.ToggleItemCompleted item ->    
+      Msgs.ToggleItemCompleted item ->
         (model, Commands.updateChecklistItem {item | completed = not item.completed })
-      
+
       Msgs.UpdatedItem item ->
         (model, Commands.fetchChecklistItems model.selectedChecklist)
 
-      OnSaveChecklist projectId-> 
+      OnSaveChecklist projectId->
         (model, Commands.fetchProjectChecklists model.selectedProject)
 
-      OnSaveItem checklistId-> 
+      OnSaveItem checklistId->
         (model, Commands.fetchChecklistItems model.selectedChecklist)
-          
-      OnNewProjectInput projectName -> 
+
+      OnNewProjectInput projectName ->
         ({ model | newProjectName = projectName }, Cmd.none)
 
-      OnFetchProjects response -> 
+      OnFetchProjects response ->
         ({model | projects = response}, Cmd.none)
 
       OnFetchProjectChecklists response ->
         ({model | checklists = response}, Cmd.none)
 
-      OnFetchChecklistItems response -> 
+      OnFetchChecklistItems response ->
         ({model | items = response}, Cmd.none)
 
-      GetProjects -> 
+      GetProjects ->
         (model, Commands.fetchProjects )
 
-      OnSaveProject projectId-> 
+      OnSaveProject projectId->
         (model, Commands.fetchProjects)
 
       RemoveProject project ->
         (model, Commands.deleteProject project)
 
-      RemoveItem item -> 
+      RemoveItem item ->
         (model, Commands.deleteItem item)
-      
+
       DeletedItem _ ->
         (model, Commands.fetchChecklistItems model.selectedChecklist)
 
-      DeleteProject (Ok projectName)-> 
+      DeleteProject (Ok projectName)->
         (model, Commands.fetchProjects)
-      
+
       DeletedChecklist (Ok checklistName) ->
-        (model, Commands.fetchProjectChecklists model.selectedProject) 
+        (model, Commands.fetchProjectChecklists model.selectedProject)
 
       DeletedChecklist (Err error) ->
-        (model, Commands.fetchProjectChecklists model.selectedProject) 
+        (model, Commands.fetchProjectChecklists model.selectedProject)
 
-      DeleteProject (Err error)-> 
+      DeleteProject (Err error)->
         (model, Cmd.none)
 
       SelectProject project ->
@@ -143,6 +156,7 @@ updateElement list itemToToggle =
         item
   in
     List.map toggle list
+
 
 onKeyDown : (Int -> msg) -> Html.Attribute msg
 onKeyDown tagger =

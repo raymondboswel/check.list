@@ -4,35 +4,38 @@ import RemoteData exposing (WebData)
 import Models exposing (..)
 import Navigation exposing (Location)
 
-type Msg = 
-           RemoveProject Project | 
-           RemoveChecklist Checklist | 
-           RemoveItem Item | 
+type Msg =
+           RemoveProject Project |
+           RemoveChecklist Checklist |
+           RemoveItem Item |
 
            ToggleItemCompleted Item |
            UpdatedItem (Result Http.Error String) |
 
+           EditItem String Item |
+           OnEditItemInput String |
+
            SelectProject Project |
            SelectChecklist Checklist |
 
-           OnSaveProject (Result Http.Error Int) | 
-           OnSaveChecklist (Result Http.Error Int) |   
+           OnSaveProject (Result Http.Error Int) |
+           OnSaveChecklist (Result Http.Error Int) |
            OnSaveItem (Result Http.Error Int) |
 
            DeleteProject (Result Http.Error String) |
-           DeletedChecklist (Result Http.Error String) | 
+           DeletedChecklist (Result Http.Error String) |
            DeletedItem (Result Http.Error String) |
 
-           OnNewProjectKeyDown Int | 
-           OnNewProjectInput String | 
+           OnNewProjectKeyDown Int |
+           OnNewProjectInput String |
 
-           OnNewChecklistKeyDown Int | 
+           OnNewChecklistKeyDown Int |
            OnNewChecklistInput String |
 
-           OnNewItemKeyDown Int | 
+           OnNewItemKeyDown Int |
            OnNewItemInput String |
 
-           GetProjects | 
+           GetProjects |
            OnLocationChange Location |
 
            OnFetchProjects (WebData (List Project)) |
