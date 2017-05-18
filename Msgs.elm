@@ -12,7 +12,8 @@ type Msg =
            ToggleItemCompleted Item |
            UpdatedItem (Result Http.Error String) |
 
-           EditItem String Item |
+           EditItem String |
+           EditingItem Item |
            OnEditItemInput String |
 
            SelectProject Project |

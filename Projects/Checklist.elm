@@ -58,7 +58,7 @@ renderItem item = div [class "collection-item row-item"]
                         label
                             [onClick (Msgs.ToggleItemCompleted item), for (toString item.id)]
                             [text Exts.Html.nbsp],
-                        div [contenteditable True, class "inline-block", on "blur" (Json.map Msgs.EditItem targetTextContent)]
+                        div [contenteditable True, class "inline-block", onClick (Msgs.EditingItem item) ,on "blur" (Json.map Msgs.EditItem targetTextContent)]
                             [text item.name],
                         i
                             [class "material-icons pull-right", onClick (Msgs.RemoveItem item)]
@@ -66,4 +66,4 @@ renderItem item = div [class "collection-item row-item"]
 
 targetTextContent : Json.Decoder String
 targetTextContent =
-  Json.at ["target", "textContent"] Json.string
+    Json.at ["target", "textContent"] Json.string

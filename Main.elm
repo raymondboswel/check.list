@@ -57,15 +57,19 @@ update msg model =
         else
           (model, Cmd.none)
 
-      EditItem description ->
+      EditItem name ->
         let
                 updateEntry t =
-                    if t.id == id then
-                        { t | name = item.name }
+                    if t.id == model.itemBeingEdited.id then
+                        t
                     else
                         t
+                updatedItems = RemoteData.map updateEntry model.items
             in
-                { model | items = List.map updateEntry model.items }
+                ({ model | items = updatedItems }, Cmd.none)
+
+      EditingItem item ->
+        (model, Cmd.none)
 
       OnEditItemInput itemName ->
         ({ model | newItemName = itemName }, Cmd.none)

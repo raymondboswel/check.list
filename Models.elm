@@ -2,15 +2,16 @@ module Models exposing (..)
 import RemoteData exposing (WebData)
 
 type alias Model = {
-    route: Route, 
-    selectedProject: Project, 
+    route: Route,
+    selectedProject: Project,
     selectedChecklist: Checklist,
-    projects : WebData (List Project), 
-    newProjectName : String, 
-    checklists: WebData (List Checklist), 
+    projects : WebData (List Project),
+    newProjectName : String,
+    checklists: WebData (List Checklist),
     newChecklistName: String,
     items: WebData (List Item),
-    newItemName: String
+    newItemName: String,
+    itemBeingEdited: Item
     }
 
 type alias Project = {id: ProjectId, name: String}
@@ -28,7 +29,7 @@ type alias ItemId = Int
 type alias Checklist = {id: ChecklistId, name: String}
 
 type alias ChecklistId = Int
-type alias ProjectId = Int  
+type alias ProjectId = Int
 
 type Route
     = ProjectsRoute
@@ -38,8 +39,8 @@ type Route
 
 -- initialModel : Model
 -- initialModel =
---     { 
---         projects = RemoteData.Loading, 
+--     {
+--         projects = RemoteData.Loading,
 --         newProjectName = ""
 --     }
 
