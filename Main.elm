@@ -27,12 +27,14 @@ subscriptions model =
 init : Location -> (Model, Cmd Msg)
 init location =
   let currentRoute = Routing.parseLocation location in
-  (Model  currentRoute
-          Models.initialProject
-          Models.initialChecklist
-          RemoteData.Loading ""
-          RemoteData.Loading ""
-          RemoteData.Loading "", Commands.fetchProjects)
+  (Model  currentRoute --route 
+          Models.initialProject --selectedProject
+          Models.initialChecklist --selectedChecklist
+          RemoteData.Loading "" --projects/newProjectName
+          RemoteData.Loading "" --checklists/newChecklistName
+          RemoteData.Loading "" --items/NewItemName
+          Models.initialItem
+          , Commands.fetchProjects)
 
 -- UPDATE
 
@@ -57,19 +59,12 @@ update msg model =
         else
           (model, Cmd.none)
 
-      EditItem name ->
-        let
-                updateEntry t =
-                    if t.id == model.itemBeingEdited.id then
-                        t
-                    else
-                        t
-                updatedItems = RemoteData.map updateEntry model.items
-            in
-                ({ model | items = updatedItems }, Cmd.none)
+      EditItem text ->
+        let item = model.itemBeingEdited in
+         (model , Commands.updateChecklistItem {item | name = text})
 
       EditingItem item ->
-        (model, Cmd.none)
+        ({model | itemBeingEdited = item}, Cmd.none)
 
       OnEditItemInput itemName ->
         ({ model | newItemName = itemName }, Cmd.none)
@@ -149,6 +144,8 @@ update msg model =
                     parseLocation location
             in
                 ( { model | route = newRoute }, Cmd.none )
+
+
 
 updateElement : List Item -> Item -> List Item
 updateElement list itemToToggle =

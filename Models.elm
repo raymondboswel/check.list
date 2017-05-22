@@ -23,6 +23,9 @@ initialProject =
 initialChecklist : Checklist
 initialChecklist = Checklist 0 ""
 
+initialItem : Item
+initialItem = Item 0 "" False 0
+
 type alias Item = {id: ItemId, name: String, completed: Bool, sequenceNumber: Int}
 type alias ItemId = Int
 
