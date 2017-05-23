@@ -48,7 +48,7 @@ renderItems items =
     List.map renderItem items
 
 renderItem : Item -> Html Msg
-renderItem item = div [class "collection-item row-item"]
+renderItem item = div [class "collection-item row-item", onClick (Msgs.EditingItem item) ]
                       [
                         input
                             [type_ "checkbox",
