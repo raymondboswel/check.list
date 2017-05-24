@@ -34,8 +34,9 @@ type alias Checklist = {id: ChecklistId, name: String}
 type alias ChecklistId = Int
 type alias ProjectId = Int
 
-type Route
-    = ProjectsRoute
+type Route = 
+    SignInRoute
+    | ProjectsRoute
     | ProjectRoute ProjectId
     | ChecklistRoute ChecklistId
     | NotFoundRoute

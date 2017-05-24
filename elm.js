@@ -14727,6 +14727,7 @@ var _user$project$Models$ProjectRoute = function (a) {
 	return {ctor: 'ProjectRoute', _0: a};
 };
 var _user$project$Models$ProjectsRoute = {ctor: 'ProjectsRoute'};
+var _user$project$Models$SignInRoute = {ctor: 'SignInRoute'};
 
 var _user$project$Msgs$OnFetchChecklistItems = function (a) {
 	return {ctor: 'OnFetchChecklistItems', _0: a};
@@ -15100,7 +15101,7 @@ var _user$project$Commands$addProject = function (projectName) {
 var _user$project$Routing$matchers = _evancz$url_parser$UrlParser$oneOf(
 	{
 		ctor: '::',
-		_0: A2(_evancz$url_parser$UrlParser$map, _user$project$Models$ProjectsRoute, _evancz$url_parser$UrlParser$top),
+		_0: A2(_evancz$url_parser$UrlParser$map, _user$project$Models$SignInRoute, _evancz$url_parser$UrlParser$top),
 		_1: {
 			ctor: '::',
 			_0: A2(
@@ -15120,19 +15121,12 @@ var _user$project$Routing$matchers = _evancz$url_parser$UrlParser$oneOf(
 					ctor: '::',
 					_0: A2(
 						_evancz$url_parser$UrlParser$map,
-						_user$project$Models$ProjectRoute,
+						_user$project$Models$ChecklistRoute,
 						A2(
 							_evancz$url_parser$UrlParser_ops['</>'],
 							_evancz$url_parser$UrlParser$s('checklists'),
 							_evancz$url_parser$UrlParser$int)),
-					_1: {
-						ctor: '::',
-						_0: A2(
-							_evancz$url_parser$UrlParser$map,
-							_user$project$Models$ProjectsRoute,
-							_evancz$url_parser$UrlParser$s('checklists')),
-						_1: {ctor: '[]'}
-					}
+					_1: {ctor: '[]'}
 				}
 			}
 		}
@@ -15859,6 +15853,42 @@ var _user$project$View$checklistItemsPage = F2(
 					_elm_lang$core$Basics$toString(_p1._0));
 		}
 	});
+var _user$project$View$signInPage = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('center-align'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$h2,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Sign in'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('g-signin2'),
+						_1: {
+							ctor: '::',
+							_0: A2(_elm_lang$html$Html_Attributes$attribute, 'data-onsuccess', 'onSignIn'),
+							_1: {ctor: '[]'}
+						}
+					},
+					{ctor: '[]'}),
+				_1: {ctor: '[]'}
+			}
+		});
+};
 var _user$project$View$page = function (model) {
 	var _p2 = model.route;
 	switch (_p2.ctor) {
@@ -15868,6 +15898,8 @@ var _user$project$View$page = function (model) {
 			return A2(_user$project$View$projectChecklistsPage, model, _p2._0);
 		case 'ChecklistRoute':
 			return A2(_user$project$View$checklistItemsPage, model, _p2._0);
+		case 'SignInRoute':
+			return _user$project$View$signInPage(model);
 		default:
 			return _user$project$View$notFoundView;
 	}

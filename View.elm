@@ -27,8 +27,17 @@ page model =
         Models.ChecklistRoute id ->
             checklistItemsPage model id
 
+        Models.SignInRoute ->
+            signInPage model
+
         Models.NotFoundRoute ->
             notFoundView
+
+signInPage : Model -> Html Msg
+signInPage model =
+    div [class "center-align"] [Html.h2 [] [text "Sign in"],
+    div [class "g-signin2", attribute "data-onsuccess" "onSignIn"] []]
+    
 
 checklistItemsPage : Model -> ChecklistId -> Html Msg
 checklistItemsPage model checklistId =
