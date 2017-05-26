@@ -9,6 +9,7 @@ import Commands exposing (..)
 import RemoteData exposing (..)
 import Routing exposing (..)
 import Navigation exposing (Location)
+import SignIn.Types exposing (initialModel)
 import View exposing (view)
 
 main : Program Never Model Msg
@@ -27,13 +28,14 @@ subscriptions model =
 init : Location -> (Model, Cmd Msg)
 init location =
   let currentRoute = Routing.parseLocation location in
-  (Model  currentRoute --route 
+  (Model  currentRoute --route
           Models.initialProject --selectedProject
           Models.initialChecklist --selectedChecklist
           RemoteData.Loading "" --projects/newProjectName
           RemoteData.Loading "" --checklists/newChecklistName
           RemoteData.Loading "" --items/NewItemName
           Models.initialItem
+          SignIn.Types.initialModel
           , Commands.fetchProjects)
 
 -- UPDATE

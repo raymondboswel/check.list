@@ -14683,6 +14683,17 @@ var _krisajenkins$remotedata$RemoteData$update = F2(
 		}
 	});
 
+var _user$project$SignIn_Types$Model = function (a) {
+	return {user: a};
+};
+var _user$project$SignIn_Types$User = F2(
+	function (a, b) {
+		return {username: a, password: b};
+	});
+var _user$project$SignIn_Types$initialUser = A2(_user$project$SignIn_Types$User, '', '');
+var _user$project$SignIn_Types$initialModel = _user$project$SignIn_Types$Model(_user$project$SignIn_Types$initialUser);
+var _user$project$SignIn_Types$SignIn = {ctor: 'SignIn'};
+
 var _user$project$Models$Model = function (a) {
 	return function (b) {
 		return function (c) {
@@ -14693,7 +14704,9 @@ var _user$project$Models$Model = function (a) {
 							return function (h) {
 								return function (i) {
 									return function (j) {
-										return {route: a, selectedProject: b, selectedChecklist: c, projects: d, newProjectName: e, checklists: f, newChecklistName: g, items: h, newItemName: i, itemBeingEdited: j};
+										return function (k) {
+											return {route: a, selectedProject: b, selectedChecklist: c, projects: d, newProjectName: e, checklists: f, newChecklistName: g, items: h, newItemName: i, itemBeingEdited: j, signInTypes: k};
+										};
 									};
 								};
 							};
@@ -15138,6 +15151,65 @@ var _user$project$Routing$parseLocation = function (location) {
 	} else {
 		return _user$project$Models$NotFoundRoute;
 	}
+};
+
+var _user$project$SignIn_View$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$h2,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Sign in'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$input,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$placeholder('Username'),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(model.user.username),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$input,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$placeholder('Password'),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(model.user.password),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$button,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('Sign in'),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		});
 };
 
 var _user$project$UI$onKeyDown = function (tagger) {
@@ -15854,40 +15926,7 @@ var _user$project$View$checklistItemsPage = F2(
 		}
 	});
 var _user$project$View$signInPage = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('center-align'),
-			_1: {ctor: '[]'}
-		},
-		{
-			ctor: '::',
-			_0: A2(
-				_elm_lang$html$Html$h2,
-				{ctor: '[]'},
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html$text('Sign in'),
-					_1: {ctor: '[]'}
-				}),
-			_1: {
-				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$div,
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class('g-signin2'),
-						_1: {
-							ctor: '::',
-							_0: A2(_elm_lang$html$Html_Attributes$attribute, 'data-onsuccess', 'onSignIn'),
-							_1: {ctor: '[]'}
-						}
-					},
-					{ctor: '[]'}),
-				_1: {ctor: '[]'}
-			}
-		});
+	return _user$project$SignIn_View$view(model);
 };
 var _user$project$View$page = function (model) {
 	var _p2 = model.route;
@@ -15899,7 +15938,7 @@ var _user$project$View$page = function (model) {
 		case 'ChecklistRoute':
 			return A2(_user$project$View$checklistItemsPage, model, _p2._0);
 		case 'SignInRoute':
-			return _user$project$View$signInPage(model);
+			return _user$project$View$signInPage(model.signInTypes);
 		default:
 			return _user$project$View$notFoundView;
 	}
@@ -16157,7 +16196,7 @@ var _user$project$Main$init = function (location) {
 	var currentRoute = _user$project$Routing$parseLocation(location);
 	return {
 		ctor: '_Tuple2',
-		_0: _user$project$Models$Model(currentRoute)(_user$project$Models$initialProject)(_user$project$Models$initialChecklist)(_krisajenkins$remotedata$RemoteData$Loading)('')(_krisajenkins$remotedata$RemoteData$Loading)('')(_krisajenkins$remotedata$RemoteData$Loading)('')(_user$project$Models$initialItem),
+		_0: _user$project$Models$Model(currentRoute)(_user$project$Models$initialProject)(_user$project$Models$initialChecklist)(_krisajenkins$remotedata$RemoteData$Loading)('')(_krisajenkins$remotedata$RemoteData$Loading)('')(_krisajenkins$remotedata$RemoteData$Loading)('')(_user$project$Models$initialItem)(_user$project$SignIn_Types$initialModel),
 		_1: _user$project$Commands$fetchProjects
 	};
 };
