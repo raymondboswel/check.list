@@ -45,6 +45,9 @@ update msg model =
   let one = "one" in
     case Debug.log "message" msg of
 
+      SignedIn ->
+        ({model | route = ProjectsRoute}, Cmd.none)
+
       OnNewProjectKeyDown key ->
         if key == 13 then
           let projectName = model.newProjectName in

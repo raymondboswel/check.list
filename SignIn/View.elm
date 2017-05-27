@@ -14,4 +14,4 @@ view model =
         [h2 [] [text "Sign in"],
         input [placeholder "Username"] [text model.user.username],
         input [placeholder "Password"] [text model.user.password],
-        button [ ] [text "Sign in"]]
+        button [ onClick Msgs.SignedIn ] [text "Sign in"]]

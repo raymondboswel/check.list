@@ -5,6 +5,7 @@ import Models exposing (..)
 import Navigation exposing (Location)
 
 type Msg =
+           SignedIn |
            RemoveProject Project |
            RemoveChecklist Checklist |
            RemoveItem Item |

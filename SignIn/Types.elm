@@ -4,7 +4,7 @@ type alias Model = {user: User}
 
 type alias User = {username: String, password: String}
 
-type Msg = SignIn
+type Msg = SignedIn
 
 initialUser: User
 initialUser = User "" ""
