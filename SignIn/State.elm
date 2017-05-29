@@ -1,5 +1,6 @@
 module SignIn.State exposing (init, update)
 import SignIn.Types exposing (..)
+import SignIn.Rest exposing (..)
 
 
 init : ( Model, Cmd Msg )
@@ -12,4 +13,7 @@ update action model =
     SignIn ->
       let user = User "new User" ""
       in
-      ({model | user = user}, Cmd.none)
+      ({model | user = user}, SignIn.Rest.signIn user.email user.password)
+
+    SignedIn userAuth ->
+      (model, Cmd.map Msgs.OnUserAuth userAuth )

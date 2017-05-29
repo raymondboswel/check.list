@@ -3,9 +3,10 @@ import Http exposing (..)
 import RemoteData exposing (WebData)
 import Models exposing (..)
 import Navigation exposing (Location)
+import SignIn.Types exposing (UserAuth)
 
 type Msg =
-           SignedIn |
+           OnUserAuth UserAuth |
            RemoveProject Project |
            RemoveChecklist Checklist |
            RemoveItem Item |

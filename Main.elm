@@ -36,6 +36,7 @@ init location =
           RemoteData.Loading "" --items/NewItemName
           Models.initialItem
           SignIn.Types.initialModel
+          SignIn.Types.initialUserAuth
           , Commands.fetchProjects)
 
 -- UPDATE
@@ -45,8 +46,8 @@ update msg model =
   let one = "one" in
     case Debug.log "message" msg of
 
-      SignedIn ->
-        ({model | route = ProjectsRoute}, Cmd.none)
+      OnUserAuth userAuth->
+        ({model | userAuth = userAuth, route = ProjectsRoute}, Cmd.none)
 
       OnNewProjectKeyDown key ->
         if key == 13 then

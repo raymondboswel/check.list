@@ -14692,6 +14692,11 @@ var _user$project$SignIn_Types$User = F2(
 	});
 var _user$project$SignIn_Types$initialUser = A2(_user$project$SignIn_Types$User, '', '');
 var _user$project$SignIn_Types$initialModel = _user$project$SignIn_Types$Model(_user$project$SignIn_Types$initialUser);
+var _user$project$SignIn_Types$UserAuth = F2(
+	function (a, b) {
+		return {jwt: a, exp: b};
+	});
+var _user$project$SignIn_Types$initialUserAuth = A2(_user$project$SignIn_Types$UserAuth, '', 0);
 var _user$project$SignIn_Types$SignedIn = {ctor: 'SignedIn'};
 
 var _user$project$Models$Model = function (a) {
@@ -14705,7 +14710,9 @@ var _user$project$Models$Model = function (a) {
 								return function (i) {
 									return function (j) {
 										return function (k) {
-											return {route: a, selectedProject: b, selectedChecklist: c, projects: d, newProjectName: e, checklists: f, newChecklistName: g, items: h, newItemName: i, itemBeingEdited: j, signInTypes: k};
+											return function (l) {
+												return {route: a, selectedProject: b, selectedChecklist: c, projects: d, newProjectName: e, checklists: f, newChecklistName: g, items: h, newItemName: i, itemBeingEdited: j, signInTypes: k, userAuth: l};
+											};
 										};
 									};
 								};
@@ -14822,6 +14829,9 @@ var _user$project$Msgs$RemoveProject = function (a) {
 	return {ctor: 'RemoveProject', _0: a};
 };
 var _user$project$Msgs$SignedIn = {ctor: 'SignedIn'};
+var _user$project$Msgs$OnUserAuth = function (a) {
+	return {ctor: 'OnUserAuth', _0: a};
+};
 
 var _user$project$Commands$fetchProjectsUrl = 'http://localhost:4000/api/projects';
 var _user$project$Commands$projectDecoder = A3(
@@ -15983,6 +15993,14 @@ var _user$project$Main$update = F2(
 		var one = 'one';
 		var _p0 = A2(_elm_lang$core$Debug$log, 'message', msg);
 		switch (_p0.ctor) {
+			case 'OnUserAuth':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{userAuth: _p0._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			case 'SignedIn':
 				return {
 					ctor: '_Tuple2',
@@ -16209,7 +16227,7 @@ var _user$project$Main$init = function (location) {
 	var currentRoute = _user$project$Routing$parseLocation(location);
 	return {
 		ctor: '_Tuple2',
-		_0: _user$project$Models$Model(currentRoute)(_user$project$Models$initialProject)(_user$project$Models$initialChecklist)(_krisajenkins$remotedata$RemoteData$Loading)('')(_krisajenkins$remotedata$RemoteData$Loading)('')(_krisajenkins$remotedata$RemoteData$Loading)('')(_user$project$Models$initialItem)(_user$project$SignIn_Types$initialModel),
+		_0: _user$project$Models$Model(currentRoute)(_user$project$Models$initialProject)(_user$project$Models$initialChecklist)(_krisajenkins$remotedata$RemoteData$Loading)('')(_krisajenkins$remotedata$RemoteData$Loading)('')(_krisajenkins$remotedata$RemoteData$Loading)('')(_user$project$Models$initialItem)(_user$project$SignIn_Types$initialModel)(_user$project$SignIn_Types$initialUserAuth),
 		_1: _user$project$Commands$fetchProjects
 	};
 };
@@ -16224,7 +16242,7 @@ var _user$project$Main$main = A2(
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
 if (typeof _user$project$Main$main !== 'undefined') {
-    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"RemoteData.RemoteData":{"args":["e","a"],"tags":{"NotAsked":[],"Success":["a"],"Loading":[],"Failure":["e"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Msgs.Msg":{"args":[],"tags":{"DeleteProject":["Result.Result Http.Error String"],"SelectChecklist":["Models.Checklist"],"OnFetchChecklistItems":["RemoteData.WebData (List Models.Item)"],"OnLocationChange":["Navigation.Location"],"RemoveChecklist":["Models.Checklist"],"OnSaveProject":["Result.Result Http.Error Int"],"DeletedItem":["Result.Result Http.Error String"],"UpdatedItem":["Result.Result Http.Error String"],"OnFetchProjects":["RemoteData.WebData (List Models.Project)"],"RemoveItem":["Models.Item"],"OnEditItemInput":["String"],"OnNewProjectInput":["String"],"OnNewItemInput":["String"],"OnNewChecklistKeyDown":["Int"],"OnSaveChecklist":["Result.Result Http.Error Int"],"OnFetchProjectChecklists":["RemoteData.WebData (List Models.Checklist)"],"OnNewChecklistInput":["String"],"ToggleItemCompleted":["Models.Item"],"SelectProject":["Models.Project"],"OnNewProjectKeyDown":["Int"],"OnSaveItem":["Result.Result Http.Error Int"],"OnNewItemKeyDown":["Int"],"SignedIn":[],"GetProjects":[],"RemoveProject":["Models.Project"],"EditingItem":["Models.Item"],"DeletedChecklist":["Result.Result Http.Error String"],"EditItem":["String"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}}},"aliases":{"Models.Project":{"args":[],"type":"{ id : Models.ProjectId, name : String }"},"Models.ItemId":{"args":[],"type":"Int"},"RemoteData.WebData":{"args":["a"],"type":"RemoteData.RemoteData Http.Error a"},"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Models.ChecklistId":{"args":[],"type":"Int"},"Models.Checklist":{"args":[],"type":"{ id : Models.ChecklistId, name : String }"},"Models.Item":{"args":[],"type":"{ id : Models.ItemId , name : String , completed : Bool , sequenceNumber : Int }"},"Models.ProjectId":{"args":[],"type":"Int"},"Navigation.Location":{"args":[],"type":"{ href : String , host : String , hostname : String , protocol : String , origin : String , port_ : String , pathname : String , search : String , hash : String , username : String , password : String }"}},"message":"Msgs.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"RemoteData.RemoteData":{"args":["e","a"],"tags":{"NotAsked":[],"Success":["a"],"Loading":[],"Failure":["e"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Msgs.Msg":{"args":[],"tags":{"DeleteProject":["Result.Result Http.Error String"],"SelectChecklist":["Models.Checklist"],"OnFetchChecklistItems":["RemoteData.WebData (List Models.Item)"],"OnLocationChange":["Navigation.Location"],"RemoveChecklist":["Models.Checklist"],"OnSaveProject":["Result.Result Http.Error Int"],"DeletedItem":["Result.Result Http.Error String"],"UpdatedItem":["Result.Result Http.Error String"],"OnFetchProjects":["RemoteData.WebData (List Models.Project)"],"RemoveItem":["Models.Item"],"OnEditItemInput":["String"],"OnNewProjectInput":["String"],"OnNewItemInput":["String"],"OnNewChecklistKeyDown":["Int"],"OnSaveChecklist":["Result.Result Http.Error Int"],"OnFetchProjectChecklists":["RemoteData.WebData (List Models.Checklist)"],"OnNewChecklistInput":["String"],"ToggleItemCompleted":["Models.Item"],"SelectProject":["Models.Project"],"OnNewProjectKeyDown":["Int"],"OnSaveItem":["Result.Result Http.Error Int"],"OnNewItemKeyDown":["Int"],"SignedIn":[],"GetProjects":[],"OnUserAuth":["SignIn.Types.UserAuth"],"RemoveProject":["Models.Project"],"EditingItem":["Models.Item"],"DeletedChecklist":["Result.Result Http.Error String"],"EditItem":["String"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}}},"aliases":{"Models.Project":{"args":[],"type":"{ id : Models.ProjectId, name : String }"},"Models.ItemId":{"args":[],"type":"Int"},"RemoteData.WebData":{"args":["a"],"type":"RemoteData.RemoteData Http.Error a"},"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Models.ChecklistId":{"args":[],"type":"Int"},"SignIn.Types.UserAuth":{"args":[],"type":"{ jwt : String, exp : Int }"},"Models.Checklist":{"args":[],"type":"{ id : Models.ChecklistId, name : String }"},"Models.Item":{"args":[],"type":"{ id : Models.ItemId , name : String , completed : Bool , sequenceNumber : Int }"},"Models.ProjectId":{"args":[],"type":"Int"},"Navigation.Location":{"args":[],"type":"{ href : String , host : String , hostname : String , protocol : String , origin : String , port_ : String , pathname : String , search : String , hash : String , username : String , password : String }"}},"message":"Msgs.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])
