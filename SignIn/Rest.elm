@@ -8,7 +8,7 @@ import Json.Encode as Encode exposing (..)
 import Json.Decode.Pipeline exposing (decode, required)
 import RemoteData exposing (..)
 
-signIn : String -> String -> Cmd Msgs.Msg
+signIn : String -> String -> Cmd SignIn.Types.Msg
 signIn email password =
   let
     url =
@@ -28,5 +28,6 @@ checklistEncoder email password =
 userAuthDecoder : Decode.Decoder UserAuth
 userAuthDecoder =
     decode UserAuth
-        |> required "" Decode.string
-        |> required "name" Decode.int
+        |> required "user_id" Decode.int
+        |> required "jwt" Decode.string
+        |> required "exp" Decode.int

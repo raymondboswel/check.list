@@ -10,6 +10,7 @@ import RemoteData exposing (..)
 import Routing exposing (..)
 import Navigation exposing (Location)
 import SignIn.Types exposing (initialModel)
+import SignIn.State exposing(..)
 import View exposing (view)
 
 main : Program Never Model Msg
@@ -46,7 +47,14 @@ update msg model =
   let one = "one" in
     case Debug.log "message" msg of
 
-      OnUserAuth userAuth->
+      SignInMsg signIn ->
+            let
+                (updatedSignInModel, signInCmd) =
+                    SignIn.State.update signIn model.signInModel
+            in
+                ({ model | signInModel = updatedSignInModel }, Cmd.map SignInMsg signInCmd )
+
+      OnUserAuth userAuth ->
         ({model | userAuth = userAuth, route = ProjectsRoute}, Cmd.none)
 
       OnNewProjectKeyDown key ->

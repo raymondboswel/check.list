@@ -30,14 +30,14 @@ page model =
             checklistItemsPage model id
 
         Models.SignInRoute ->
-            signInPage model.signInTypes
+            signInPage model.signInModel
 
         Models.NotFoundRoute ->
             notFoundView
 
 signInPage : SignIn.Types.Model -> Html Msgs.Msg
 signInPage model =
-    SignIn.View.view model
+    Html.map Msgs.SignInMsg (SignIn.View.view model)
 
 
 checklistItemsPage : Models.Model -> ChecklistId -> Html Msgs.Msg

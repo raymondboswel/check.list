@@ -10,6 +10,6 @@ view : Model -> Html SignIn.Types.Msg
 view model =
     div []
         [h2 [] [text "Sign in"],
-        input [placeholder "Username"] [text model.user.email],
-        input [placeholder "Password"] [text model.user.password],
-        button [ onClick SignIn ] [text "Sign in"]]
+        input [placeholder "Username", onInput SignIn.Types.OnEmailInput] [text model.user.email],
+        input [placeholder "Password", onInput SignIn.Types.OnPasswordInput] [text model.user.password],
+        button [ onClick SignIn.Types.SignIn ] [text "Sign in"]]

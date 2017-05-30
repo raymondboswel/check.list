@@ -5,7 +5,7 @@ import Models exposing (..)
 import Navigation exposing (Location)
 import SignIn.Types exposing (UserAuth)
 
-type Msg =
+type Msg = SignInMsg SignIn.Types.Msg |
            OnUserAuth UserAuth |
            RemoveProject Project |
            RemoveChecklist Checklist |

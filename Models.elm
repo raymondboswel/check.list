@@ -13,7 +13,7 @@ type alias Model = {
     items: WebData (List Item),
     newItemName: String,
     itemBeingEdited: Item,
-    signInTypes: SignIn.Types.Model,
+    signInModel: SignIn.Types.Model,
     userAuth: SignIn.Types.UserAuth
     }
 
