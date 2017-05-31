@@ -9,6 +9,8 @@ import Commands exposing (..)
 import RemoteData exposing (..)
 import Routing exposing (..)
 import Navigation exposing (Location)
+import SignIn.Types exposing (initialModel)
+import SignIn.State exposing(..)
 import View exposing (view)
 
 main : Program Never Model Msg
@@ -27,13 +29,15 @@ subscriptions model =
 init : Location -> (Model, Cmd Msg)
 init location =
   let currentRoute = Routing.parseLocation location in
-  (Model  currentRoute --route 
+  (Model  currentRoute --route
           Models.initialProject --selectedProject
           Models.initialChecklist --selectedChecklist
           RemoteData.Loading "" --projects/newProjectName
           RemoteData.Loading "" --checklists/newChecklistName
           RemoteData.Loading "" --items/NewItemName
           Models.initialItem
+          SignIn.Types.initialModel
+          SignIn.Types.initialUserAuth
           , Commands.fetchProjects)
 
 -- UPDATE
@@ -42,6 +46,19 @@ update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   let one = "one" in
     case Debug.log "message" msg of
+
+      SignInMsg (SignIn.Types.SignedIn (Ok userAuth)) ->
+        ({model | route = ProjectsRoute, userAuth = userAuth}, Cmd.none)
+
+      SignInMsg signIn ->
+            let
+                (updatedSignInModel, signInCmd) =
+                    SignIn.State.update signIn model.signInModel
+            in
+                ({ model | signInModel = updatedSignInModel }, Cmd.map SignInMsg signInCmd )
+
+      OnUserAuth userAuth ->
+        ({model | userAuth = userAuth, route = ProjectsRoute}, Cmd.none)
 
       OnNewProjectKeyDown key ->
         if key == 13 then
