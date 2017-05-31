@@ -16,6 +16,5 @@ update action model =
       ({model | password = input}, Cmd.none)
     SignIn ->
       (model, SignIn.Rest.signIn model.email model.password)
-
     SignedIn userAuth ->
       (model, Cmd.none )

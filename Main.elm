@@ -47,6 +47,9 @@ update msg model =
   let one = "one" in
     case Debug.log "message" msg of
 
+      SignInMsg (SignIn.Types.SignedIn (Ok userAuth)) ->
+        ({model | route = ProjectsRoute, userAuth = userAuth}, Cmd.none)
+
       SignInMsg signIn ->
             let
                 (updatedSignInModel, signInCmd) =

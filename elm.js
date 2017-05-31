@@ -16098,16 +16098,26 @@ var _user$project$Main$update = F2(
 		var _p0 = A2(_elm_lang$core$Debug$log, 'message', msg);
 		switch (_p0.ctor) {
 			case 'SignInMsg':
-				var _p1 = A2(_user$project$SignIn_State$update, _p0._0, model.signInModel);
-				var updatedSignInModel = _p1._0;
-				var signInCmd = _p1._1;
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{signInModel: updatedSignInModel}),
-					_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Msgs$SignInMsg, signInCmd)
-				};
+				if ((_p0._0.ctor === 'SignedIn') && (_p0._0._0.ctor === 'Ok')) {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{route: _user$project$Models$ProjectsRoute, userAuth: _p0._0._0._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				} else {
+					var _p1 = A2(_user$project$SignIn_State$update, _p0._0, model.signInModel);
+					var updatedSignInModel = _p1._0;
+					var signInCmd = _p1._1;
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{signInModel: updatedSignInModel}),
+						_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Msgs$SignInMsg, signInCmd)
+					};
+				}
 			case 'OnUserAuth':
 				return {
 					ctor: '_Tuple2',
