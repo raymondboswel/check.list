@@ -62,7 +62,9 @@ renderItem item = div [class "collection-item row-item", onClick (Msgs.EditingIt
                             [text item.name],
                         i
                             [class "material-icons pull-right", onClick (Msgs.RemoveItem item)]
-                            [text "delete"] ]
+                            [text "delete"],
+                        i   [class "material-icons pull-right"]
+                            [text "expand_more"] ]
 
 targetTextContent : Json.Decoder String
 targetTextContent =
