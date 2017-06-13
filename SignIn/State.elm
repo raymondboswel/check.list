@@ -18,3 +18,5 @@ update action model =
       (model, SignIn.Rest.signIn model.email model.password)
     SignedIn userAuth ->
       (model, Cmd.none )
+    GotoRegistration ->
+      (model, Cmd.none )

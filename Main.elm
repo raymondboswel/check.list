@@ -10,7 +10,9 @@ import RemoteData exposing (..)
 import Routing exposing (..)
 import Navigation exposing (Location)
 import SignIn.Types exposing (initialModel)
+import Registration.Types exposing (initialModel)
 import SignIn.State exposing(..)
+import Registration.State exposing (..)
 import View exposing (view)
 
 main : Program Never Model Msg
@@ -37,6 +39,7 @@ init location =
           RemoteData.Loading "" --items/NewItemName
           Models.initialItem
           SignIn.Types.initialModel
+          Registration.Types.initialModel
           SignIn.Types.initialUserAuth
           , Commands.fetchProjects)
 
@@ -50,12 +53,25 @@ update msg model =
       SignInMsg (SignIn.Types.SignedIn (Ok userAuth)) ->
         ({model | route = ProjectsRoute, userAuth = userAuth}, Cmd.none)
 
+      RegistrationMsg (Registration.Types.Registered (Ok userAuth)) ->
+        ({model | route = ProjectsRoute, userAuth = userAuth}, Cmd.none)
+
+      SignInMsg (SignIn.Types.GotoRegistration) ->
+        ({model | route = RegistrationRoute}, Cmd.none)
+
       SignInMsg signIn ->
             let
                 (updatedSignInModel, signInCmd) =
                     SignIn.State.update signIn model.signInModel
             in
                 ({ model | signInModel = updatedSignInModel }, Cmd.map SignInMsg signInCmd )
+
+      Msgs.RegistrationMsg msg ->
+        let
+            (updatedRegistrationModel, registrationCmd) =
+                Registration.State.update msg model.registrationModel
+        in
+            ({ model | registrationModel = updatedRegistrationModel }, Cmd.map RegistrationMsg registrationCmd )
 
       OnUserAuth userAuth ->
         ({model | userAuth = userAuth, route = ProjectsRoute}, Cmd.none)

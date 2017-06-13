@@ -12,4 +12,5 @@ view model =
         [h2 [] [text "Sign in"],
         input [placeholder "Username", onInput SignIn.Types.OnEmailInput] [text model.user.email],
         input [placeholder "Password", onInput SignIn.Types.OnPasswordInput] [text model.user.password],
-        button [ onClick SignIn.Types.SignIn ] [text "Sign in"]]
+        button [ onClick SignIn.Types.SignIn ] [text "Sign in"],
+        div [] [a [onClick SignIn.Types.GotoRegistration] [text "Don't have a profile?"]] ]

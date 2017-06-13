@@ -14698,6 +14698,7 @@ var _user$project$SignIn_Types$UserAuth = F3(
 		return {user_id: a, jwt: b, exp: c};
 	});
 var _user$project$SignIn_Types$initialUserAuth = A3(_user$project$SignIn_Types$UserAuth, 0, '', 0);
+var _user$project$SignIn_Types$GotoRegistration = {ctor: 'GotoRegistration'};
 var _user$project$SignIn_Types$OnPasswordInput = function (a) {
 	return {ctor: 'OnPasswordInput', _0: a};
 };
@@ -14708,6 +14709,30 @@ var _user$project$SignIn_Types$SignedIn = function (a) {
 	return {ctor: 'SignedIn', _0: a};
 };
 var _user$project$SignIn_Types$SignIn = {ctor: 'SignIn'};
+
+var _user$project$Registration_Types$Model = F4(
+	function (a, b, c, d) {
+		return {user: a, email: b, password: c, repeatPassword: d};
+	});
+var _user$project$Registration_Types$User = F3(
+	function (a, b, c) {
+		return {email: a, password: b, repeatPassword: c};
+	});
+var _user$project$Registration_Types$initialUser = A3(_user$project$Registration_Types$User, '', '', '');
+var _user$project$Registration_Types$initialModel = A4(_user$project$Registration_Types$Model, _user$project$Registration_Types$initialUser, '', '', '');
+var _user$project$Registration_Types$OnPasswordRepeatInput = function (a) {
+	return {ctor: 'OnPasswordRepeatInput', _0: a};
+};
+var _user$project$Registration_Types$OnPasswordInput = function (a) {
+	return {ctor: 'OnPasswordInput', _0: a};
+};
+var _user$project$Registration_Types$OnEmailInput = function (a) {
+	return {ctor: 'OnEmailInput', _0: a};
+};
+var _user$project$Registration_Types$Registered = function (a) {
+	return {ctor: 'Registered', _0: a};
+};
+var _user$project$Registration_Types$Register = {ctor: 'Register'};
 
 var _user$project$Models$Model = function (a) {
 	return function (b) {
@@ -14721,7 +14746,9 @@ var _user$project$Models$Model = function (a) {
 									return function (j) {
 										return function (k) {
 											return function (l) {
-												return {route: a, selectedProject: b, selectedChecklist: c, projects: d, newProjectName: e, checklists: f, newChecklistName: g, items: h, newItemName: i, itemBeingEdited: j, signInModel: k, userAuth: l};
+												return function (m) {
+													return {route: a, selectedProject: b, selectedChecklist: c, projects: d, newProjectName: e, checklists: f, newChecklistName: g, items: h, newItemName: i, itemBeingEdited: j, signInModel: k, registrationModel: l, userAuth: m};
+												};
 											};
 										};
 									};
@@ -14750,6 +14777,7 @@ var _user$project$Models$Checklist = F2(
 	});
 var _user$project$Models$initialChecklist = A2(_user$project$Models$Checklist, 0, '');
 var _user$project$Models$NotFoundRoute = {ctor: 'NotFoundRoute'};
+var _user$project$Models$RegistrationRoute = {ctor: 'RegistrationRoute'};
 var _user$project$Models$ChecklistRoute = function (a) {
 	return {ctor: 'ChecklistRoute', _0: a};
 };
@@ -14840,6 +14868,9 @@ var _user$project$Msgs$RemoveProject = function (a) {
 };
 var _user$project$Msgs$OnUserAuth = function (a) {
 	return {ctor: 'OnUserAuth', _0: a};
+};
+var _user$project$Msgs$RegistrationMsg = function (a) {
+	return {ctor: 'RegistrationMsg', _0: a};
 };
 var _user$project$Msgs$SignInMsg = function (a) {
 	return {ctor: 'SignInMsg', _0: a};
@@ -15189,7 +15220,7 @@ var _user$project$SignIn_Rest$userAuthDecoder = A3(
 			'user_id',
 			_elm_lang$core$Json_Decode$int,
 			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$SignIn_Types$UserAuth))));
-var _user$project$SignIn_Rest$checklistEncoder = F2(
+var _user$project$SignIn_Rest$authEncoder = F2(
 	function (email, password) {
 		return _elm_lang$core$Json_Encode$object(
 			{
@@ -15213,7 +15244,7 @@ var _user$project$SignIn_Rest$checklistEncoder = F2(
 var _user$project$SignIn_Rest$signIn = F2(
 	function (email, password) {
 		var body = _elm_lang$http$Http$jsonBody(
-			A2(_user$project$SignIn_Rest$checklistEncoder, email, password));
+			A2(_user$project$SignIn_Rest$authEncoder, email, password));
 		var url = 'http://localhost:4000/api/users/sign_in';
 		return A2(
 			_elm_lang$http$Http$send,
@@ -15247,6 +15278,8 @@ var _user$project$SignIn_State$update = F2(
 					_0: model,
 					_1: A2(_user$project$SignIn_Rest$signIn, model.email, model.password)
 				};
+			case 'SignedIn':
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 			default:
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 		}
@@ -15254,6 +15287,96 @@ var _user$project$SignIn_State$update = F2(
 var _user$project$SignIn_State$init = {
 	ctor: '_Tuple2',
 	_0: A3(_user$project$SignIn_Types$Model, _user$project$SignIn_Types$initialUser, '', ''),
+	_1: _elm_lang$core$Platform_Cmd$none
+};
+
+var _user$project$Registration_Rest$userAuthDecoder = A3(
+	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+	'exp',
+	_elm_lang$core$Json_Decode$int,
+	A3(
+		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+		'jwt',
+		_elm_lang$core$Json_Decode$string,
+		A3(
+			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
+			'user_id',
+			_elm_lang$core$Json_Decode$int,
+			_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$SignIn_Types$UserAuth))));
+var _user$project$Registration_Rest$authEncoder = F2(
+	function (email, password) {
+		return _elm_lang$core$Json_Encode$object(
+			{
+				ctor: '::',
+				_0: {
+					ctor: '_Tuple2',
+					_0: 'email',
+					_1: _elm_lang$core$Json_Encode$string(email)
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						ctor: '_Tuple2',
+						_0: 'password',
+						_1: _elm_lang$core$Json_Encode$string(password)
+					},
+					_1: {ctor: '[]'}
+				}
+			});
+	});
+var _user$project$Registration_Rest$register = F2(
+	function (email, password) {
+		var body = _elm_lang$http$Http$jsonBody(
+			A2(_user$project$Registration_Rest$authEncoder, email, password));
+		var url = 'http://localhost:4000/api/users/sign_in';
+		return A2(
+			_elm_lang$http$Http$send,
+			_user$project$Registration_Types$Registered,
+			A3(_elm_lang$http$Http$post, url, body, _user$project$Registration_Rest$userAuthDecoder));
+	});
+var _user$project$Registration_Rest$dummy = '';
+
+var _user$project$Registration_State$update = F2(
+	function (action, model) {
+		var _p0 = action;
+		switch (_p0.ctor) {
+			case 'OnEmailInput':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{email: _p0._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'OnPasswordInput':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{password: _p0._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'Register':
+				return {
+					ctor: '_Tuple2',
+					_0: model,
+					_1: A2(_user$project$Registration_Rest$register, model.email, model.password)
+				};
+			case 'Registered':
+				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{repeatPassword: _p0._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+		}
+	});
+var _user$project$Registration_State$init = {
+	ctor: '_Tuple2',
+	_0: A4(_user$project$Registration_Types$Model, _user$project$Registration_Types$initialUser, '', '', ''),
 	_1: _elm_lang$core$Platform_Cmd$none
 };
 
@@ -15321,7 +15444,119 @@ var _user$project$SignIn_View$view = function (model) {
 								_0: _elm_lang$html$Html$text('Sign in'),
 								_1: {ctor: '[]'}
 							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$div,
+								{ctor: '[]'},
+								{
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$a,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Events$onClick(_user$project$SignIn_Types$GotoRegistration),
+											_1: {ctor: '[]'}
+										},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text('Don\'t have a profile?'),
+											_1: {ctor: '[]'}
+										}),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
+					}
+				}
+			}
+		});
+};
+
+var _user$project$Registration_View$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$h2,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Register'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$input,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$placeholder('Username'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onInput(_user$project$Registration_Types$OnEmailInput),
+							_1: {ctor: '[]'}
+						}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(model.user.email),
 						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$input,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$placeholder('Password'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onInput(_user$project$Registration_Types$OnPasswordInput),
+								_1: {ctor: '[]'}
+							}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(model.user.password),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$input,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$placeholder('Password'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Events$onInput(_user$project$Registration_Types$OnPasswordRepeatInput),
+									_1: {ctor: '[]'}
+								}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(model.user.repeatPassword),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$button,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Events$onClick(_user$project$Registration_Types$Register),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('Register'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
 					}
 				}
 			}
@@ -16047,6 +16282,12 @@ var _user$project$View$signInPage = function (model) {
 		_user$project$Msgs$SignInMsg,
 		_user$project$SignIn_View$view(model));
 };
+var _user$project$View$registrationPage = function (model) {
+	return A2(
+		_elm_lang$html$Html$map,
+		_user$project$Msgs$RegistrationMsg,
+		_user$project$Registration_View$view(model));
+};
 var _user$project$View$page = function (model) {
 	var _p2 = model.route;
 	switch (_p2.ctor) {
@@ -16058,6 +16299,8 @@ var _user$project$View$page = function (model) {
 			return A2(_user$project$View$checklistItemsPage, model, _p2._0);
 		case 'SignInRoute':
 			return _user$project$View$signInPage(model.signInModel);
+		case 'RegistrationRoute':
+			return _user$project$View$registrationPage(model.registrationModel);
 		default:
 			return _user$project$View$notFoundView;
 	}
@@ -16096,255 +16339,293 @@ var _user$project$Main$update = F2(
 	function (msg, model) {
 		var one = 'one';
 		var _p0 = A2(_elm_lang$core$Debug$log, 'message', msg);
-		switch (_p0.ctor) {
-			case 'SignInMsg':
-				if ((_p0._0.ctor === 'SignedIn') && (_p0._0._0.ctor === 'Ok')) {
+		_v0_3:
+		do {
+			switch (_p0.ctor) {
+				case 'SignInMsg':
+					switch (_p0._0.ctor) {
+						case 'SignedIn':
+							if (_p0._0._0.ctor === 'Ok') {
+								return {
+									ctor: '_Tuple2',
+									_0: _elm_lang$core$Native_Utils.update(
+										model,
+										{route: _user$project$Models$ProjectsRoute, userAuth: _p0._0._0._0}),
+									_1: _elm_lang$core$Platform_Cmd$none
+								};
+							} else {
+								break _v0_3;
+							}
+						case 'GotoRegistration':
+							return {
+								ctor: '_Tuple2',
+								_0: _elm_lang$core$Native_Utils.update(
+									model,
+									{route: _user$project$Models$RegistrationRoute}),
+								_1: _elm_lang$core$Platform_Cmd$none
+							};
+						default:
+							break _v0_3;
+					}
+				case 'RegistrationMsg':
+					if ((_p0._0.ctor === 'Registered') && (_p0._0._0.ctor === 'Ok')) {
+						return {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{route: _user$project$Models$ProjectsRoute, userAuth: _p0._0._0._0}),
+							_1: _elm_lang$core$Platform_Cmd$none
+						};
+					} else {
+						var _p2 = A2(_user$project$Registration_State$update, _p0._0, model.registrationModel);
+						var updatedRegistrationModel = _p2._0;
+						var registrationCmd = _p2._1;
+						return {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{registrationModel: updatedRegistrationModel}),
+							_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Msgs$RegistrationMsg, registrationCmd)
+						};
+					}
+				case 'OnUserAuth':
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{route: _user$project$Models$ProjectsRoute, userAuth: _p0._0._0._0}),
+							{userAuth: _p0._0, route: _user$project$Models$ProjectsRoute}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
-				} else {
-					var _p1 = A2(_user$project$SignIn_State$update, _p0._0, model.signInModel);
-					var updatedSignInModel = _p1._0;
-					var signInCmd = _p1._1;
+				case 'OnNewProjectKeyDown':
+					if (_elm_lang$core$Native_Utils.eq(_p0._0, 13)) {
+						var projectName = model.newProjectName;
+						return {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.update(
+								model,
+								{newProjectName: ''}),
+							_1: _user$project$Commands$addProject(projectName)
+						};
+					} else {
+						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+					}
+				case 'OnNewChecklistInput':
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{signInModel: updatedSignInModel}),
-						_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Msgs$SignInMsg, signInCmd)
+							{newChecklistName: _p0._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
 					};
-				}
-			case 'OnUserAuth':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{userAuth: _p0._0, route: _user$project$Models$ProjectsRoute}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'OnNewProjectKeyDown':
-				if (_elm_lang$core$Native_Utils.eq(_p0._0, 13)) {
-					var projectName = model.newProjectName;
+				case 'OnNewChecklistKeyDown':
+					return _elm_lang$core$Native_Utils.eq(_p0._0, 13) ? {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{newChecklistName: ''}),
+						_1: A2(_user$project$Commands$addChecklist, model.selectedProject.id, model.newChecklistName)
+					} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				case 'EditItem':
+					var item = model.itemBeingEdited;
+					return {
+						ctor: '_Tuple2',
+						_0: model,
+						_1: _user$project$Commands$updateChecklistItem(
+							_elm_lang$core$Native_Utils.update(
+								item,
+								{name: _p0._0}))
+					};
+				case 'EditingItem':
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{newProjectName: ''}),
-						_1: _user$project$Commands$addProject(projectName)
+							{itemBeingEdited: _p0._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
 					};
-				} else {
-					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-				}
-			case 'OnNewChecklistInput':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{newChecklistName: _p0._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'OnNewChecklistKeyDown':
-				return _elm_lang$core$Native_Utils.eq(_p0._0, 13) ? {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{newChecklistName: ''}),
-					_1: A2(_user$project$Commands$addChecklist, model.selectedProject.id, model.newChecklistName)
-				} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-			case 'EditItem':
-				var item = model.itemBeingEdited;
-				return {
-					ctor: '_Tuple2',
-					_0: model,
-					_1: _user$project$Commands$updateChecklistItem(
-						_elm_lang$core$Native_Utils.update(
-							item,
-							{name: _p0._0}))
-				};
-			case 'EditingItem':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{itemBeingEdited: _p0._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'OnEditItemInput':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{newItemName: _p0._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'OnNewItemInput':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{newItemName: _p0._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'OnNewItemKeyDown':
-				return _elm_lang$core$Native_Utils.eq(_p0._0, 13) ? {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{newItemName: ''}),
-					_1: A2(_user$project$Commands$addItem, model.selectedChecklist.id, model.newItemName)
-				} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-			case 'ToggleItemCompleted':
-				var _p2 = _p0._0;
-				return {
-					ctor: '_Tuple2',
-					_0: model,
-					_1: _user$project$Commands$updateChecklistItem(
-						_elm_lang$core$Native_Utils.update(
-							_p2,
-							{completed: !_p2.completed}))
-				};
-			case 'UpdatedItem':
-				return {
-					ctor: '_Tuple2',
-					_0: model,
-					_1: _user$project$Commands$fetchChecklistItems(model.selectedChecklist)
-				};
-			case 'OnSaveChecklist':
-				return {
-					ctor: '_Tuple2',
-					_0: model,
-					_1: _user$project$Commands$fetchProjectChecklists(model.selectedProject)
-				};
-			case 'OnSaveItem':
-				return {
-					ctor: '_Tuple2',
-					_0: model,
-					_1: _user$project$Commands$fetchChecklistItems(model.selectedChecklist)
-				};
-			case 'OnNewProjectInput':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{newProjectName: _p0._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'OnFetchProjects':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{projects: _p0._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'OnFetchProjectChecklists':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{checklists: _p0._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'OnFetchChecklistItems':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{items: _p0._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'GetProjects':
-				return {ctor: '_Tuple2', _0: model, _1: _user$project$Commands$fetchProjects};
-			case 'OnSaveProject':
-				return {ctor: '_Tuple2', _0: model, _1: _user$project$Commands$fetchProjects};
-			case 'RemoveProject':
-				return {
-					ctor: '_Tuple2',
-					_0: model,
-					_1: _user$project$Commands$deleteProject(_p0._0)
-				};
-			case 'RemoveItem':
-				return {
-					ctor: '_Tuple2',
-					_0: model,
-					_1: _user$project$Commands$deleteItem(_p0._0)
-				};
-			case 'DeletedItem':
-				return {
-					ctor: '_Tuple2',
-					_0: model,
-					_1: _user$project$Commands$fetchChecklistItems(model.selectedChecklist)
-				};
-			case 'DeletedChecklist':
-				if (_p0._0.ctor === 'Ok') {
+				case 'OnEditItemInput':
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{newItemName: _p0._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				case 'OnNewItemInput':
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{newItemName: _p0._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				case 'OnNewItemKeyDown':
+					return _elm_lang$core$Native_Utils.eq(_p0._0, 13) ? {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{newItemName: ''}),
+						_1: A2(_user$project$Commands$addItem, model.selectedChecklist.id, model.newItemName)
+					} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				case 'ToggleItemCompleted':
+					var _p3 = _p0._0;
+					return {
+						ctor: '_Tuple2',
+						_0: model,
+						_1: _user$project$Commands$updateChecklistItem(
+							_elm_lang$core$Native_Utils.update(
+								_p3,
+								{completed: !_p3.completed}))
+					};
+				case 'UpdatedItem':
+					return {
+						ctor: '_Tuple2',
+						_0: model,
+						_1: _user$project$Commands$fetchChecklistItems(model.selectedChecklist)
+					};
+				case 'OnSaveChecklist':
 					return {
 						ctor: '_Tuple2',
 						_0: model,
 						_1: _user$project$Commands$fetchProjectChecklists(model.selectedProject)
 					};
-				} else {
+				case 'OnSaveItem':
 					return {
 						ctor: '_Tuple2',
 						_0: model,
-						_1: _user$project$Commands$fetchProjectChecklists(model.selectedProject)
+						_1: _user$project$Commands$fetchChecklistItems(model.selectedChecklist)
 					};
-				}
-			case 'DeleteProject':
-				if (_p0._0.ctor === 'Ok') {
+				case 'OnNewProjectInput':
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{newProjectName: _p0._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				case 'OnFetchProjects':
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{projects: _p0._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				case 'OnFetchProjectChecklists':
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{checklists: _p0._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				case 'OnFetchChecklistItems':
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{items: _p0._0}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				case 'GetProjects':
 					return {ctor: '_Tuple2', _0: model, _1: _user$project$Commands$fetchProjects};
-				} else {
-					return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-				}
-			case 'SelectProject':
-				var _p3 = _p0._0;
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							route: _user$project$Models$ProjectRoute(_p3.id),
-							selectedProject: _p3
-						}),
-					_1: _user$project$Commands$fetchProjectChecklists(_p3)
-				};
-			case 'SelectChecklist':
-				var _p4 = _p0._0;
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{
-							route: _user$project$Models$ChecklistRoute(_p4.id),
-							selectedChecklist: _p4
-						}),
-					_1: _user$project$Commands$fetchChecklistItems(_p4)
-				};
-			case 'RemoveChecklist':
-				return {
-					ctor: '_Tuple2',
-					_0: model,
-					_1: _user$project$Commands$deleteChecklist(_p0._0)
-				};
-			default:
-				var newRoute = _user$project$Routing$parseLocation(_p0._0);
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{route: newRoute}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-		}
+				case 'OnSaveProject':
+					return {ctor: '_Tuple2', _0: model, _1: _user$project$Commands$fetchProjects};
+				case 'RemoveProject':
+					return {
+						ctor: '_Tuple2',
+						_0: model,
+						_1: _user$project$Commands$deleteProject(_p0._0)
+					};
+				case 'RemoveItem':
+					return {
+						ctor: '_Tuple2',
+						_0: model,
+						_1: _user$project$Commands$deleteItem(_p0._0)
+					};
+				case 'DeletedItem':
+					return {
+						ctor: '_Tuple2',
+						_0: model,
+						_1: _user$project$Commands$fetchChecklistItems(model.selectedChecklist)
+					};
+				case 'DeletedChecklist':
+					if (_p0._0.ctor === 'Ok') {
+						return {
+							ctor: '_Tuple2',
+							_0: model,
+							_1: _user$project$Commands$fetchProjectChecklists(model.selectedProject)
+						};
+					} else {
+						return {
+							ctor: '_Tuple2',
+							_0: model,
+							_1: _user$project$Commands$fetchProjectChecklists(model.selectedProject)
+						};
+					}
+				case 'DeleteProject':
+					if (_p0._0.ctor === 'Ok') {
+						return {ctor: '_Tuple2', _0: model, _1: _user$project$Commands$fetchProjects};
+					} else {
+						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+					}
+				case 'SelectProject':
+					var _p4 = _p0._0;
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								route: _user$project$Models$ProjectRoute(_p4.id),
+								selectedProject: _p4
+							}),
+						_1: _user$project$Commands$fetchProjectChecklists(_p4)
+					};
+				case 'SelectChecklist':
+					var _p5 = _p0._0;
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								route: _user$project$Models$ChecklistRoute(_p5.id),
+								selectedChecklist: _p5
+							}),
+						_1: _user$project$Commands$fetchChecklistItems(_p5)
+					};
+				case 'RemoveChecklist':
+					return {
+						ctor: '_Tuple2',
+						_0: model,
+						_1: _user$project$Commands$deleteChecklist(_p0._0)
+					};
+				default:
+					var newRoute = _user$project$Routing$parseLocation(_p0._0);
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{route: newRoute}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+			}
+		} while(false);
+		var _p1 = A2(_user$project$SignIn_State$update, _p0._0, model.signInModel);
+		var updatedSignInModel = _p1._0;
+		var signInCmd = _p1._1;
+		return {
+			ctor: '_Tuple2',
+			_0: _elm_lang$core$Native_Utils.update(
+				model,
+				{signInModel: updatedSignInModel}),
+			_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Msgs$SignInMsg, signInCmd)
+		};
 	});
 var _user$project$Main$init = function (location) {
 	var currentRoute = _user$project$Routing$parseLocation(location);
 	return {
 		ctor: '_Tuple2',
-		_0: _user$project$Models$Model(currentRoute)(_user$project$Models$initialProject)(_user$project$Models$initialChecklist)(_krisajenkins$remotedata$RemoteData$Loading)('')(_krisajenkins$remotedata$RemoteData$Loading)('')(_krisajenkins$remotedata$RemoteData$Loading)('')(_user$project$Models$initialItem)(_user$project$SignIn_Types$initialModel)(_user$project$SignIn_Types$initialUserAuth),
+		_0: _user$project$Models$Model(currentRoute)(_user$project$Models$initialProject)(_user$project$Models$initialChecklist)(_krisajenkins$remotedata$RemoteData$Loading)('')(_krisajenkins$remotedata$RemoteData$Loading)('')(_krisajenkins$remotedata$RemoteData$Loading)('')(_user$project$Models$initialItem)(_user$project$SignIn_Types$initialModel)(_user$project$Registration_Types$initialModel)(_user$project$SignIn_Types$initialUserAuth),
 		_1: _user$project$Commands$fetchProjects
 	};
 };
@@ -16359,7 +16640,7 @@ var _user$project$Main$main = A2(
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
 if (typeof _user$project$Main$main !== 'undefined') {
-    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"RemoteData.RemoteData":{"args":["e","a"],"tags":{"NotAsked":[],"Success":["a"],"Loading":[],"Failure":["e"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Msgs.Msg":{"args":[],"tags":{"DeleteProject":["Result.Result Http.Error String"],"SelectChecklist":["Models.Checklist"],"OnFetchChecklistItems":["RemoteData.WebData (List Models.Item)"],"OnLocationChange":["Navigation.Location"],"RemoveChecklist":["Models.Checklist"],"OnSaveProject":["Result.Result Http.Error Int"],"SignInMsg":["SignIn.Types.Msg"],"DeletedItem":["Result.Result Http.Error String"],"UpdatedItem":["Result.Result Http.Error String"],"OnFetchProjects":["RemoteData.WebData (List Models.Project)"],"RemoveItem":["Models.Item"],"OnEditItemInput":["String"],"OnNewProjectInput":["String"],"OnNewItemInput":["String"],"OnNewChecklistKeyDown":["Int"],"OnSaveChecklist":["Result.Result Http.Error Int"],"OnFetchProjectChecklists":["RemoteData.WebData (List Models.Checklist)"],"OnNewChecklistInput":["String"],"ToggleItemCompleted":["Models.Item"],"SelectProject":["Models.Project"],"OnNewProjectKeyDown":["Int"],"OnSaveItem":["Result.Result Http.Error Int"],"OnNewItemKeyDown":["Int"],"GetProjects":[],"OnUserAuth":["SignIn.Types.UserAuth"],"RemoveProject":["Models.Project"],"EditingItem":["Models.Item"],"DeletedChecklist":["Result.Result Http.Error String"],"EditItem":["String"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"SignIn.Types.Msg":{"args":[],"tags":{"SignIn":[],"OnEmailInput":["String"],"SignedIn":["Result.Result Http.Error SignIn.Types.UserAuth"],"OnPasswordInput":["String"]}}},"aliases":{"Models.Project":{"args":[],"type":"{ id : Models.ProjectId, name : String }"},"Models.ItemId":{"args":[],"type":"Int"},"RemoteData.WebData":{"args":["a"],"type":"RemoteData.RemoteData Http.Error a"},"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Models.ChecklistId":{"args":[],"type":"Int"},"SignIn.Types.UserAuth":{"args":[],"type":"{ user_id : Int, jwt : String, exp : Int }"},"Models.Checklist":{"args":[],"type":"{ id : Models.ChecklistId, name : String }"},"Models.Item":{"args":[],"type":"{ id : Models.ItemId , name : String , completed : Bool , sequenceNumber : Int }"},"Models.ProjectId":{"args":[],"type":"Int"},"Navigation.Location":{"args":[],"type":"{ href : String , host : String , hostname : String , protocol : String , origin : String , port_ : String , pathname : String , search : String , hash : String , username : String , password : String }"}},"message":"Msgs.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"RemoteData.RemoteData":{"args":["e","a"],"tags":{"NotAsked":[],"Success":["a"],"Loading":[],"Failure":["e"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Msgs.Msg":{"args":[],"tags":{"DeleteProject":["Result.Result Http.Error String"],"SelectChecklist":["Models.Checklist"],"OnFetchChecklistItems":["RemoteData.WebData (List Models.Item)"],"OnLocationChange":["Navigation.Location"],"RemoveChecklist":["Models.Checklist"],"OnSaveProject":["Result.Result Http.Error Int"],"SignInMsg":["SignIn.Types.Msg"],"DeletedItem":["Result.Result Http.Error String"],"UpdatedItem":["Result.Result Http.Error String"],"RegistrationMsg":["Registration.Types.Msg"],"OnFetchProjects":["RemoteData.WebData (List Models.Project)"],"RemoveItem":["Models.Item"],"OnEditItemInput":["String"],"OnNewProjectInput":["String"],"OnNewItemInput":["String"],"OnNewChecklistKeyDown":["Int"],"OnSaveChecklist":["Result.Result Http.Error Int"],"OnFetchProjectChecklists":["RemoteData.WebData (List Models.Checklist)"],"OnNewChecklistInput":["String"],"ToggleItemCompleted":["Models.Item"],"SelectProject":["Models.Project"],"OnNewProjectKeyDown":["Int"],"OnSaveItem":["Result.Result Http.Error Int"],"OnNewItemKeyDown":["Int"],"GetProjects":[],"OnUserAuth":["SignIn.Types.UserAuth"],"RemoveProject":["Models.Project"],"EditingItem":["Models.Item"],"DeletedChecklist":["Result.Result Http.Error String"],"EditItem":["String"]}},"Registration.Types.Msg":{"args":[],"tags":{"OnEmailInput":["String"],"Register":[],"OnPasswordRepeatInput":["String"],"Registered":["Result.Result Http.Error SignIn.Types.UserAuth"],"OnPasswordInput":["String"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"SignIn.Types.Msg":{"args":[],"tags":{"SignIn":[],"OnEmailInput":["String"],"GotoRegistration":[],"SignedIn":["Result.Result Http.Error SignIn.Types.UserAuth"],"OnPasswordInput":["String"]}}},"aliases":{"Models.Project":{"args":[],"type":"{ id : Models.ProjectId, name : String }"},"Models.ItemId":{"args":[],"type":"Int"},"RemoteData.WebData":{"args":["a"],"type":"RemoteData.RemoteData Http.Error a"},"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Models.ChecklistId":{"args":[],"type":"Int"},"SignIn.Types.UserAuth":{"args":[],"type":"{ user_id : Int, jwt : String, exp : Int }"},"Models.Checklist":{"args":[],"type":"{ id : Models.ChecklistId, name : String }"},"Models.Item":{"args":[],"type":"{ id : Models.ItemId , name : String , completed : Bool , sequenceNumber : Int }"},"Models.ProjectId":{"args":[],"type":"Int"},"Navigation.Location":{"args":[],"type":"{ href : String , host : String , hostname : String , protocol : String , origin : String , port_ : String , pathname : String , search : String , hash : String , username : String , password : String }"}},"message":"Msgs.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])

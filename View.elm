@@ -2,10 +2,12 @@ module View exposing (..)
 
 import Html exposing (Html, div, text)
 import SignIn.View exposing (view)
+import Registration.View exposing (view)
 import Html.Attributes exposing (..)
 import Models exposing (..)
 import Msgs exposing (Msg)
 import SignIn.Types exposing (..)
+import Registration.Types exposing (..)
 import Projects.Project exposing (..)
 import Projects.List exposing (..)
 import Projects.Checklist exposing (..)
@@ -32,8 +34,15 @@ page model =
         Models.SignInRoute ->
             signInPage model.signInModel
 
+        Models.RegistrationRoute ->
+        registrationPage model.registrationModel
+
         Models.NotFoundRoute ->
             notFoundView
+
+registrationPage : Registration.Types.Model -> Html Msgs.Msg
+registrationPage model =
+    Html.map Msgs.RegistrationMsg (Registration.View.view model)
 
 signInPage : SignIn.Types.Model -> Html Msgs.Msg
 signInPage model =
