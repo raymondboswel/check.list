@@ -15514,8 +15514,12 @@ var _user$project$Registration_View$view = function (model) {
 							_0: _elm_lang$html$Html_Attributes$placeholder('Password'),
 							_1: {
 								ctor: '::',
-								_0: _elm_lang$html$Html_Events$onInput(_user$project$Registration_Types$OnPasswordInput),
-								_1: {ctor: '[]'}
+								_0: _elm_lang$html$Html_Attributes$type_('password'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Events$onInput(_user$project$Registration_Types$OnPasswordInput),
+									_1: {ctor: '[]'}
+								}
 							}
 						},
 						{
@@ -15532,8 +15536,12 @@ var _user$project$Registration_View$view = function (model) {
 								_0: _elm_lang$html$Html_Attributes$placeholder('Password'),
 								_1: {
 									ctor: '::',
-									_0: _elm_lang$html$Html_Events$onInput(_user$project$Registration_Types$OnPasswordRepeatInput),
-									_1: {ctor: '[]'}
+									_0: _elm_lang$html$Html_Attributes$type_('password'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Events$onInput(_user$project$Registration_Types$OnPasswordRepeatInput),
+										_1: {ctor: '[]'}
+									}
 								}
 							},
 							{
