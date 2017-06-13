@@ -15328,7 +15328,7 @@ var _user$project$Registration_Rest$register = F2(
 	function (email, password) {
 		var body = _elm_lang$http$Http$jsonBody(
 			A2(_user$project$Registration_Rest$authEncoder, email, password));
-		var url = 'http://localhost:4000/api/users/sign_in';
+		var url = 'http://localhost:4000/api/users/';
 		return A2(
 			_elm_lang$http$Http$send,
 			_user$project$Registration_Types$Registered,
