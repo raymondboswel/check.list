@@ -14,6 +14,7 @@ type Msg = SignInMsg SignIn.Types.Msg |
            RemoveItem Item |
 
            GotoProject |
+           GotoProjects |
 
            ToggleItemCompleted Item |
            UpdatedItem (Result Http.Error String) |

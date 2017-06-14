@@ -36,7 +36,7 @@ renderTable items model =
 
 constructTableChildren : List Item -> Model-> List (Html Msgs.Msg)
 constructTableChildren items model =
-    let table = div [class "collection-header"] [UI.backButton Msgs.GotoProject, text "Checklist items"] :: renderItems items
+    let table = div [class "collection-header"] [div [style [("display", "flex"), ("align-items", "center")]] [div [] [UI.backButton Msgs.GotoProjects], div [style [("display", "inline"), ("transform", "transformY(-12%)")]] [text "Checklist item"]]] :: renderItems items
     in List.append table [(div [class "collection-item"] [inputField "New Item" model.newItemName (Msgs.OnNewItemInput "") (Msgs.OnNewItemKeyDown 0)])]
 
 inputField : String -> String -> Msgs.Msg -> Msgs.Msg -> Html Msgs.Msg

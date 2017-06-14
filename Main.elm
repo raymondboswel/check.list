@@ -50,6 +50,9 @@ update msg model =
   let one = "one" in
     case Debug.log "message" msg of
 
+      GotoProjects -> 
+        ({model | route = ProjectsRoute}, Cmd.none)
+
       GotoProject ->
         ({model | route = ProjectRoute model.selectedProject.id}, Cmd.none)
 
