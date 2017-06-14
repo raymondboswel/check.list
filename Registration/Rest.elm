@@ -9,9 +9,6 @@ import Json.Encode as Encode exposing (..)
 import Json.Decode.Pipeline exposing (decode, required)
 import RemoteData exposing (..)
 
-dummy : String
-dummy = ""
-
 register : String -> String -> Cmd Registration.Types.Msg
 register email password =
   let

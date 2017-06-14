@@ -2,7 +2,7 @@ module Projects.Checklist exposing (..)
 
 import Exts.Html exposing (..)
 import Html exposing (..)
-import Html.Attributes exposing (class, value, href, checked, placeholder, type_, for, id, contenteditable)
+import Html.Attributes exposing (class, value, href, checked, placeholder, type_, for, id, contenteditable, style)
 import Html.Events exposing (on, keyCode, onInput, onClick, onCheck)
 import Msgs exposing (Msg)
 import Models exposing (..)
@@ -36,7 +36,7 @@ renderTable items model =
 
 constructTableChildren : List Item -> Model-> List (Html Msgs.Msg)
 constructTableChildren items model =
-    let table = div [class "collection-header"] [text "Checklist items", i [class "material-icons dp48"] []] :: renderItems items
+    let table = div [class "collection-header"] [UI.backButton Msgs.GotoProject, text "Checklist items"] :: renderItems items
     in List.append table [(div [class "collection-item"] [inputField "New Item" model.newItemName (Msgs.OnNewItemInput "") (Msgs.OnNewItemKeyDown 0)])]
 
 inputField : String -> String -> Msgs.Msg -> Msgs.Msg -> Html Msgs.Msg

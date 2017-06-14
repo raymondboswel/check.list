@@ -5,7 +5,7 @@ import Registration.Rest exposing (..)
 
 init : ( Model, Cmd Msg )
 init =
-  (Model initialUser "" "" "", Cmd.none)
+  (Model initialUser "" "" "" False, Cmd.none)
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
@@ -15,8 +15,13 @@ update action model =
     OnPasswordInput input ->
       ({model | password = input}, Cmd.none)
     Register ->
-      (model, Registration.Rest.register model.email model.password)
+      if model.password == model.repeatPassword then
+        (model, Registration.Rest.register model.email model.password)
+      else
+        ({model | shouldDisplayPasswordModal = True}, Cmd.none)
     Registered userAuth ->
       (model, Cmd.none)
     Registration.Types.OnPasswordRepeatInput repeatPassword ->
       ({model | repeatPassword = repeatPassword}, Cmd.none)
+    AcknowledgeDialog ->
+      ({model | shouldDisplayPasswordModal = False}, Cmd.none)

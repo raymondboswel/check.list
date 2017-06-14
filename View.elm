@@ -1,10 +1,12 @@
 module View exposing (..)
 
-import Html exposing (Html, div, text)
+import Html exposing (Html, div, text, button, h3)
 import SignIn.View exposing (view)
+import Html.Events exposing (on, keyCode, onInput, onClick)
 import Registration.View exposing (view)
 import Html.Attributes exposing (..)
 import Models exposing (..)
+import Dialog
 import Msgs exposing (Msg)
 import SignIn.Types exposing (..)
 import Registration.Types exposing (..)

@@ -14206,6 +14206,563 @@ var _evancz$url_parser$UrlParser$intParam = function (name) {
 	return A2(_evancz$url_parser$UrlParser$customParam, name, _evancz$url_parser$UrlParser$intParamHelp);
 };
 
+var _krisajenkins$elm_exts$Exts_Html_Bootstrap$video = F2(
+	function (ratio, url) {
+		var ratioClass = function () {
+			var _p0 = ratio;
+			if (_p0.ctor === 'SixteenByNine') {
+				return 'embed-responsive-16by9';
+			} else {
+				return 'embed-responsive-4by3';
+			}
+		}();
+		return A2(
+			_elm_lang$html$Html$div,
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$h1,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('About'),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('embed-responsive'),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$iframe,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('embed-responsive-item'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$src(url),
+										_1: {ctor: '[]'}
+									}
+								},
+								{ctor: '[]'}),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
+			});
+	});
+var _krisajenkins$elm_exts$Exts_Html_Bootstrap$badge = _elm_lang$html$Html$span(
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html_Attributes$class('badge'),
+		_1: {ctor: '[]'}
+	});
+var _krisajenkins$elm_exts$Exts_Html_Bootstrap$well = _elm_lang$html$Html$div(
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html_Attributes$class('well'),
+		_1: {ctor: '[]'}
+	});
+var _krisajenkins$elm_exts$Exts_Html_Bootstrap$jumbotron = _elm_lang$html$Html$div(
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html_Attributes$class('jumbotron'),
+		_1: {ctor: '[]'}
+	});
+var _krisajenkins$elm_exts$Exts_Html_Bootstrap$clearfix = A2(
+	_elm_lang$html$Html$div,
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html_Attributes$class('clearfix'),
+		_1: {ctor: '[]'}
+	},
+	{ctor: '[]'});
+var _krisajenkins$elm_exts$Exts_Html_Bootstrap$empty = A2(
+	_elm_lang$html$Html$span,
+	{ctor: '[]'},
+	{ctor: '[]'});
+var _krisajenkins$elm_exts$Exts_Html_Bootstrap$formGroup = _elm_lang$html$Html$div(
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html_Attributes$class('form-group'),
+		_1: {ctor: '[]'}
+	});
+var _krisajenkins$elm_exts$Exts_Html_Bootstrap$row = _elm_lang$html$Html$div(
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html_Attributes$class('row'),
+		_1: {ctor: '[]'}
+	});
+var _krisajenkins$elm_exts$Exts_Html_Bootstrap$twoColumns = F2(
+	function (left, right) {
+		return _krisajenkins$elm_exts$Exts_Html_Bootstrap$row(
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('col-xs-6'),
+						_1: {ctor: '[]'}
+					},
+					left),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('col-xs-6'),
+							_1: {ctor: '[]'}
+						},
+						right),
+					_1: {ctor: '[]'}
+				}
+			});
+	});
+var _krisajenkins$elm_exts$Exts_Html_Bootstrap$containerFluid = _elm_lang$html$Html$div(
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html_Attributes$class('container-fluid'),
+		_1: {ctor: '[]'}
+	});
+var _krisajenkins$elm_exts$Exts_Html_Bootstrap$container = _elm_lang$html$Html$div(
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html_Attributes$class('container'),
+		_1: {ctor: '[]'}
+	});
+var _krisajenkins$elm_exts$Exts_Html_Bootstrap$stylesheet = A3(
+	_elm_lang$html$Html$node,
+	'link',
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html_Attributes$rel('stylesheet'),
+		_1: {
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$href('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css'),
+			_1: {ctor: '[]'}
+		}
+	},
+	{ctor: '[]'});
+var _krisajenkins$elm_exts$Exts_Html_Bootstrap$FourByThree = {ctor: 'FourByThree'};
+var _krisajenkins$elm_exts$Exts_Html_Bootstrap$SixteenByNine = {ctor: 'SixteenByNine'};
+var _krisajenkins$elm_exts$Exts_Html_Bootstrap$Left = {ctor: 'Left'};
+var _krisajenkins$elm_exts$Exts_Html_Bootstrap$Bottom = {ctor: 'Bottom'};
+var _krisajenkins$elm_exts$Exts_Html_Bootstrap$Right = {ctor: 'Right'};
+var _krisajenkins$elm_exts$Exts_Html_Bootstrap$Top = {ctor: 'Top'};
+var _krisajenkins$elm_exts$Exts_Html_Bootstrap$popover = F5(
+	function (direction, isShown, styles, title, body) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$classList(
+					{
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: 'popover fade', _1: true},
+						_1: {
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'in', _1: isShown},
+							_1: {
+								ctor: '::',
+								_0: {
+									ctor: '_Tuple2',
+									_0: 'top',
+									_1: _elm_lang$core$Native_Utils.eq(direction, _krisajenkins$elm_exts$Exts_Html_Bootstrap$Top)
+								},
+								_1: {
+									ctor: '::',
+									_0: {
+										ctor: '_Tuple2',
+										_0: 'right',
+										_1: _elm_lang$core$Native_Utils.eq(direction, _krisajenkins$elm_exts$Exts_Html_Bootstrap$Right)
+									},
+									_1: {
+										ctor: '::',
+										_0: {
+											ctor: '_Tuple2',
+											_0: 'bottom',
+											_1: _elm_lang$core$Native_Utils.eq(direction, _krisajenkins$elm_exts$Exts_Html_Bootstrap$Bottom)
+										},
+										_1: {
+											ctor: '::',
+											_0: {
+												ctor: '_Tuple2',
+												_0: 'left',
+												_1: _elm_lang$core$Native_Utils.eq(direction, _krisajenkins$elm_exts$Exts_Html_Bootstrap$Left)
+											},
+											_1: {ctor: '[]'}
+										}
+									}
+								}
+							}
+						}
+					}),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$style(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							styles,
+							{
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'display', _1: 'block'},
+								_1: {ctor: '[]'}
+							})),
+					_1: {ctor: '[]'}
+				}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('arrow'),
+						_1: {ctor: '[]'}
+					},
+					{ctor: '[]'}),
+				_1: {
+					ctor: '::',
+					_0: function () {
+						var _p1 = title;
+						if (_p1.ctor === 'Just') {
+							return A2(
+								_elm_lang$html$Html$h3,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('popover-title'),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text(_p1._0),
+									_1: {ctor: '[]'}
+								});
+						} else {
+							return _krisajenkins$elm_exts$Exts_Html_Bootstrap$empty;
+						}
+					}(),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class('popover-content'),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: body,
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}
+				}
+			});
+	});
+
+var _krisajenkins$elm_exts$Exts_Maybe$oneOf = A2(
+	_elm_lang$core$List$foldl,
+	F2(
+		function (x, acc) {
+			return (!_elm_lang$core$Native_Utils.eq(acc, _elm_lang$core$Maybe$Nothing)) ? acc : x;
+		}),
+	_elm_lang$core$Maybe$Nothing);
+var _krisajenkins$elm_exts$Exts_Maybe$when = F2(
+	function (test, value) {
+		return test ? _elm_lang$core$Maybe$Just(value) : _elm_lang$core$Maybe$Nothing;
+	});
+var _krisajenkins$elm_exts$Exts_Maybe$validate = F2(
+	function (predicate, value) {
+		return predicate(value) ? _elm_lang$core$Maybe$Just(value) : _elm_lang$core$Maybe$Nothing;
+	});
+var _krisajenkins$elm_exts$Exts_Maybe$matches = function (predicate) {
+	return _elm_lang$core$Maybe$andThen(
+		_krisajenkins$elm_exts$Exts_Maybe$validate(predicate));
+};
+var _krisajenkins$elm_exts$Exts_Maybe$maybeDefault = F2(
+	function ($default, x) {
+		var _p0 = x;
+		if (_p0.ctor === 'Just') {
+			return _elm_lang$core$Maybe$Just(_p0._0);
+		} else {
+			return _elm_lang$core$Maybe$Just($default);
+		}
+	});
+var _krisajenkins$elm_exts$Exts_Maybe$join = F3(
+	function (f, left, right) {
+		var _p1 = {ctor: '_Tuple2', _0: left, _1: right};
+		if (((_p1.ctor === '_Tuple2') && (_p1._0.ctor === 'Just')) && (_p1._1.ctor === 'Just')) {
+			return _elm_lang$core$Maybe$Just(
+				A2(f, _p1._0._0, _p1._1._0));
+		} else {
+			return _elm_lang$core$Maybe$Nothing;
+		}
+	});
+var _krisajenkins$elm_exts$Exts_Maybe$catMaybes = _elm_lang$core$List$filterMap(_elm_lang$core$Basics$identity);
+var _krisajenkins$elm_exts$Exts_Maybe$mappend = F2(
+	function (a, b) {
+		var _p2 = {ctor: '_Tuple2', _0: a, _1: b};
+		if (_p2._0.ctor === 'Nothing') {
+			return _elm_lang$core$Maybe$Nothing;
+		} else {
+			if (_p2._1.ctor === 'Nothing') {
+				return _elm_lang$core$Maybe$Nothing;
+			} else {
+				return _elm_lang$core$Maybe$Just(
+					{ctor: '_Tuple2', _0: _p2._0._0, _1: _p2._1._0});
+			}
+		}
+	});
+var _krisajenkins$elm_exts$Exts_Maybe$maybe = F2(
+	function ($default, f) {
+		return function (_p3) {
+			return A2(
+				_elm_lang$core$Maybe$withDefault,
+				$default,
+				A2(_elm_lang$core$Maybe$map, f, _p3));
+		};
+	});
+var _krisajenkins$elm_exts$Exts_Maybe$isJust = function (x) {
+	var _p4 = x;
+	if (_p4.ctor === 'Just') {
+		return true;
+	} else {
+		return false;
+	}
+};
+var _krisajenkins$elm_exts$Exts_Maybe$isNothing = function (_p5) {
+	return !_krisajenkins$elm_exts$Exts_Maybe$isJust(_p5);
+};
+
+var _krisajenkins$elm_dialog$Dialog$map = F2(
+	function (f, config) {
+		return {
+			closeMessage: A2(_elm_lang$core$Maybe$map, f, config.closeMessage),
+			containerClass: config.containerClass,
+			header: A2(
+				_elm_lang$core$Maybe$map,
+				_elm_lang$html$Html$map(f),
+				config.header),
+			body: A2(
+				_elm_lang$core$Maybe$map,
+				_elm_lang$html$Html$map(f),
+				config.body),
+			footer: A2(
+				_elm_lang$core$Maybe$map,
+				_elm_lang$html$Html$map(f),
+				config.footer)
+		};
+	});
+var _krisajenkins$elm_dialog$Dialog$mapMaybe = function (_p0) {
+	return _elm_lang$core$Maybe$map(
+		_krisajenkins$elm_dialog$Dialog$map(_p0));
+};
+var _krisajenkins$elm_dialog$Dialog$backdrop = function (config) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$classList(
+				{
+					ctor: '::',
+					_0: {
+						ctor: '_Tuple2',
+						_0: 'modal-backdrop in',
+						_1: _krisajenkins$elm_exts$Exts_Maybe$isJust(config)
+					},
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		},
+		{ctor: '[]'});
+};
+var _krisajenkins$elm_dialog$Dialog$wrapFooter = function (footer) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('modal-footer'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: footer,
+			_1: {ctor: '[]'}
+		});
+};
+var _krisajenkins$elm_dialog$Dialog$wrapBody = function (body) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('modal-body'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: body,
+			_1: {ctor: '[]'}
+		});
+};
+var _krisajenkins$elm_dialog$Dialog$closeButton = function (closeMessage) {
+	return A2(
+		_elm_lang$html$Html$button,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('close'),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$html$Html_Events$onClick(closeMessage),
+				_1: {ctor: '[]'}
+			}
+		},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text('x'),
+			_1: {ctor: '[]'}
+		});
+};
+var _krisajenkins$elm_dialog$Dialog$wrapHeader = F2(
+	function (closeMessage, header) {
+		return (_elm_lang$core$Native_Utils.eq(closeMessage, _elm_lang$core$Maybe$Nothing) && _elm_lang$core$Native_Utils.eq(header, _elm_lang$core$Maybe$Nothing)) ? _krisajenkins$elm_exts$Exts_Html_Bootstrap$empty : A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('modal-header'),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: A3(_krisajenkins$elm_exts$Exts_Maybe$maybe, _krisajenkins$elm_exts$Exts_Html_Bootstrap$empty, _krisajenkins$elm_dialog$Dialog$closeButton, closeMessage),
+				_1: {
+					ctor: '::',
+					_0: A2(_elm_lang$core$Maybe$withDefault, _krisajenkins$elm_exts$Exts_Html_Bootstrap$empty, header),
+					_1: {ctor: '[]'}
+				}
+			});
+	});
+var _krisajenkins$elm_dialog$Dialog$view = function (maybeConfig) {
+	var displayed = _krisajenkins$elm_exts$Exts_Maybe$isJust(maybeConfig);
+	return A2(
+		_elm_lang$html$Html$div,
+		function () {
+			var _p1 = A2(
+				_elm_lang$core$Maybe$andThen,
+				function (_) {
+					return _.containerClass;
+				},
+				maybeConfig);
+			if (_p1.ctor === 'Nothing') {
+				return {ctor: '[]'};
+			} else {
+				return {
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class(_p1._0),
+					_1: {ctor: '[]'}
+				};
+			}
+		}(),
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$classList(
+						{
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'modal', _1: true},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'in', _1: displayed},
+								_1: {ctor: '[]'}
+							}
+						}),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$style(
+							{
+								ctor: '::',
+								_0: {
+									ctor: '_Tuple2',
+									_0: 'display',
+									_1: displayed ? 'block' : 'none'
+								},
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}
+				},
+				{
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('modal-dialog'),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$div,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('modal-content'),
+									_1: {ctor: '[]'}
+								},
+								function () {
+									var _p2 = maybeConfig;
+									if (_p2.ctor === 'Nothing') {
+										return {
+											ctor: '::',
+											_0: _krisajenkins$elm_exts$Exts_Html_Bootstrap$empty,
+											_1: {ctor: '[]'}
+										};
+									} else {
+										var _p3 = _p2._0;
+										return {
+											ctor: '::',
+											_0: A2(_krisajenkins$elm_dialog$Dialog$wrapHeader, _p3.closeMessage, _p3.header),
+											_1: {
+												ctor: '::',
+												_0: A3(_krisajenkins$elm_exts$Exts_Maybe$maybe, _krisajenkins$elm_exts$Exts_Html_Bootstrap$empty, _krisajenkins$elm_dialog$Dialog$wrapBody, _p3.body),
+												_1: {
+													ctor: '::',
+													_0: A3(_krisajenkins$elm_exts$Exts_Maybe$maybe, _krisajenkins$elm_exts$Exts_Html_Bootstrap$empty, _krisajenkins$elm_dialog$Dialog$wrapFooter, _p3.footer),
+													_1: {ctor: '[]'}
+												}
+											}
+										};
+									}
+								}()),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: _krisajenkins$elm_dialog$Dialog$backdrop(maybeConfig),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _krisajenkins$elm_dialog$Dialog$Config = F5(
+	function (a, b, c, d, e) {
+		return {closeMessage: a, containerClass: b, header: c, body: d, footer: e};
+	});
+
 var _krisajenkins$elm_exts$Exts_Basics$on = F4(
 	function (f, g, a, b) {
 		return A2(
@@ -14691,8 +15248,8 @@ var _user$project$SignIn_Types$User = F2(
 	function (a, b) {
 		return {email: a, password: b};
 	});
-var _user$project$SignIn_Types$initialUser = A2(_user$project$SignIn_Types$User, '', '');
-var _user$project$SignIn_Types$initialModel = A3(_user$project$SignIn_Types$Model, _user$project$SignIn_Types$initialUser, '', '');
+var _user$project$SignIn_Types$initialUser = A2(_user$project$SignIn_Types$User, 'raymondboswel@gmail.com', 'letmein');
+var _user$project$SignIn_Types$initialModel = A3(_user$project$SignIn_Types$Model, _user$project$SignIn_Types$initialUser, 'raymondboswel@gmail.com', 'letmein');
 var _user$project$SignIn_Types$UserAuth = F3(
 	function (a, b, c) {
 		return {user_id: a, jwt: b, exp: c};
@@ -14710,16 +15267,17 @@ var _user$project$SignIn_Types$SignedIn = function (a) {
 };
 var _user$project$SignIn_Types$SignIn = {ctor: 'SignIn'};
 
-var _user$project$Registration_Types$Model = F4(
-	function (a, b, c, d) {
-		return {user: a, email: b, password: c, repeatPassword: d};
+var _user$project$Registration_Types$Model = F5(
+	function (a, b, c, d, e) {
+		return {user: a, email: b, password: c, repeatPassword: d, shouldDisplayPasswordModal: e};
 	});
 var _user$project$Registration_Types$User = F3(
 	function (a, b, c) {
 		return {email: a, password: b, repeatPassword: c};
 	});
 var _user$project$Registration_Types$initialUser = A3(_user$project$Registration_Types$User, '', '', '');
-var _user$project$Registration_Types$initialModel = A4(_user$project$Registration_Types$Model, _user$project$Registration_Types$initialUser, '', '', '');
+var _user$project$Registration_Types$initialModel = A5(_user$project$Registration_Types$Model, _user$project$Registration_Types$initialUser, '', '', '', false);
+var _user$project$Registration_Types$AcknowledgeDialog = {ctor: 'AcknowledgeDialog'};
 var _user$project$Registration_Types$OnPasswordRepeatInput = function (a) {
 	return {ctor: 'OnPasswordRepeatInput', _0: a};
 };
@@ -14857,6 +15415,7 @@ var _user$project$Msgs$UpdatedItem = function (a) {
 var _user$project$Msgs$ToggleItemCompleted = function (a) {
 	return {ctor: 'ToggleItemCompleted', _0: a};
 };
+var _user$project$Msgs$GotoProject = {ctor: 'GotoProject'};
 var _user$project$Msgs$RemoveItem = function (a) {
 	return {ctor: 'RemoveItem', _0: a};
 };
@@ -15286,7 +15845,7 @@ var _user$project$SignIn_State$update = F2(
 	});
 var _user$project$SignIn_State$init = {
 	ctor: '_Tuple2',
-	_0: A3(_user$project$SignIn_Types$Model, _user$project$SignIn_Types$initialUser, '', ''),
+	_0: A3(_user$project$SignIn_Types$Model, _user$project$SignIn_Types$initialUser, 'raymondboswel@gmail.com', 'letmein'),
 	_1: _elm_lang$core$Platform_Cmd$none
 };
 
@@ -15334,7 +15893,6 @@ var _user$project$Registration_Rest$register = F2(
 			_user$project$Registration_Types$Registered,
 			A3(_elm_lang$http$Http$post, url, body, _user$project$Registration_Rest$userAuthDecoder));
 	});
-var _user$project$Registration_Rest$dummy = '';
 
 var _user$project$Registration_State$update = F2(
 	function (action, model) {
@@ -15357,14 +15915,20 @@ var _user$project$Registration_State$update = F2(
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'Register':
-				return {
+				return _elm_lang$core$Native_Utils.eq(model.password, model.repeatPassword) ? {
 					ctor: '_Tuple2',
 					_0: model,
 					_1: A2(_user$project$Registration_Rest$register, model.email, model.password)
+				} : {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{shouldDisplayPasswordModal: true}),
+					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'Registered':
 				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
-			default:
+			case 'OnPasswordRepeatInput':
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
@@ -15372,11 +15936,19 @@ var _user$project$Registration_State$update = F2(
 						{repeatPassword: _p0._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{shouldDisplayPasswordModal: false}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 		}
 	});
 var _user$project$Registration_State$init = {
 	ctor: '_Tuple2',
-	_0: A4(_user$project$Registration_Types$Model, _user$project$Registration_Types$initialUser, '', '', ''),
+	_0: A5(_user$project$Registration_Types$Model, _user$project$Registration_Types$initialUser, '', '', '', false),
 	_1: _elm_lang$core$Platform_Cmd$none
 };
 
@@ -15421,8 +15993,12 @@ var _user$project$SignIn_View$view = function (model) {
 							_0: _elm_lang$html$Html_Attributes$placeholder('Password'),
 							_1: {
 								ctor: '::',
-								_0: _elm_lang$html$Html_Events$onInput(_user$project$SignIn_Types$OnPasswordInput),
-								_1: {ctor: '[]'}
+								_0: _elm_lang$html$Html_Attributes$type_('password'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Events$onInput(_user$project$SignIn_Types$OnPasswordInput),
+									_1: {ctor: '[]'}
+								}
 							}
 						},
 						{
@@ -15473,6 +16049,40 @@ var _user$project$SignIn_View$view = function (model) {
 		});
 };
 
+var _user$project$Registration_View$dialogConfig = function (model) {
+	return {
+		closeMessage: _elm_lang$core$Maybe$Nothing,
+		containerClass: _elm_lang$core$Maybe$Nothing,
+		header: _elm_lang$core$Maybe$Just(
+			A2(
+				_elm_lang$html$Html$h3,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Password mismatch'),
+					_1: {ctor: '[]'}
+				})),
+		body: _elm_lang$core$Maybe$Just(
+			_elm_lang$html$Html$text('Please ensure that the passwords match.')),
+		footer: _elm_lang$core$Maybe$Just(
+			A2(
+				_elm_lang$html$Html$button,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('btn btn-success'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Events$onClick(_user$project$Registration_Types$AcknowledgeDialog),
+						_1: {ctor: '[]'}
+					}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('OK'),
+					_1: {ctor: '[]'}
+				}))
+	};
+};
 var _user$project$Registration_View$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
@@ -15563,7 +16173,13 @@ var _user$project$Registration_View$view = function (model) {
 									_0: _elm_lang$html$Html$text('Register'),
 									_1: {ctor: '[]'}
 								}),
-							_1: {ctor: '[]'}
+							_1: {
+								ctor: '::',
+								_0: _krisajenkins$elm_dialog$Dialog$view(
+									model.shouldDisplayPasswordModal ? _elm_lang$core$Maybe$Just(
+										_user$project$Registration_View$dialogConfig(model)) : _elm_lang$core$Maybe$Nothing),
+								_1: {ctor: '[]'}
+							}
 						}
 					}
 				}
@@ -15571,6 +16187,40 @@ var _user$project$Registration_View$view = function (model) {
 		});
 };
 
+var _user$project$UI$backButton = function (msg) {
+	return A2(
+		_elm_lang$html$Html$i,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('material-icons'),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$html$Html_Events$onClick(msg),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$style(
+						{
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'cursor', _1: 'pointer'},
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
+			}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('chevron_left'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		});
+};
 var _user$project$UI$onKeyDown = function (tagger) {
 	return A2(
 		_elm_lang$html$Html_Events$on,
@@ -16181,17 +16831,10 @@ var _user$project$Projects_Checklist$constructTableChildren = F2(
 				},
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html$text('Checklist items'),
+					_0: _user$project$UI$backButton(_user$project$Msgs$GotoProject),
 					_1: {
 						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$i,
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$class('material-icons dp48'),
-								_1: {ctor: '[]'}
-							},
-							{ctor: '[]'}),
+						_0: _elm_lang$html$Html$text('Checklist items'),
 						_1: {ctor: '[]'}
 					}
 				}),
@@ -16362,9 +17005,19 @@ var _user$project$Main$update = F2(
 	function (msg, model) {
 		var one = 'one';
 		var _p0 = A2(_elm_lang$core$Debug$log, 'message', msg);
-		_v0_3:
+		_v0_4:
 		do {
 			switch (_p0.ctor) {
+				case 'GotoProject':
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								route: _user$project$Models$ProjectRoute(model.selectedProject.id)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
 				case 'SignInMsg':
 					switch (_p0._0.ctor) {
 						case 'SignedIn':
@@ -16377,7 +17030,7 @@ var _user$project$Main$update = F2(
 									_1: _elm_lang$core$Platform_Cmd$none
 								};
 							} else {
-								break _v0_3;
+								break _v0_4;
 							}
 						case 'GotoRegistration':
 							return {
@@ -16388,7 +17041,7 @@ var _user$project$Main$update = F2(
 								_1: _elm_lang$core$Platform_Cmd$none
 							};
 						default:
-							break _v0_3;
+							break _v0_4;
 					}
 				case 'RegistrationMsg':
 					if ((_p0._0.ctor === 'Registered') && (_p0._0._0.ctor === 'Ok')) {
@@ -16663,7 +17316,7 @@ var _user$project$Main$main = A2(
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
 if (typeof _user$project$Main$main !== 'undefined') {
-    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"RemoteData.RemoteData":{"args":["e","a"],"tags":{"NotAsked":[],"Success":["a"],"Loading":[],"Failure":["e"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Msgs.Msg":{"args":[],"tags":{"DeleteProject":["Result.Result Http.Error String"],"SelectChecklist":["Models.Checklist"],"OnFetchChecklistItems":["RemoteData.WebData (List Models.Item)"],"OnLocationChange":["Navigation.Location"],"RemoveChecklist":["Models.Checklist"],"OnSaveProject":["Result.Result Http.Error Int"],"SignInMsg":["SignIn.Types.Msg"],"DeletedItem":["Result.Result Http.Error String"],"UpdatedItem":["Result.Result Http.Error String"],"RegistrationMsg":["Registration.Types.Msg"],"OnFetchProjects":["RemoteData.WebData (List Models.Project)"],"RemoveItem":["Models.Item"],"OnEditItemInput":["String"],"OnNewProjectInput":["String"],"OnNewItemInput":["String"],"OnNewChecklistKeyDown":["Int"],"OnSaveChecklist":["Result.Result Http.Error Int"],"OnFetchProjectChecklists":["RemoteData.WebData (List Models.Checklist)"],"OnNewChecklistInput":["String"],"ToggleItemCompleted":["Models.Item"],"SelectProject":["Models.Project"],"OnNewProjectKeyDown":["Int"],"OnSaveItem":["Result.Result Http.Error Int"],"OnNewItemKeyDown":["Int"],"GetProjects":[],"OnUserAuth":["SignIn.Types.UserAuth"],"RemoveProject":["Models.Project"],"EditingItem":["Models.Item"],"DeletedChecklist":["Result.Result Http.Error String"],"EditItem":["String"]}},"Registration.Types.Msg":{"args":[],"tags":{"OnEmailInput":["String"],"Register":[],"OnPasswordRepeatInput":["String"],"Registered":["Result.Result Http.Error SignIn.Types.UserAuth"],"OnPasswordInput":["String"]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"SignIn.Types.Msg":{"args":[],"tags":{"SignIn":[],"OnEmailInput":["String"],"GotoRegistration":[],"SignedIn":["Result.Result Http.Error SignIn.Types.UserAuth"],"OnPasswordInput":["String"]}}},"aliases":{"Models.Project":{"args":[],"type":"{ id : Models.ProjectId, name : String }"},"Models.ItemId":{"args":[],"type":"Int"},"RemoteData.WebData":{"args":["a"],"type":"RemoteData.RemoteData Http.Error a"},"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Models.ChecklistId":{"args":[],"type":"Int"},"SignIn.Types.UserAuth":{"args":[],"type":"{ user_id : Int, jwt : String, exp : Int }"},"Models.Checklist":{"args":[],"type":"{ id : Models.ChecklistId, name : String }"},"Models.Item":{"args":[],"type":"{ id : Models.ItemId , name : String , completed : Bool , sequenceNumber : Int }"},"Models.ProjectId":{"args":[],"type":"Int"},"Navigation.Location":{"args":[],"type":"{ href : String , host : String , hostname : String , protocol : String , origin : String , port_ : String , pathname : String , search : String , hash : String , username : String , password : String }"}},"message":"Msgs.Msg"},"versions":{"elm":"0.18.0"}});
+    _user$project$Main$main(Elm['Main'], 'Main', {"types":{"unions":{"Dict.LeafColor":{"args":[],"tags":{"LBBlack":[],"LBlack":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":["Dict.LeafColor"]}},"RemoteData.RemoteData":{"args":["e","a"],"tags":{"NotAsked":[],"Success":["a"],"Loading":[],"Failure":["e"]}},"Dict.NColor":{"args":[],"tags":{"BBlack":[],"Red":[],"NBlack":[],"Black":[]}},"Msgs.Msg":{"args":[],"tags":{"DeleteProject":["Result.Result Http.Error String"],"SelectChecklist":["Models.Checklist"],"OnFetchChecklistItems":["RemoteData.WebData (List Models.Item)"],"OnLocationChange":["Navigation.Location"],"RemoveChecklist":["Models.Checklist"],"OnSaveProject":["Result.Result Http.Error Int"],"SignInMsg":["SignIn.Types.Msg"],"DeletedItem":["Result.Result Http.Error String"],"UpdatedItem":["Result.Result Http.Error String"],"RegistrationMsg":["Registration.Types.Msg"],"OnFetchProjects":["RemoteData.WebData (List Models.Project)"],"RemoveItem":["Models.Item"],"OnEditItemInput":["String"],"OnNewProjectInput":["String"],"GotoProject":[],"OnNewItemInput":["String"],"OnNewChecklistKeyDown":["Int"],"OnSaveChecklist":["Result.Result Http.Error Int"],"OnFetchProjectChecklists":["RemoteData.WebData (List Models.Checklist)"],"OnNewChecklistInput":["String"],"ToggleItemCompleted":["Models.Item"],"SelectProject":["Models.Project"],"OnNewProjectKeyDown":["Int"],"OnSaveItem":["Result.Result Http.Error Int"],"OnNewItemKeyDown":["Int"],"GetProjects":[],"OnUserAuth":["SignIn.Types.UserAuth"],"RemoveProject":["Models.Project"],"EditingItem":["Models.Item"],"DeletedChecklist":["Result.Result Http.Error String"],"EditItem":["String"]}},"Registration.Types.Msg":{"args":[],"tags":{"OnEmailInput":["String"],"Register":[],"OnPasswordRepeatInput":["String"],"Registered":["Result.Result Http.Error SignIn.Types.UserAuth"],"OnPasswordInput":["String"],"AcknowledgeDialog":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String"],"NetworkError":[],"Timeout":[],"BadStatus":["Http.Response String"],"BadPayload":["String","Http.Response String"]}},"Result.Result":{"args":["error","value"],"tags":{"Ok":["value"],"Err":["error"]}},"SignIn.Types.Msg":{"args":[],"tags":{"SignIn":[],"OnEmailInput":["String"],"GotoRegistration":[],"SignedIn":["Result.Result Http.Error SignIn.Types.UserAuth"],"OnPasswordInput":["String"]}}},"aliases":{"Models.Project":{"args":[],"type":"{ id : Models.ProjectId, name : String }"},"Models.ItemId":{"args":[],"type":"Int"},"RemoteData.WebData":{"args":["a"],"type":"RemoteData.RemoteData Http.Error a"},"Http.Response":{"args":["body"],"type":"{ url : String , status : { code : Int, message : String } , headers : Dict.Dict String String , body : body }"},"Models.ChecklistId":{"args":[],"type":"Int"},"SignIn.Types.UserAuth":{"args":[],"type":"{ user_id : Int, jwt : String, exp : Int }"},"Models.Checklist":{"args":[],"type":"{ id : Models.ChecklistId, name : String }"},"Models.Item":{"args":[],"type":"{ id : Models.ItemId , name : String , completed : Bool , sequenceNumber : Int }"},"Models.ProjectId":{"args":[],"type":"Int"},"Navigation.Location":{"args":[],"type":"{ href : String , host : String , hostname : String , protocol : String , origin : String , port_ : String , pathname : String , search : String , hash : String , username : String , password : String }"}},"message":"Msgs.Msg"},"versions":{"elm":"0.18.0"}});
 }
 
 if (typeof define === "function" && define['amd'])

@@ -14,11 +14,11 @@ type Msg =  SignIn |
             GotoRegistration
 
 initialUser: User
-initialUser = User "" ""
+initialUser = User "raymondboswel@gmail.com" "letmein"
 
 initialUserAuth: UserAuth
 initialUserAuth = UserAuth 0 "" 0
 
 initialModel : Model
 initialModel =
-  Model initialUser "" ""
+  Model initialUser "raymondboswel@gmail.com" "letmein"

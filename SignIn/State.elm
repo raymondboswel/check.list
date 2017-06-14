@@ -5,7 +5,7 @@ import SignIn.Rest exposing (..)
 
 init : ( Model, Cmd Msg )
 init =
-  (Model initialUser "" "" , Cmd.none)
+  (Model initialUser "raymondboswel@gmail.com" "letmein" , Cmd.none)
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update action model =
