@@ -1,7 +1,7 @@
 module Projects.Project exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (class, value, href, placeholder)
+import Html.Attributes exposing (class, value, href, placeholder, style)
 import Html.Events exposing (on, keyCode, onInput, onClick)
 import Msgs exposing (Msg)
 import Models exposing (..) 
@@ -33,7 +33,7 @@ renderTable checklists model =
 
 constructTableChildren : List Checklist -> Model-> List (Html Msgs.Msg)
 constructTableChildren checklists model = 
-    let table = div [class "collection-header"] [text "Checklists", i [class "material-icons dp48"] []] :: renderChecklists checklists 
+    let table = div [class "collection-header"] [div [style [("display", "flex"), ("align-items", "center")]] [div [] [UI.backButton Msgs.GotoProjects], div [style [("display", "inline"), ("transform", "transformY(-12%)")]] [text "Checklists"]]] :: renderChecklists checklists 
     in List.append table [(div [class "collection-item"] [inputField "New Checklist" model.newChecklistName (Msgs.OnNewChecklistInput "") (Msgs.OnNewChecklistKeyDown 0)])]
 
 inputField : String -> String -> Msgs.Msg -> Msgs.Msg -> Html Msgs.Msg

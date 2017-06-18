@@ -1,6 +1,7 @@
 module Models exposing (..)
 import RemoteData exposing (WebData)
 import SignIn.Types exposing (..)
+import Registration.Types exposing (..)
 
 type alias Model = {
     route: Route,
@@ -14,6 +15,7 @@ type alias Model = {
     newItemName: String,
     itemBeingEdited: Item,
     signInModel: SignIn.Types.Model,
+    registrationModel: Registration.Types.Model,
     userAuth: SignIn.Types.UserAuth
     }
 
@@ -42,6 +44,7 @@ type Route =
     | ProjectsRoute
     | ProjectRoute ProjectId
     | ChecklistRoute ChecklistId
+    | RegistrationRoute
     | NotFoundRoute
 
 -- initialModel : Model
