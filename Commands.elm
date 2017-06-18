@@ -170,6 +170,7 @@ itemDecoder =
         |> required "name" Decode.string
         |> required "completed" Decode.bool
         |> required "sequence_number" Decode.int
+        |> Json.Decode.Pipeline.optional "displayDetails" Decode.bool False
 
 projectsDecoder : Decode.Decoder (List Project)
 projectsDecoder =

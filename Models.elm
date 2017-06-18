@@ -29,9 +29,9 @@ initialChecklist : Checklist
 initialChecklist = Checklist 0 ""
 
 initialItem : Item
-initialItem = Item 0 "" False 0
+initialItem = Item 0 "" False 0 False
 
-type alias Item = {id: ItemId, name: String, completed: Bool, sequenceNumber: Int}
+type alias Item = {id: ItemId, name: String, completed: Bool, sequenceNumber: Int, displayDetails: Bool}
 type alias ItemId = Int
 
 type alias Checklist = {id: ChecklistId, name: String}

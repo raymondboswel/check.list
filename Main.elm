@@ -100,10 +100,17 @@ update msg model =
 
       EditItem text ->
         let item = model.itemBeingEdited in
-         (model , Commands.updateChecklistItem {item | name = text})
+         (model, Commands.updateChecklistItem {item | name = text})
 
       EditingItem item ->
         ({model | itemBeingEdited = item}, Cmd.none)
+
+      DisplayItemDetails item ->
+        let 
+          updatedItem = {item | displayDetails = not item.displayDetails}         
+          updatedItems = RemoteData.map (updateItemInItems updatedItem) model.items            
+        in                              
+          ({model | items = updatedItems}, Cmd.none)
 
       OnEditItemInput itemName ->
         ({ model | newItemName = itemName }, Cmd.none)
@@ -185,6 +192,16 @@ update msg model =
                 ( { model | route = newRoute }, Cmd.none )
 
 
+updateItemInItems : Item -> List Item -> List Item
+updateItemInItems itemToUpdate items  =
+  let    
+    replace item =       
+      if item.id == itemToUpdate.id then
+        itemToUpdate
+      else
+        item
+  in
+    List.map replace items
 
 updateElement : List Item -> Item -> List Item
 updateElement list itemToToggle =

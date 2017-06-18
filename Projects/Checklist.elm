@@ -2,7 +2,7 @@ module Projects.Checklist exposing (..)
 
 import Exts.Html exposing (..)
 import Html exposing (..)
-import Html.Attributes exposing (class, value, href, checked, placeholder, type_, for, id, contenteditable, style)
+import Html.Attributes exposing (class, value, href, checked, placeholder, type_, for, id, contenteditable, style, hidden)
 import Html.Events exposing (on, keyCode, onInput, onClick, onCheck)
 import Msgs exposing (Msg)
 import Models exposing (..)
@@ -48,7 +48,7 @@ renderItems items =
     List.map renderItem items
 
 renderItem : Item -> Html Msg
-renderItem item = div [class "collection-item row-item", onClick (Msgs.EditingItem item) ]
+renderItem item = div [class "collection-item row-item" ]
                       [
                         input
                             [type_ "checkbox",
@@ -63,8 +63,16 @@ renderItem item = div [class "collection-item row-item", onClick (Msgs.EditingIt
                         i
                             [class "material-icons pull-right", onClick (Msgs.RemoveItem item)]
                             [text "delete"],
-                        i   [class "material-icons pull-right"]
-                            [text "expand_more"] ]
+                        i   [class "material-icons pull-right", onClick (Msgs.DisplayItemDetails item)] 
+                            [text "expand_more"],
+                            div [class (shouldDisplay item)] [text "Display"] ]
+
+shouldDisplay : Item -> String
+shouldDisplay item = 
+    if item.displayDetails == True then
+        ""
+    else 
+        "hidden"
 
 targetTextContent : Json.Decoder String
 targetTextContent =

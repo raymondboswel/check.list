@@ -13,6 +13,8 @@ type Msg = SignInMsg SignIn.Types.Msg |
            RemoveChecklist Checklist |
            RemoveItem Item |
 
+           DisplayItemDetails Item | 
+
            GotoProject |
            GotoProjects |
 
