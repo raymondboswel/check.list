@@ -15305,7 +15305,9 @@ var _user$project$Models$Model = function (a) {
 										return function (k) {
 											return function (l) {
 												return function (m) {
-													return {route: a, selectedProject: b, selectedChecklist: c, projects: d, newProjectName: e, checklists: f, newChecklistName: g, items: h, newItemName: i, itemBeingEdited: j, signInModel: k, registrationModel: l, userAuth: m};
+													return function (n) {
+														return {route: a, selectedProject: b, selectedChecklist: c, projects: d, newProjectName: e, checklists: f, newChecklistName: g, items: h, newItemName: i, itemBeingEdited: j, signInModel: k, registrationModel: l, userAuth: m, api: n};
+													};
 												};
 											};
 										};
@@ -15439,7 +15441,9 @@ var _user$project$Msgs$SignInMsg = function (a) {
 	return {ctor: 'SignInMsg', _0: a};
 };
 
-var _user$project$Commands$fetchProjectsUrl = 'http://localhost:4000/api/projects';
+var _user$project$Commands$fetchProjectsUrl = function (model) {
+	return A2(_elm_lang$core$Basics_ops['++'], model.api, '/api/projects');
+};
 var _user$project$Commands$projectDecoder = A3(
 	_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$required,
 	'name',
@@ -15483,49 +15487,64 @@ var _user$project$Commands$checklistDecoder = A3(
 		_elm_lang$core$Json_Decode$int,
 		_NoRedInk$elm_decode_pipeline$Json_Decode_Pipeline$decode(_user$project$Models$Checklist)));
 var _user$project$Commands$checklistsDecoder = _elm_lang$core$Json_Decode$list(_user$project$Commands$checklistDecoder);
-var _user$project$Commands$fetchProjectChecklistsUrl = function (project) {
-	return A2(
-		_elm_lang$core$Basics_ops['++'],
-		'http://localhost:4000/api/projects/',
-		A2(
+var _user$project$Commands$fetchProjectChecklistsUrl = F2(
+	function (model, project) {
+		return A2(
 			_elm_lang$core$Basics_ops['++'],
-			_elm_lang$core$Basics$toString(project.id),
-			'/checklists'));
-};
-var _user$project$Commands$fetchChecklistItemsUrl = function (checklist) {
-	return A2(
-		_elm_lang$core$Basics_ops['++'],
-		'http://localhost:4000/api/checklists/',
-		A2(
+			model.api,
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				'/api/projects/',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					_elm_lang$core$Basics$toString(project.id),
+					'/checklists')));
+	});
+var _user$project$Commands$fetchChecklistItemsUrl = F2(
+	function (model, checklist) {
+		return A2(
 			_elm_lang$core$Basics_ops['++'],
-			_elm_lang$core$Basics$toString(checklist.id),
-			'/items'));
-};
-var _user$project$Commands$fetchChecklistItems = function (checklist) {
+			model.api,
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				'/api/checklists/',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					_elm_lang$core$Basics$toString(checklist.id),
+					'/items')));
+	});
+var _user$project$Commands$fetchChecklistItems = F2(
+	function (model, checklist) {
+		return A2(
+			_elm_lang$core$Platform_Cmd$map,
+			_user$project$Msgs$OnFetchChecklistItems,
+			_krisajenkins$remotedata$RemoteData$sendRequest(
+				A2(
+					_elm_lang$http$Http$get,
+					A2(_user$project$Commands$fetchChecklistItemsUrl, model, checklist),
+					_user$project$Commands$itemsDecoder)));
+	});
+var _user$project$Commands$fetchProjectChecklists = F2(
+	function (model, project) {
+		return A2(
+			_elm_lang$core$Platform_Cmd$map,
+			_user$project$Msgs$OnFetchProjectChecklists,
+			_krisajenkins$remotedata$RemoteData$sendRequest(
+				A2(
+					_elm_lang$http$Http$get,
+					A2(_user$project$Commands$fetchProjectChecklistsUrl, model, project),
+					_user$project$Commands$checklistsDecoder)));
+	});
+var _user$project$Commands$fetchProjects = function (model) {
 	return A2(
 		_elm_lang$core$Platform_Cmd$map,
-		_user$project$Msgs$OnFetchChecklistItems,
+		_user$project$Msgs$OnFetchProjects,
 		_krisajenkins$remotedata$RemoteData$sendRequest(
 			A2(
 				_elm_lang$http$Http$get,
-				_user$project$Commands$fetchChecklistItemsUrl(checklist),
-				_user$project$Commands$itemsDecoder)));
+				_user$project$Commands$fetchProjectsUrl(model),
+				_user$project$Commands$projectsDecoder)));
 };
-var _user$project$Commands$fetchProjectChecklists = function (project) {
-	return A2(
-		_elm_lang$core$Platform_Cmd$map,
-		_user$project$Msgs$OnFetchProjectChecklists,
-		_krisajenkins$remotedata$RemoteData$sendRequest(
-			A2(
-				_elm_lang$http$Http$get,
-				_user$project$Commands$fetchProjectChecklistsUrl(project),
-				_user$project$Commands$checklistsDecoder)));
-};
-var _user$project$Commands$fetchProjects = A2(
-	_elm_lang$core$Platform_Cmd$map,
-	_user$project$Msgs$OnFetchProjects,
-	_krisajenkins$remotedata$RemoteData$sendRequest(
-		A2(_elm_lang$http$Http$get, _user$project$Commands$fetchProjectsUrl, _user$project$Commands$projectsDecoder)));
 var _user$project$Commands$deleteByName = F2(
 	function (url, name) {
 		return _elm_lang$http$Http$request(
@@ -15561,36 +15580,58 @@ var _user$project$Commands$deleteById = F2(
 				withCredentials: false
 			});
 	});
-var _user$project$Commands$checklistResourceUrl = 'http://localhost:4000/api/checklists';
-var _user$project$Commands$projectChecklistsResourceUrl = function (project) {
-	return A2(
-		_elm_lang$core$Basics_ops['++'],
-		'http://localhost:4000/api/projects/',
-		A2(
+var _user$project$Commands$checklistResourceUrl = function (model) {
+	return A2(_elm_lang$core$Basics_ops['++'], model.api, '/api/checklists');
+};
+var _user$project$Commands$projectChecklistsResourceUrl = F2(
+	function (model, project) {
+		return A2(
 			_elm_lang$core$Basics_ops['++'],
-			_elm_lang$core$Basics$toString(project.id),
-			'/checklists'));
+			model.api,
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				'/api/projects/',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					_elm_lang$core$Basics$toString(project.id),
+					'/checklists')));
+	});
+var _user$project$Commands$itemResourceUrl = function (model) {
+	return A2(_elm_lang$core$Basics_ops['++'], model.api, '/api/items');
 };
-var _user$project$Commands$itemResourceUrl = 'http://localhost:4000/api/items';
-var _user$project$Commands$deleteItem = function (item) {
-	return A2(
-		_elm_lang$http$Http$send,
-		_user$project$Msgs$DeletedItem,
-		A2(_user$project$Commands$deleteById, _user$project$Commands$itemResourceUrl, item.id));
+var _user$project$Commands$deleteItem = F2(
+	function (model, item) {
+		return A2(
+			_elm_lang$http$Http$send,
+			_user$project$Msgs$DeletedItem,
+			A2(
+				_user$project$Commands$deleteById,
+				_user$project$Commands$itemResourceUrl(model),
+				item.id));
+	});
+var _user$project$Commands$deleteChecklist = F2(
+	function (model, checklist) {
+		return A2(
+			_elm_lang$http$Http$send,
+			_user$project$Msgs$DeletedChecklist,
+			A2(
+				_user$project$Commands$deleteById,
+				_user$project$Commands$checklistResourceUrl(model),
+				checklist.id));
+	});
+var _user$project$Commands$projectResourceUrl = function (model) {
+	return A2(_elm_lang$core$Basics_ops['++'], model.api, '/api/projects');
 };
-var _user$project$Commands$deleteChecklist = function (checklist) {
-	return A2(
-		_elm_lang$http$Http$send,
-		_user$project$Msgs$DeletedChecklist,
-		A2(_user$project$Commands$deleteById, _user$project$Commands$checklistResourceUrl, checklist.id));
-};
-var _user$project$Commands$projectResourceUrl = 'http://localhost:4000/api/projects';
-var _user$project$Commands$deleteProject = function (project) {
-	return A2(
-		_elm_lang$http$Http$send,
-		_user$project$Msgs$DeleteProject,
-		A2(_user$project$Commands$deleteByName, _user$project$Commands$projectResourceUrl, project.name));
-};
+var _user$project$Commands$deleteProject = F2(
+	function (model, project) {
+		return A2(
+			_elm_lang$http$Http$send,
+			_user$project$Msgs$DeleteProject,
+			A2(
+				_user$project$Commands$deleteByName,
+				_user$project$Commands$projectResourceUrl(model),
+				project.name));
+	});
 var _user$project$Commands$itemEncoder = F3(
 	function (itemName, completed, sequenceNumber) {
 		return _elm_lang$core$Json_Encode$object(
@@ -15633,29 +15674,36 @@ var _user$project$Commands$putRequest = F2(
 				withCredentials: false
 			});
 	});
-var _user$project$Commands$updateChecklistItem = function (item) {
-	var body = _elm_lang$http$Http$jsonBody(
-		A3(_user$project$Commands$itemEncoder, item.name, item.completed, item.sequenceNumber));
-	var url = A2(
-		_elm_lang$core$Basics_ops['++'],
-		'http://localhost:4000/api/items/',
-		_elm_lang$core$Basics$toString(item.id));
-	return A2(
-		_elm_lang$http$Http$send,
-		_user$project$Msgs$UpdatedItem,
-		A2(_user$project$Commands$putRequest, url, body));
-};
-var _user$project$Commands$addItem = F2(
-	function (checklistId, itemName) {
+var _user$project$Commands$updateChecklistItem = F2(
+	function (model, item) {
+		var body = _elm_lang$http$Http$jsonBody(
+			A3(_user$project$Commands$itemEncoder, item.name, item.completed, item.sequenceNumber));
+		var url = A2(
+			_elm_lang$core$Basics_ops['++'],
+			model.api,
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				'/api/items/',
+				_elm_lang$core$Basics$toString(item.id)));
+		return A2(
+			_elm_lang$http$Http$send,
+			_user$project$Msgs$UpdatedItem,
+			A2(_user$project$Commands$putRequest, url, body));
+	});
+var _user$project$Commands$addItem = F3(
+	function (model, checklistId, itemName) {
 		var body = _elm_lang$http$Http$jsonBody(
 			A3(_user$project$Commands$itemEncoder, itemName, false, 1));
 		var url = A2(
 			_elm_lang$core$Basics_ops['++'],
-			'http://localhost:4000/api/checklists/',
+			model.api,
 			A2(
 				_elm_lang$core$Basics_ops['++'],
-				_elm_lang$core$Basics$toString(checklistId),
-				'/items'));
+				'/api/checklists/',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					_elm_lang$core$Basics$toString(checklistId),
+					'/items')));
 		return A2(
 			_elm_lang$http$Http$send,
 			_user$project$Msgs$OnSaveItem,
@@ -15684,13 +15732,13 @@ var _user$project$Commands$checklistEncoder = function (checklistName) {
 			_1: {ctor: '[]'}
 		});
 };
-var _user$project$Commands$addChecklist = F2(
-	function (projectId, checklistName) {
+var _user$project$Commands$addChecklist = F3(
+	function (model, projectId, checklistName) {
 		var body = _elm_lang$http$Http$jsonBody(
 			_user$project$Commands$checklistEncoder(checklistName));
 		var url = A2(
 			_elm_lang$core$Basics_ops['++'],
-			_user$project$Commands$projectResourceUrl,
+			_user$project$Commands$projectResourceUrl(model),
 			A2(
 				_elm_lang$core$Basics_ops['++'],
 				'/',
@@ -15714,24 +15762,28 @@ var _user$project$Commands$addChecklist = F2(
 					},
 					_elm_lang$core$Json_Decode$int)));
 	});
-var _user$project$Commands$addProject = function (projectName) {
-	var url = A2(_elm_lang$core$String$append, 'http://localhost:4000/api/projects?name=', projectName);
-	return A2(
-		_elm_lang$http$Http$send,
-		_user$project$Msgs$OnSaveProject,
-		A3(
-			_elm_lang$http$Http$post,
-			url,
-			_elm_lang$http$Http$emptyBody,
-			A2(
-				_elm_lang$core$Json_Decode$at,
-				{
-					ctor: '::',
-					_0: 'id',
-					_1: {ctor: '[]'}
-				},
-				_elm_lang$core$Json_Decode$int)));
-};
+var _user$project$Commands$addProject = F2(
+	function (model, projectName) {
+		var url = A2(
+			_elm_lang$core$Basics_ops['++'],
+			model.api,
+			A2(_elm_lang$core$Basics_ops['++'], 'api/projects?name=', projectName));
+		return A2(
+			_elm_lang$http$Http$send,
+			_user$project$Msgs$OnSaveProject,
+			A3(
+				_elm_lang$http$Http$post,
+				url,
+				_elm_lang$http$Http$emptyBody,
+				A2(
+					_elm_lang$core$Json_Decode$at,
+					{
+						ctor: '::',
+						_0: 'id',
+						_1: {ctor: '[]'}
+					},
+					_elm_lang$core$Json_Decode$int)));
+	});
 
 var _user$project$Routing$matchers = _evancz$url_parser$UrlParser$oneOf(
 	{
@@ -16040,8 +16092,12 @@ var _user$project$SignIn_View$view = function (model) {
 										_elm_lang$html$Html$a,
 										{
 											ctor: '::',
-											_0: _elm_lang$html$Html_Events$onClick(_user$project$SignIn_Types$GotoRegistration),
-											_1: {ctor: '[]'}
+											_0: _elm_lang$html$Html_Attributes$class('clickable'),
+											_1: {
+												ctor: '::',
+												_0: _elm_lang$html$Html_Events$onClick(_user$project$SignIn_Types$GotoRegistration),
+												_1: {ctor: '[]'}
+											}
 										},
 										{
 											ctor: '::',
@@ -16121,7 +16177,7 @@ var _user$project$Registration_View$view = function (model) {
 					},
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html$text(model.user.email),
+						_0: _elm_lang$html$Html$text(model.registrationModel.user.email),
 						_1: {ctor: '[]'}
 					}),
 				_1: {
@@ -16143,7 +16199,7 @@ var _user$project$Registration_View$view = function (model) {
 						},
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html$text(model.user.password),
+							_0: _elm_lang$html$Html$text(model.registrationModel.user.password),
 							_1: {ctor: '[]'}
 						}),
 					_1: {
@@ -16165,7 +16221,7 @@ var _user$project$Registration_View$view = function (model) {
 							},
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html$text(model.user.repeatPassword),
+								_0: _elm_lang$html$Html$text(model.registrationModel.user.repeatPassword),
 								_1: {ctor: '[]'}
 							}),
 						_1: {
@@ -16185,7 +16241,7 @@ var _user$project$Registration_View$view = function (model) {
 							_1: {
 								ctor: '::',
 								_0: _krisajenkins$elm_dialog$Dialog$view(
-									model.shouldDisplayPasswordModal ? _elm_lang$core$Maybe$Just(
+									model.registrationModel.shouldDisplayPasswordModal ? _elm_lang$core$Maybe$Just(
 										_user$project$Registration_View$dialogConfig(model)) : _elm_lang$core$Maybe$Nothing),
 								_1: {ctor: '[]'}
 							}
@@ -17081,7 +17137,7 @@ var _user$project$View$page = function (model) {
 		case 'SignInRoute':
 			return _user$project$View$signInPage(model.signInModel);
 		case 'RegistrationRoute':
-			return _user$project$View$registrationPage(model.registrationModel);
+			return _user$project$View$registrationPage(model);
 		default:
 			return _user$project$View$notFoundView;
 	}
@@ -17210,7 +17266,7 @@ var _user$project$Main$update = F2(
 							_0: _elm_lang$core$Native_Utils.update(
 								model,
 								{newProjectName: ''}),
-							_1: _user$project$Commands$addProject(projectName)
+							_1: A2(_user$project$Commands$addProject, model, projectName)
 						};
 					} else {
 						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
@@ -17229,14 +17285,16 @@ var _user$project$Main$update = F2(
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{newChecklistName: ''}),
-						_1: A2(_user$project$Commands$addChecklist, model.selectedProject.id, model.newChecklistName)
+						_1: A3(_user$project$Commands$addChecklist, model, model.selectedProject.id, model.newChecklistName)
 					} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				case 'EditItem':
 					var item = model.itemBeingEdited;
 					return {
 						ctor: '_Tuple2',
 						_0: model,
-						_1: _user$project$Commands$updateChecklistItem(
+						_1: A2(
+							_user$project$Commands$updateChecklistItem,
+							model,
 							_elm_lang$core$Native_Utils.update(
 								item,
 								{name: _p0._0}))
@@ -17287,14 +17345,16 @@ var _user$project$Main$update = F2(
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
 							{newItemName: ''}),
-						_1: A2(_user$project$Commands$addItem, model.selectedChecklist.id, model.newItemName)
+						_1: A3(_user$project$Commands$addItem, model, model.selectedChecklist.id, model.newItemName)
 					} : {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 				case 'ToggleItemCompleted':
 					var _p4 = _p0._0;
 					return {
 						ctor: '_Tuple2',
 						_0: model,
-						_1: _user$project$Commands$updateChecklistItem(
+						_1: A2(
+							_user$project$Commands$updateChecklistItem,
+							model,
 							_elm_lang$core$Native_Utils.update(
 								_p4,
 								{completed: !_p4.completed}))
@@ -17303,19 +17363,19 @@ var _user$project$Main$update = F2(
 					return {
 						ctor: '_Tuple2',
 						_0: model,
-						_1: _user$project$Commands$fetchChecklistItems(model.selectedChecklist)
+						_1: A2(_user$project$Commands$fetchChecklistItems, model, model.selectedChecklist)
 					};
 				case 'OnSaveChecklist':
 					return {
 						ctor: '_Tuple2',
 						_0: model,
-						_1: _user$project$Commands$fetchProjectChecklists(model.selectedProject)
+						_1: A2(_user$project$Commands$fetchProjectChecklists, model, model.selectedProject)
 					};
 				case 'OnSaveItem':
 					return {
 						ctor: '_Tuple2',
 						_0: model,
-						_1: _user$project$Commands$fetchChecklistItems(model.selectedChecklist)
+						_1: A2(_user$project$Commands$fetchChecklistItems, model, model.selectedChecklist)
 					};
 				case 'OnNewProjectInput':
 					return {
@@ -17350,44 +17410,56 @@ var _user$project$Main$update = F2(
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				case 'GetProjects':
-					return {ctor: '_Tuple2', _0: model, _1: _user$project$Commands$fetchProjects};
+					return {
+						ctor: '_Tuple2',
+						_0: model,
+						_1: _user$project$Commands$fetchProjects(model)
+					};
 				case 'OnSaveProject':
-					return {ctor: '_Tuple2', _0: model, _1: _user$project$Commands$fetchProjects};
+					return {
+						ctor: '_Tuple2',
+						_0: model,
+						_1: _user$project$Commands$fetchProjects(model)
+					};
 				case 'RemoveProject':
 					return {
 						ctor: '_Tuple2',
 						_0: model,
-						_1: _user$project$Commands$deleteProject(_p0._0)
+						_1: A2(_user$project$Commands$deleteProject, model, _p0._0)
 					};
 				case 'RemoveItem':
 					return {
 						ctor: '_Tuple2',
 						_0: model,
-						_1: _user$project$Commands$deleteItem(_p0._0)
+						_1: A2(_user$project$Commands$deleteItem, model, _p0._0)
 					};
 				case 'DeletedItem':
 					return {
 						ctor: '_Tuple2',
 						_0: model,
-						_1: _user$project$Commands$fetchChecklistItems(model.selectedChecklist)
+						_1: A2(_user$project$Commands$fetchChecklistItems, model, model.selectedChecklist)
 					};
 				case 'DeletedChecklist':
 					if (_p0._0.ctor === 'Ok') {
 						return {
 							ctor: '_Tuple2',
 							_0: model,
-							_1: _user$project$Commands$fetchProjectChecklists(model.selectedProject)
+							_1: A2(_user$project$Commands$fetchProjectChecklists, model, model.selectedProject)
 						};
 					} else {
 						return {
 							ctor: '_Tuple2',
 							_0: model,
-							_1: _user$project$Commands$fetchProjectChecklists(model.selectedProject)
+							_1: A2(_user$project$Commands$fetchProjectChecklists, model, model.selectedProject)
 						};
 					}
 				case 'DeleteProject':
 					if (_p0._0.ctor === 'Ok') {
-						return {ctor: '_Tuple2', _0: model, _1: _user$project$Commands$fetchProjects};
+						return {
+							ctor: '_Tuple2',
+							_0: model,
+							_1: _user$project$Commands$fetchProjects(model)
+						};
 					} else {
 						return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
 					}
@@ -17401,7 +17473,7 @@ var _user$project$Main$update = F2(
 								route: _user$project$Models$ProjectRoute(_p5.id),
 								selectedProject: _p5
 							}),
-						_1: _user$project$Commands$fetchProjectChecklists(_p5)
+						_1: A2(_user$project$Commands$fetchProjectChecklists, model, _p5)
 					};
 				case 'SelectChecklist':
 					var _p6 = _p0._0;
@@ -17413,13 +17485,13 @@ var _user$project$Main$update = F2(
 								route: _user$project$Models$ChecklistRoute(_p6.id),
 								selectedChecklist: _p6
 							}),
-						_1: _user$project$Commands$fetchChecklistItems(_p6)
+						_1: A2(_user$project$Commands$fetchChecklistItems, model, _p6)
 					};
 				case 'RemoveChecklist':
 					return {
 						ctor: '_Tuple2',
 						_0: model,
-						_1: _user$project$Commands$deleteChecklist(_p0._0)
+						_1: A2(_user$project$Commands$deleteChecklist, model, _p0._0)
 					};
 				default:
 					var newRoute = _user$project$Routing$parseLocation(_p0._0);
@@ -17443,21 +17515,33 @@ var _user$project$Main$update = F2(
 			_1: A2(_elm_lang$core$Platform_Cmd$map, _user$project$Msgs$SignInMsg, signInCmd)
 		};
 	});
-var _user$project$Main$init = function (location) {
-	var currentRoute = _user$project$Routing$parseLocation(location);
-	return {
-		ctor: '_Tuple2',
-		_0: _user$project$Models$Model(currentRoute)(_user$project$Models$initialProject)(_user$project$Models$initialChecklist)(_krisajenkins$remotedata$RemoteData$Loading)('')(_krisajenkins$remotedata$RemoteData$Loading)('')(_krisajenkins$remotedata$RemoteData$Loading)('')(_user$project$Models$initialItem)(_user$project$SignIn_Types$initialModel)(_user$project$Registration_Types$initialModel)(_user$project$SignIn_Types$initialUserAuth),
-		_1: _user$project$Commands$fetchProjects
-	};
-};
+var _user$project$Main$init = F2(
+	function (flags, location) {
+		var currentRoute = _user$project$Routing$parseLocation(location);
+		var model = _user$project$Models$Model(currentRoute)(_user$project$Models$initialProject)(_user$project$Models$initialChecklist)(_krisajenkins$remotedata$RemoteData$Loading)('')(_krisajenkins$remotedata$RemoteData$Loading)('')(_krisajenkins$remotedata$RemoteData$Loading)('')(_user$project$Models$initialItem)(_user$project$SignIn_Types$initialModel)(_user$project$Registration_Types$initialModel)(_user$project$SignIn_Types$initialUserAuth)(flags.api);
+		return {
+			ctor: '_Tuple2',
+			_0: model,
+			_1: _user$project$Commands$fetchProjects(model)
+		};
+	});
 var _user$project$Main$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$none;
 };
 var _user$project$Main$main = A2(
-	_elm_lang$navigation$Navigation$program,
+	_elm_lang$navigation$Navigation$programWithFlags,
 	_user$project$Msgs$OnLocationChange,
-	{init: _user$project$Main$init, view: _user$project$View$view, update: _user$project$Main$update, subscriptions: _user$project$Main$subscriptions})();
+	{init: _user$project$Main$init, view: _user$project$View$view, update: _user$project$Main$update, subscriptions: _user$project$Main$subscriptions})(
+	A2(
+		_elm_lang$core$Json_Decode$andThen,
+		function (api) {
+			return _elm_lang$core$Json_Decode$succeed(
+				{api: api});
+		},
+		A2(_elm_lang$core$Json_Decode$field, 'api', _elm_lang$core$Json_Decode$string)));
+var _user$project$Main$Flags = function (a) {
+	return {api: a};
+};
 
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};

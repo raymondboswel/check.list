@@ -16,7 +16,8 @@ type alias Model = {
     itemBeingEdited: Item,
     signInModel: SignIn.Types.Model,
     registrationModel: Registration.Types.Model,
-    userAuth: SignIn.Types.UserAuth
+    userAuth: SignIn.Types.UserAuth,
+    api: String
     }
 
 type alias Project = {id: ProjectId, name: String}

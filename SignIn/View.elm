@@ -13,4 +13,4 @@ view model =
         input [placeholder "Username", onInput SignIn.Types.OnEmailInput] [text model.user.email],
         input [placeholder "Password", type_ "password", onInput SignIn.Types.OnPasswordInput] [text model.user.password],
         button [ onClick SignIn.Types.SignIn ] [text "Sign in"],
-        div [] [a [onClick SignIn.Types.GotoRegistration] [text "Don't have a profile?"]] ]
+        div [] [a [class "clickable", onClick SignIn.Types.GotoRegistration] [text "Don't have a profile?"]] ]

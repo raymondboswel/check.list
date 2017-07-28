@@ -1,13 +1,14 @@
 module Registration.State exposing (init, update)
 import Registration.Types exposing (..)
 import Registration.Rest exposing (..)
+import Models as RootModel exposing (Model)
 
 
-init : ( Model, Cmd Msg )
+init : ( Registration.Types.Model, Cmd Msg )
 init =
-  (Model initialUser "" "" "" False, Cmd.none)
+  (Registration.Types.Model initialUser "" "" "" False, Cmd.none)
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+update : Msg -> Registration.Types.Model -> ( Registration.Types.Model, Cmd Msg )
 update action model =
   case action of
     OnEmailInput input ->

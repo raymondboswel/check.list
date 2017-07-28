@@ -8,16 +8,20 @@ import Models exposing (..)
 import Commands exposing (..)
 import RemoteData exposing (..)
 import Routing exposing (..)
-import Navigation exposing (Location)
+import Navigation exposing (Location, programWithFlags)
 import SignIn.Types exposing (initialModel)
 import Registration.Types exposing (initialModel)
 import SignIn.State exposing(..)
 import Registration.State exposing (..)
 import View exposing (view)
 
-main : Program Never Model Msg
+type alias Flags =
+  { 
+    api : String  
+  }
+
 main =
-  Navigation.program Msgs.OnLocationChange
+  Navigation.programWithFlags Msgs.OnLocationChange
         { init = init
         , view = view
         , update = update
@@ -28,10 +32,10 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.none
 
-init : Location -> (Model, Cmd Msg)
-init location =
-  let currentRoute = Routing.parseLocation location in
-  (Model  currentRoute --route
+init : Flags -> Location -> (Model, Cmd Msg)
+init flags location =
+  let currentRoute = Routing.parseLocation location 
+      model = Model  currentRoute --route
           Models.initialProject --selectedProject
           Models.initialChecklist --selectedChecklist
           RemoteData.Loading "" --projects/newProjectName
@@ -41,7 +45,9 @@ init location =
           SignIn.Types.initialModel
           Registration.Types.initialModel
           SignIn.Types.initialUserAuth
-          , Commands.fetchProjects)
+          flags.api
+  in
+  (model, Commands.fetchProjects model)
 
 -- UPDATE
 
@@ -85,7 +91,7 @@ update msg model =
       OnNewProjectKeyDown key ->
         if key == 13 then
           let projectName = model.newProjectName in
-            ({ model | newProjectName = ""}, Commands.addProject projectName)
+            ({ model | newProjectName = ""}, Commands.addProject model projectName)
         else
           (model, Cmd.none)
 
@@ -94,13 +100,13 @@ update msg model =
 
       OnNewChecklistKeyDown key ->
         if key == 13 then
-          ({ model | newChecklistName = ""}, Commands.addChecklist model.selectedProject.id model.newChecklistName)
+          ({ model | newChecklistName = ""}, Commands.addChecklist model model.selectedProject.id model.newChecklistName)
         else
           (model, Cmd.none)
 
       EditItem text ->
         let item = model.itemBeingEdited in
-         (model, Commands.updateChecklistItem {item | name = text})
+         (model, Commands.updateChecklistItem model {item | name = text})
 
       EditingItem item ->
         ({model | itemBeingEdited = item}, Cmd.none)
@@ -120,21 +126,21 @@ update msg model =
 
       OnNewItemKeyDown key ->
         if key == 13 then
-          ({ model | newItemName = ""}, Commands.addItem model.selectedChecklist.id model.newItemName)
+          ({ model | newItemName = ""}, Commands.addItem model model.selectedChecklist.id model.newItemName)
         else
           (model, Cmd.none)
 
       Msgs.ToggleItemCompleted item ->
-        (model, Commands.updateChecklistItem {item | completed = not item.completed })
+        (model, Commands.updateChecklistItem model {item | completed = not item.completed })
 
       Msgs.UpdatedItem item ->
-        (model, Commands.fetchChecklistItems model.selectedChecklist)
+        (model, Commands.fetchChecklistItems model model.selectedChecklist)
 
       OnSaveChecklist projectId->
-        (model, Commands.fetchProjectChecklists model.selectedProject)
+        (model, Commands.fetchProjectChecklists model model.selectedProject)
 
       OnSaveItem checklistId->
-        (model, Commands.fetchChecklistItems model.selectedChecklist)
+        (model, Commands.fetchChecklistItems model model.selectedChecklist)
 
       OnNewProjectInput projectName ->
         ({ model | newProjectName = projectName }, Cmd.none)
@@ -149,40 +155,40 @@ update msg model =
         ({model | items = response}, Cmd.none)
 
       GetProjects ->
-        (model, Commands.fetchProjects )
+        (model, Commands.fetchProjects model)
 
       OnSaveProject projectId->
-        (model, Commands.fetchProjects)
+        (model, Commands.fetchProjects model)
 
       RemoveProject project ->
-        (model, Commands.deleteProject project)
+        (model, Commands.deleteProject model project)
 
       RemoveItem item ->
-        (model, Commands.deleteItem item)
+        (model, Commands.deleteItem model item)
 
       DeletedItem _ ->
-        (model, Commands.fetchChecklistItems model.selectedChecklist)
+        (model, Commands.fetchChecklistItems model model.selectedChecklist)
 
       DeleteProject (Ok projectName)->
-        (model, Commands.fetchProjects)
+        (model, Commands.fetchProjects model)
 
       DeletedChecklist (Ok checklistName) ->
-        (model, Commands.fetchProjectChecklists model.selectedProject)
+        (model, Commands.fetchProjectChecklists model model.selectedProject)
 
       DeletedChecklist (Err error) ->
-        (model, Commands.fetchProjectChecklists model.selectedProject)
+        (model, Commands.fetchProjectChecklists model model.selectedProject)
 
       DeleteProject (Err error)->
         (model, Cmd.none)
 
       SelectProject project ->
-        ({model | route = ProjectRoute project.id, selectedProject = project}, Commands.fetchProjectChecklists project)
+        ({model | route = ProjectRoute project.id, selectedProject = project}, Commands.fetchProjectChecklists model project)
 
       SelectChecklist checklist ->
-        ({model | route = ChecklistRoute checklist.id, selectedChecklist = checklist}, Commands.fetchChecklistItems checklist)
+        ({model | route = ChecklistRoute checklist.id, selectedChecklist = checklist}, Commands.fetchChecklistItems model checklist)
 
       RemoveChecklist checklist ->
-        (model, Commands.deleteChecklist checklist)
+        (model, Commands.deleteChecklist model checklist)
 
       OnLocationChange location ->
             let

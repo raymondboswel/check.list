@@ -7,20 +7,20 @@ import Json.Encode as Encode exposing (..)
 import Json.Decode.Pipeline exposing (decode, required)
 import RemoteData exposing (..)
 
-addProject : (String) -> Cmd Msg
-addProject projectName =   
+addProject : Models.Model -> String -> Cmd Msg
+addProject model projectName =   
   let
     url =
-      String.append "http://localhost:4000/api/projects?name=" projectName
+      model.api ++ "api/projects?name=" ++ projectName
   in    
     Http.post url Http.emptyBody (Decode.at ["id"] (Decode.int))
     |> Http.send Msgs.OnSaveProject
 
-addChecklist : Int -> String -> Cmd Msg
-addChecklist projectId checklistName =   
+addChecklist : Models.Model -> Int -> String -> Cmd Msg
+addChecklist model projectId checklistName =   
   let
     url =
-      projectResourceUrl ++ "/" ++ toString(projectId) ++ "/checklists"
+      (projectResourceUrl model) ++ "/" ++ toString(projectId) ++ "/checklists"
     body =
         checklistEncoder checklistName |> Http.jsonBody
   in    
@@ -33,21 +33,21 @@ checklistEncoder checklistName =
         [ ("name", Encode.string checklistName)
         ]      
 
-addItem : Int -> String -> Cmd Msg
-addItem checklistId itemName =   
+addItem : Models.Model -> Int -> String -> Cmd Msg
+addItem model checklistId itemName =   
   let
     url =
-      "http://localhost:4000/api/checklists/" ++ toString(checklistId) ++ "/items"
+      model.api ++ "/api/checklists/" ++ toString(checklistId) ++ "/items"
     body =
         itemEncoder itemName False 1 |> Http.jsonBody
   in    
     Http.post url body (Decode.at ["id"] (Decode.int))
     |> Http.send Msgs.OnSaveItem
 
-updateChecklistItem : Item -> Cmd Msg
-updateChecklistItem item = 
+updateChecklistItem : Models.Model -> Item -> Cmd Msg
+updateChecklistItem model item = 
   let 
-    url = "http://localhost:4000/api/items/" ++ toString(item.id)
+    url = model.api ++ "/api/items/" ++ toString(item.id)
     body = itemEncoder item.name item.completed item.sequenceNumber |> Http.jsonBody
   in Http.send Msgs.UpdatedItem (putRequest url body) 
 
@@ -72,33 +72,33 @@ itemEncoder itemName completed sequenceNumber =
           ("sequence_number", Encode.int sequenceNumber)
         ]      
     
-deleteProject : (Project) -> Cmd Msg
-deleteProject project = 
-  Http.send DeleteProject (deleteByName projectResourceUrl project.name) 
+deleteProject : Models.Model -> (Project) -> Cmd Msg
+deleteProject model project = 
+  Http.send DeleteProject (deleteByName (projectResourceUrl model) project.name) 
 
-projectResourceUrl : String 
-projectResourceUrl =
-    "http://localhost:4000/api/projects"
+projectResourceUrl : Models.Model -> String 
+projectResourceUrl model =
+    model.api ++ "/api/projects"
 
-deleteChecklist : Checklist -> Cmd Msg
-deleteChecklist checklist =
-    Http.send (Msgs.DeletedChecklist) (deleteById checklistResourceUrl checklist.id)
+deleteChecklist : Models.Model -> Checklist -> Cmd Msg
+deleteChecklist model checklist =
+    Http.send (Msgs.DeletedChecklist) (deleteById (checklistResourceUrl model) checklist.id)
 
-deleteItem : Item -> Cmd Msg
-deleteItem item = 
-    Http.send (Msgs.DeletedItem) (deleteById itemResourceUrl item.id)
+deleteItem : Models.Model -> Item -> Cmd Msg
+deleteItem model item = 
+    Http.send (Msgs.DeletedItem) (deleteById (itemResourceUrl model) item.id)
 
-itemResourceUrl : String
-itemResourceUrl = 
-    "http://localhost:4000/api/items"
+itemResourceUrl : Models.Model -> String
+itemResourceUrl model = 
+    model.api ++ "/api/items"
 
-projectChecklistsResourceUrl : Project -> String
-projectChecklistsResourceUrl project = 
-    "http://localhost:4000/api/projects/" ++ toString(project.id) ++ "/checklists"
+projectChecklistsResourceUrl : Models.Model -> Project -> String
+projectChecklistsResourceUrl model project = 
+    model.api ++ "/api/projects/" ++ toString(project.id) ++ "/checklists"
 
-checklistResourceUrl : String
-checklistResourceUrl =
-    "http://localhost:4000/api/checklists"
+checklistResourceUrl : Models.Model -> String
+checklistResourceUrl model =
+    model.api ++ "/api/checklists"
 
 deleteById : String -> Int -> Request String
 deleteById url id =
@@ -124,30 +124,30 @@ deleteByName url name =
     , withCredentials = False
     }
 
-fetchProjects : Cmd Msg
-fetchProjects =
-    Http.get fetchProjectsUrl projectsDecoder
+fetchProjects : Models.Model -> Cmd Msg
+fetchProjects model =
+    Http.get (fetchProjectsUrl model) projectsDecoder
         |> RemoteData.sendRequest
         |> Cmd.map Msgs.OnFetchProjects
 
-fetchProjectChecklists : Project -> Cmd Msg
-fetchProjectChecklists project = 
-    Http.get (fetchProjectChecklistsUrl project) checklistsDecoder
+fetchProjectChecklists : Models.Model -> Project -> Cmd Msg
+fetchProjectChecklists model project = 
+    Http.get (fetchProjectChecklistsUrl model project) checklistsDecoder
             |> RemoteData.sendRequest
             |> Cmd.map Msgs.OnFetchProjectChecklists
 
-fetchChecklistItems : Checklist -> Cmd Msg
-fetchChecklistItems checklist = 
-     Http.get (fetchChecklistItemsUrl checklist) itemsDecoder
+fetchChecklistItems : Models.Model -> Checklist -> Cmd Msg
+fetchChecklistItems model checklist = 
+     Http.get (fetchChecklistItemsUrl model checklist) itemsDecoder
             |> RemoteData.sendRequest
             |> Cmd.map Msgs.OnFetchChecklistItems
 
-fetchChecklistItemsUrl : Checklist -> String
-fetchChecklistItemsUrl checklist =
-    "http://localhost:4000/api/checklists/" ++ toString(checklist.id) ++ "/items" 
+fetchChecklistItemsUrl : Models.Model -> Checklist -> String
+fetchChecklistItemsUrl model checklist =
+    model.api ++ "/api/checklists/" ++ toString(checklist.id) ++ "/items" 
 
-fetchProjectChecklistsUrl : Project -> String
-fetchProjectChecklistsUrl project = "http://localhost:4000/api/projects/" ++ toString project.id ++ "/checklists"
+fetchProjectChecklistsUrl : Models.Model -> Project -> String
+fetchProjectChecklistsUrl model project = model.api ++ "/api/projects/" ++ toString project.id ++ "/checklists"
 
 checklistsDecoder : Decode.Decoder (List Checklist)
 checklistsDecoder = 
@@ -182,14 +182,14 @@ projectDecoder =
         |> required "id" Decode.int
         |> required "name" Decode.string
 
-fetchProjectsUrl : String
-fetchProjectsUrl = "http://localhost:4000/api/projects"
+fetchProjectsUrl : Models.Model -> String
+fetchProjectsUrl model = model.api ++ "/api/projects"
 
 -- getProjects : Cmd Msg
 -- getProjects =
 --   let
 --     url =
---       "http://localhost:4000/api/projects"    
+--       model.api ++ "/api/projects"    
 --   in
 --     Http.send AllProjects (Http.get url decodeProjects)
 

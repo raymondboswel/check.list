@@ -37,12 +37,12 @@ page model =
             signInPage model.signInModel
 
         Models.RegistrationRoute ->
-        registrationPage model.registrationModel
+        registrationPage model
 
         Models.NotFoundRoute ->
             notFoundView
 
-registrationPage : Registration.Types.Model -> Html Msgs.Msg
+registrationPage : Models.Model -> Html Msgs.Msg
 registrationPage model =
     Html.map Msgs.RegistrationMsg (Registration.View.view model)
 

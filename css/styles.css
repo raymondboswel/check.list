@@ -7,6 +7,10 @@
     text-align: center;
 }
 
+.clickable {
+    cursor: pointer;
+}
+
 .add-top {
     top:30px;
 }
