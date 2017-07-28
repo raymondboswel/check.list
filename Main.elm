@@ -81,7 +81,7 @@ update msg model =
       Msgs.RegistrationMsg msg ->
         let
             (updatedRegistrationModel, registrationCmd) =
-                Registration.State.update msg model.registrationModel
+                Registration.State.update msg model
         in
             ({ model | registrationModel = updatedRegistrationModel }, Cmd.map RegistrationMsg registrationCmd )
 

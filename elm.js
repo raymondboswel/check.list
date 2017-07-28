@@ -15944,67 +15944,70 @@ var _user$project$Registration_Rest$authEncoder = F2(
 				}
 			});
 	});
-var _user$project$Registration_Rest$register = F2(
-	function (email, password) {
+var _user$project$Registration_Rest$register = F3(
+	function (api, email, password) {
 		var body = _elm_lang$http$Http$jsonBody(
 			A2(_user$project$Registration_Rest$authEncoder, email, password));
-		var url = 'http://localhost:4000/api/users/';
+		var url = A2(_elm_lang$core$Basics_ops['++'], api, '/api/users/');
 		return A2(
 			_elm_lang$http$Http$send,
 			_user$project$Registration_Types$Registered,
 			A3(_elm_lang$http$Http$post, url, body, _user$project$Registration_Rest$userAuthDecoder));
 	});
 
+var _user$project$Registration_State$setPassword = F2(
+	function (password, model) {
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{password: password});
+	});
+var _user$project$Registration_State$setShouldDisplayPasswordModal = F2(
+	function (shouldDisplayPasswordModal, model) {
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{shouldDisplayPasswordModal: shouldDisplayPasswordModal});
+	});
+var _user$project$Registration_State$setEmail = F2(
+	function (email, model) {
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{email: email});
+	});
+var _user$project$Registration_State$setRepeatPassword = F2(
+	function (repeatPassword, model) {
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{repeatPassword: repeatPassword});
+	});
 var _user$project$Registration_State$update = F2(
 	function (action, model) {
 		var _p0 = action;
 		switch (_p0.ctor) {
 			case 'OnEmailInput':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{email: _p0._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
+				var newRegistrationModel = A2(_user$project$Registration_State$setEmail, _p0._0, model.registrationModel);
+				return {ctor: '_Tuple2', _0: newRegistrationModel, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'OnPasswordInput':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{password: _p0._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
+				var newRegistrationModel = A2(_user$project$Registration_State$setPassword, _p0._0, model.registrationModel);
+				return {ctor: '_Tuple2', _0: newRegistrationModel, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'Register':
-				return _elm_lang$core$Native_Utils.eq(model.password, model.repeatPassword) ? {
-					ctor: '_Tuple2',
-					_0: model,
-					_1: A2(_user$project$Registration_Rest$register, model.email, model.password)
-				} : {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{shouldDisplayPasswordModal: true}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
+				if (_elm_lang$core$Native_Utils.eq(model.registrationModel.password, model.registrationModel.repeatPassword)) {
+					return {
+						ctor: '_Tuple2',
+						_0: model.registrationModel,
+						_1: A3(_user$project$Registration_Rest$register, model.api, model.registrationModel.email, model.registrationModel.password)
+					};
+				} else {
+					var newRegistrationModel = A2(_user$project$Registration_State$setShouldDisplayPasswordModal, true, model.registrationModel);
+					return {ctor: '_Tuple2', _0: newRegistrationModel, _1: _elm_lang$core$Platform_Cmd$none};
+				}
 			case 'Registered':
-				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				return {ctor: '_Tuple2', _0: model.registrationModel, _1: _elm_lang$core$Platform_Cmd$none};
 			case 'OnPasswordRepeatInput':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{repeatPassword: _p0._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
+				var newRegistrationModel = A2(_user$project$Registration_State$setRepeatPassword, _p0._0, model.registrationModel);
+				return {ctor: '_Tuple2', _0: newRegistrationModel, _1: _elm_lang$core$Platform_Cmd$none};
 			default:
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{shouldDisplayPasswordModal: false}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
+				var newRegistrationModel = A2(_user$project$Registration_State$setShouldDisplayPasswordModal, false, model.registrationModel);
+				return {ctor: '_Tuple2', _0: newRegistrationModel, _1: _elm_lang$core$Platform_Cmd$none};
 		}
 	});
 var _user$project$Registration_State$init = {
@@ -17239,7 +17242,7 @@ var _user$project$Main$update = F2(
 							_1: _elm_lang$core$Platform_Cmd$none
 						};
 					} else {
-						var _p2 = A2(_user$project$Registration_State$update, _p0._0, model.registrationModel);
+						var _p2 = A2(_user$project$Registration_State$update, _p0._0, model);
 						var updatedRegistrationModel = _p2._0;
 						var registrationCmd = _p2._1;
 						return {

@@ -9,11 +9,11 @@ import Json.Encode as Encode exposing (..)
 import Json.Decode.Pipeline exposing (decode, required)
 import RemoteData exposing (..)
 
-register : String -> String -> Cmd Registration.Types.Msg
-register email password =
+register : String -> String -> String -> Cmd Registration.Types.Msg
+register api email password =
   let
       url =
-        "http://localhost:4000/api/users/"
+        api ++ "/api/users/"
       body =
             authEncoder email password |> Http.jsonBody
     in

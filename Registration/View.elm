@@ -8,14 +8,14 @@ import Dialog
 import Models exposing (..)
 import Msgs exposing (..)
 
-view : Models.Model -> Html (Registration.Types.Msg, Models.Model)
+view : Models.Model -> Html Registration.Types.Msg
 view model =
     div []
         [h2 [] [text "Register"],
         input [placeholder "Username", onInput Registration.Types.OnEmailInput] [text model.registrationModel.user.email],
         input [placeholder "Password", type_ "password", onInput Registration.Types.OnPasswordInput] [text model.registrationModel.user.password],
         input [placeholder "Password", type_ "password", onInput Registration.Types.OnPasswordRepeatInput] [text model.registrationModel.user.repeatPassword],
-        button [ onClick (Registration.Types.Register, model) ] [text "Register"]
+        button [ onClick Registration.Types.Register ] [text "Register"]
         ,
         Dialog.view
         (if model.registrationModel.shouldDisplayPasswordModal then

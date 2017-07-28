@@ -8,21 +8,52 @@ init : ( Registration.Types.Model, Cmd Msg )
 init =
   (Registration.Types.Model initialUser "" "" "" False, Cmd.none)
 
-update : Msg -> Registration.Types.Model -> ( Registration.Types.Model, Cmd Msg )
+update : Msg -> RootModel.Model -> ( Registration.Types.Model, Cmd Msg )
 update action model =
   case action of
     OnEmailInput input ->
-      ({model | email = input}, Cmd.none)
+      let newRegistrationModel = 
+        model.registrationModel |> setEmail input 
+      in
+      (newRegistrationModel, Cmd.none)
     OnPasswordInput input ->
-      ({model | password = input}, Cmd.none)
+      let newRegistrationModel = 
+        model.registrationModel |> setPassword input
+      in
+      (newRegistrationModel, Cmd.none)
     Register ->
-      if model.password == model.repeatPassword then
-        (model, Registration.Rest.register model.email model.password)
+      if model.registrationModel.password == model.registrationModel.repeatPassword then
+        (model.registrationModel, Registration.Rest.register model.api model.registrationModel.email model.registrationModel.password)
       else
-        ({model | shouldDisplayPasswordModal = True}, Cmd.none)
+        let newRegistrationModel = 
+          model.registrationModel |> setShouldDisplayPasswordModal True
+        in
+        (newRegistrationModel, Cmd.none)
     Registered userAuth ->
-      (model, Cmd.none)
+      (model.registrationModel, Cmd.none)
     Registration.Types.OnPasswordRepeatInput repeatPassword ->
-      ({model | repeatPassword = repeatPassword}, Cmd.none)
+      let newRegistrationModel = 
+        model.registrationModel |> setRepeatPassword repeatPassword
+      in
+      (newRegistrationModel, Cmd.none)
     AcknowledgeDialog ->
-      ({model | shouldDisplayPasswordModal = False}, Cmd.none)
+      let newRegistrationModel = 
+        model.registrationModel |> setShouldDisplayPasswordModal False
+      in
+      (newRegistrationModel, Cmd.none)
+
+setRepeatPassword : String -> Registration.Types.Model -> Registration.Types.Model
+setRepeatPassword repeatPassword model = 
+  {model | repeatPassword = repeatPassword}
+
+setEmail : String -> Registration.Types.Model -> Registration.Types.Model
+setEmail email model = 
+  {model | email = email}
+
+setShouldDisplayPasswordModal : Bool -> Registration.Types.Model -> Registration.Types.Model
+setShouldDisplayPasswordModal shouldDisplayPasswordModal model = 
+  {model | shouldDisplayPasswordModal = shouldDisplayPasswordModal}
+
+setPassword : String -> Registration.Types.Model -> Registration.Types.Model
+setPassword password model = 
+  {model | password = password}
