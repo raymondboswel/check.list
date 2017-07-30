@@ -15767,7 +15767,7 @@ var _user$project$Commands$addProject = F2(
 		var url = A2(
 			_elm_lang$core$Basics_ops['++'],
 			model.api,
-			A2(_elm_lang$core$Basics_ops['++'], 'api/projects?name=', projectName));
+			A2(_elm_lang$core$Basics_ops['++'], '/api/projects?name=', projectName));
 		return A2(
 			_elm_lang$http$Http$send,
 			_user$project$Msgs$OnSaveProject,

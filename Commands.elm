@@ -11,7 +11,7 @@ addProject : Models.Model -> String -> Cmd Msg
 addProject model projectName =   
   let
     url =
-      model.api ++ "api/projects?name=" ++ projectName
+      model.api ++ "/api/projects?name=" ++ projectName
   in    
     Http.post url Http.emptyBody (Decode.at ["id"] (Decode.int))
     |> Http.send Msgs.OnSaveProject
