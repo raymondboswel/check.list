@@ -74,7 +74,7 @@ update msg model =
       SignInMsg signIn ->
             let
                 (updatedSignInModel, signInCmd) =
-                    SignIn.State.update signIn model.signInModel
+                    SignIn.State.update signIn model
             in
                 ({ model | signInModel = updatedSignInModel }, Cmd.map SignInMsg signInCmd )
 

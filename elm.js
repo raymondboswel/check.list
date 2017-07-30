@@ -15861,47 +15861,58 @@ var _user$project$SignIn_Rest$authEncoder = F2(
 				}
 			});
 	});
-var _user$project$SignIn_Rest$signIn = F2(
-	function (email, password) {
+var _user$project$SignIn_Rest$signIn = F3(
+	function (model, email, password) {
 		var body = _elm_lang$http$Http$jsonBody(
 			A2(_user$project$SignIn_Rest$authEncoder, email, password));
-		var url = 'http://localhost:4000/api/users/sign_in';
+		var url = A2(_elm_lang$core$Basics_ops['++'], model.api, '/api/users/sign_in');
 		return A2(
 			_elm_lang$http$Http$send,
 			_user$project$SignIn_Types$SignedIn,
 			A3(_elm_lang$http$Http$post, url, body, _user$project$SignIn_Rest$userAuthDecoder));
 	});
 
+var _user$project$SignIn_State$setEmail = F2(
+	function (email, model) {
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{email: email});
+	});
 var _user$project$SignIn_State$update = F2(
 	function (action, model) {
 		var _p0 = action;
 		switch (_p0.ctor) {
 			case 'OnEmailInput':
+				var signInModel = model.signInModel;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
-						model,
+						signInModel,
 						{email: _p0._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'OnPasswordInput':
+				var signInModel = model.signInModel;
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
-						model,
+						signInModel,
 						{password: _p0._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'SignIn':
+				var signInModel = model.signInModel;
 				return {
 					ctor: '_Tuple2',
-					_0: model,
-					_1: A2(_user$project$SignIn_Rest$signIn, model.email, model.password)
+					_0: signInModel,
+					_1: A3(_user$project$SignIn_Rest$signIn, model, model.signInModel.email, model.signInModel.password)
 				};
 			case 'SignedIn':
-				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				var signInModel = model.signInModel;
+				return {ctor: '_Tuple2', _0: signInModel, _1: _elm_lang$core$Platform_Cmd$none};
 			default:
-				return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+				var signInModel = model.signInModel;
+				return {ctor: '_Tuple2', _0: signInModel, _1: _elm_lang$core$Platform_Cmd$none};
 		}
 	});
 var _user$project$SignIn_State$init = {
@@ -16045,7 +16056,7 @@ var _user$project$SignIn_View$view = function (model) {
 					},
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html$text(model.user.email),
+						_0: _elm_lang$html$Html$text(model.signInModel.user.email),
 						_1: {ctor: '[]'}
 					}),
 				_1: {
@@ -16067,7 +16078,7 @@ var _user$project$SignIn_View$view = function (model) {
 						},
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html$text(model.user.password),
+							_0: _elm_lang$html$Html$text(model.signInModel.user.password),
 							_1: {ctor: '[]'}
 						}),
 					_1: {
@@ -17138,7 +17149,7 @@ var _user$project$View$page = function (model) {
 		case 'ChecklistRoute':
 			return A2(_user$project$View$checklistItemsPage, model, _p2._0);
 		case 'SignInRoute':
-			return _user$project$View$signInPage(model.signInModel);
+			return _user$project$View$signInPage(model);
 		case 'RegistrationRoute':
 			return _user$project$View$registrationPage(model);
 		default:
@@ -17507,7 +17518,7 @@ var _user$project$Main$update = F2(
 					};
 			}
 		} while(false);
-		var _p1 = A2(_user$project$SignIn_State$update, _p0._0, model.signInModel);
+		var _p1 = A2(_user$project$SignIn_State$update, _p0._0, model);
 		var updatedSignInModel = _p1._0;
 		var signInCmd = _p1._1;
 		return {

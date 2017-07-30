@@ -8,11 +8,11 @@ import Json.Encode as Encode exposing (..)
 import Json.Decode.Pipeline exposing (decode, required)
 import RemoteData exposing (..)
 
-signIn : String -> String -> Cmd SignIn.Types.Msg
-signIn email password =
+signIn : Models.Model -> String -> String -> Cmd SignIn.Types.Msg
+signIn model email password =
   let
     url =
-      "http://localhost:4000/api/users/sign_in"
+      model.api ++ "/api/users/sign_in"
     body =
           authEncoder email password |> Http.jsonBody
   in

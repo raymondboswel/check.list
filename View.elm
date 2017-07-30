@@ -34,7 +34,7 @@ page model =
             checklistItemsPage model id
 
         Models.SignInRoute ->
-            signInPage model.signInModel
+            signInPage model
 
         Models.RegistrationRoute ->
         registrationPage model
@@ -46,7 +46,7 @@ registrationPage : Models.Model -> Html Msgs.Msg
 registrationPage model =
     Html.map Msgs.RegistrationMsg (Registration.View.view model)
 
-signInPage : SignIn.Types.Model -> Html Msgs.Msg
+signInPage : Models.Model -> Html Msgs.Msg
 signInPage model =
     Html.map Msgs.SignInMsg (SignIn.View.view model)
 
